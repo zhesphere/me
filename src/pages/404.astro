@@ -1,0 +1,22 @@
+---
+import { siteConfig } from "../data/site";
+import "../styles/global.css";
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>404 · Signal Lost · {siteConfig.name}</title>
+  </head>
+  <body class="error-page">
+    <main>
+      <p>ERROR / 404</p>
+      <h1>SIGNAL<br />LOST</h1>
+      <span>你抵达了一片尚未命名的虚空。</span>
+      <a href="/">返回坐标原点 →</a>
+    </main>
+  </body>
+</html>
