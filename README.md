@@ -13,10 +13,12 @@ npm run dev
 
 ## Cloudflare deployment
 
-在 Cloudflare Workers Builds 中连接 `zhesphere/me`：
+Cloudflare Worker 名为 `me`，Workers Builds 已连接 GitHub 仓库 `zhesphere/me`：
 
 - Build command: `npm run build`
 - Deploy command: `npx wrangler deploy`
 - Production branch: `main`
 
-首次发布后，在 Worker 的 Custom Domains 中绑定 `a.zsphere.top`，并从 Cloudflare 控制台为该域名启用无 Cookie 的 Web Analytics 自动注入。
+日常发布、验收、排错和回滚流程见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
+
+`a.zsphere.top` 目前仍指向 GitHub Pages。绑定 Worker Custom Domain 之前，必须先将 `zsphere.top` 作为活跃 zone 接入同一 Cloudflare 账户，并完整迁移现有 DNS 记录。
