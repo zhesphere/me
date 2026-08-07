@@ -325,12 +325,13 @@ footer {
 }
 
 .core-sun::before {
-  inset: -13%;
-  border: 1px solid rgba(222,236,255,.24);
-  background: repeating-conic-gradient(from 16deg, rgba(207,230,255,.22) 0deg 2deg, transparent 3deg 15deg);
-  box-shadow: 0 0 24px rgba(101,230,245,.14);
-  opacity: .8;
-  animation: core-surface-turn 24s linear infinite;
+  inset: 5%;
+  background:
+    radial-gradient(ellipse at 27% 68%, rgba(93,107,237,.34) 0 5%, transparent 17%),
+    radial-gradient(ellipse at 73% 29%, rgba(222,235,255,.3) 0 4%, transparent 15%),
+    radial-gradient(ellipse at 55% 81%, rgba(68,219,245,.17) 0 4%, transparent 14%);
+  filter: blur(4px);
+  opacity: .72;
 }
 
 .core-sun::after {
@@ -340,7 +341,7 @@ footer {
   transform: rotate(-19deg) scaleY(.37);
 }
 
-.core-sun i { inset: -8% -24%; border: 1px solid rgba(101,230,245,.2); transform: rotate(35deg) scaleY(.28); animation: node-spin 21s linear infinite; }
+.core-sun i { inset: -8% -24%; border: 1px solid rgba(101,230,245,.2); transform: rotate(35deg) scaleY(.28); }
 .core-sun b { top: 8%; right: -10%; width: 13%; aspect-ratio: 1; background: radial-gradient(circle, #fff, var(--cyan) 28%, transparent 68%); box-shadow: 0 0 20px var(--cyan); }
 .core-sun em { left: -12%; bottom: 20%; width: 9%; aspect-ratio: 1; background: radial-gradient(circle, #fff, #bba7ff 25%, transparent 70%); box-shadow: 0 0 22px #bba7ff; }
 
@@ -944,10 +945,6 @@ footer {
 }
 
 @keyframes core-halo-turn {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes core-surface-turn {
   to { transform: rotate(360deg); }
 }
 
