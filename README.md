@@ -1,6 +1,6 @@
 # ZheSphere Personal Universe
 
-`a.zsphere.top` 的 Astro 静态个人主页，使用 Cloudflare Workers Static Assets 部署。
+`a.zsphere.top` 的 Astro 静态个人主页，使用 GitHub + Vercel 部署。
 
 ## Local development
 
@@ -11,14 +11,15 @@ npm run dev
 
 内容集中在 `src/data/site.ts`。生产构建会尝试读取博客 Atom feed；网络异常时自动使用本地备用数据。
 
-## Cloudflare deployment
+## Vercel deployment
 
-Cloudflare Worker 名为 `me`，Workers Builds 已连接 GitHub 仓库 `zhesphere/me`：
+Vercel 项目应连接 GitHub 仓库 `zhesphere/me`：
 
+- Framework Preset: `Astro`
 - Build command: `npm run build`
-- Deploy command: `npx wrangler deploy`
+- Output directory: `dist`
 - Production branch: `main`
 
-日常发布、验收、排错和回滚流程见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
+首次在 Vercel 导入仓库后，推送到 `main` 会自动发布生产环境；Pull Request 会生成预览部署。日常发布、验收、排错和回滚流程见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
 
-`a.zsphere.top` 目前仍指向 GitHub Pages。绑定 Worker Custom Domain 之前，必须先将 `zsphere.top` 作为活跃 zone 接入同一 Cloudflare 账户，并完整迁移现有 DNS 记录。
+将 `a.zsphere.top` 添加到 Vercel 项目后，按 Vercel 显示的 DNS 记录更新该子域名。通常为 CNAME 指向 `cname.vercel-dns.com`；以 Vercel 控制台给出的记录为准。

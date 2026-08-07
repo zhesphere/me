@@ -18,7 +18,6 @@
     "@astrojs/check": "latest",
     "@playwright/test": "latest",
     "typescript": "latest",
-    "vitest": "latest",
-    "wrangler": "latest"
+    "vitest": "latest"
   }
 }
