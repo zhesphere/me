@@ -287,18 +287,6 @@ footer {
   content: "";
 }
 
-.core::after {
-  position: absolute;
-  inset: 3%;
-  z-index: -2;
-  border-radius: 50%;
-  background: conic-gradient(from 120deg, transparent 0 9%, rgba(101,230,245,.38) 14%, transparent 19% 38%, rgba(155,123,255,.28) 46%, transparent 53% 71%, rgba(110,168,254,.28) 80%, transparent 88%);
-  filter: blur(8px);
-  opacity: .65;
-  animation: core-halo-turn 20s linear infinite;
-  content: "";
-}
-
 .core-sun {
   position: absolute;
   z-index: -1;
@@ -942,10 +930,6 @@ footer {
 
 @keyframes core-breathe {
   50% { transform: scale(1.07); filter: saturate(1.25) brightness(1.15); }
-}
-
-@keyframes core-halo-turn {
-  to { transform: rotate(360deg); }
 }
 
 @keyframes orbit-satellite {
