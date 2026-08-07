@@ -141,6 +141,12 @@ footer {
   font-weight: 700;
 }
 
+.wordmark small {
+  color: #66718c;
+  font: 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .08em;
+}
+
 .wordmark-mark {
   position: relative;
   width: 20px;
@@ -276,10 +282,60 @@ footer {
   z-index: -1;
   border: 1px solid rgba(166, 193, 255, .13);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(92, 123, 216, .13), rgba(10,14,25,.04) 58%, transparent 67%);
-  box-shadow: inset 0 0 70px rgba(92,124,214,.08), 0 0 100px rgba(71,96,170,.08);
+  background: radial-gradient(circle, rgba(130, 111, 255, .16), rgba(10,14,25,.04) 58%, transparent 67%);
+  box-shadow: inset 0 0 70px rgba(92,124,214,.11), 0 0 100px rgba(71,96,170,.13);
   content: "";
 }
+
+.core::after {
+  position: absolute;
+  inset: 3%;
+  z-index: -2;
+  border-radius: 50%;
+  background: conic-gradient(from 120deg, transparent 0 9%, rgba(101,230,245,.38) 14%, transparent 19% 38%, rgba(155,123,255,.28) 46%, transparent 53% 71%, rgba(110,168,254,.28) 80%, transparent 88%);
+  filter: blur(8px);
+  opacity: .65;
+  animation: core-halo-turn 20s linear infinite;
+  content: "";
+}
+
+.core-sun {
+  position: absolute;
+  z-index: -1;
+  width: 42%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(212, 224, 255, .42);
+  border-radius: 50%;
+  background: radial-gradient(circle at 39% 34%, #f1f7ff 0 2%, #a8d4ff 11%, #7d82ff 30%, #323a86 58%, #11152f 72%, transparent 73%);
+  box-shadow: 0 0 18px rgba(151,202,255,.55), 0 0 52px rgba(115,116,255,.32), inset -16px -18px 30px rgba(6,9,30,.75);
+  animation: core-breathe 5.5s ease-in-out infinite;
+}
+
+.core-sun::before,
+.core-sun::after,
+.core-sun i,
+.core-sun b,
+.core-sun em {
+  position: absolute;
+  border-radius: 50%;
+  content: "";
+}
+
+.core-sun::before {
+  inset: -19%;
+  border: 1px solid rgba(101,230,245,.2);
+  box-shadow: 0 0 16px rgba(101,230,245,.12);
+}
+
+.core-sun::after {
+  inset: -35% 8%;
+  border: 1px solid rgba(155,123,255,.18);
+  transform: rotate(-23deg);
+}
+
+.core-sun i { inset: 17% 14%; border: 1px dashed rgba(240,246,255,.3); animation: node-spin 15s linear infinite; }
+.core-sun b { top: -3px; right: 17%; width: 5px; height: 5px; background: var(--cyan); box-shadow: 0 0 13px var(--cyan); }
+.core-sun em { right: -8%; bottom: 26%; width: 3px; height: 3px; background: #bba7ff; box-shadow: 0 0 12px #bba7ff; }
 
 .kicker,
 .panel-kicker {
@@ -293,7 +349,9 @@ footer {
 .core h1 {
   margin: 0;
   font-family: "Zhe Display", Impact, Haettenschweiler, sans-serif;
-  font-size: clamp(58px, 8.4vw, 124px);
+  position: relative;
+  z-index: 1;
+  font-size: clamp(52px, 7.5vw, 110px);
   font-stretch: condensed;
   font-weight: 700;
   letter-spacing: -.065em;
@@ -307,8 +365,8 @@ footer {
 
 .core h1 span:last-child {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(222, 232, 255, .82);
-  text-shadow: 0 0 38px rgba(126, 157, 244, .13);
+  -webkit-text-stroke: 1px rgba(226, 237, 255, .9);
+  text-shadow: 0 0 28px rgba(149, 188, 255, .4);
 }
 
 .tagline {
@@ -346,8 +404,8 @@ footer {
   position: absolute;
   z-index: 4;
   display: flex;
-  min-width: 192px;
-  min-height: 64px;
+  min-width: 210px;
+  min-height: 76px;
   align-items: center;
   gap: 15px;
   color: var(--paper);
@@ -358,9 +416,9 @@ footer {
   position: absolute;
   inset: -14px;
   z-index: -1;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  background: rgba(16, 22, 42, 0);
+  border: 1px solid rgba(168, 188, 238, .13);
+  border-radius: 12px;
+  background: linear-gradient(105deg, rgba(16, 22, 42, .76), rgba(16, 22, 42, .28));
   content: "";
   transition: background .35s ease, border-color .35s ease;
 }
@@ -384,8 +442,8 @@ footer {
 .node-beacon {
   position: relative;
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   flex: 0 0 auto;
   border: 1px solid var(--line-bright);
   border-radius: 50%;
@@ -423,7 +481,7 @@ footer {
 }
 
 .node-copy small {
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   color: var(--cyan);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 8px;
@@ -431,17 +489,18 @@ footer {
 }
 
 .node-copy strong {
-  font-family: "Zhe Display", Impact, sans-serif;
-  font-size: 22px;
-  letter-spacing: .04em;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: .02em;
 }
 
 .node-copy em {
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 10px;
+  margin-top: 5px;
+  color: #c0cae0;
+  font-size: 12px;
   font-style: normal;
-  letter-spacing: .05em;
+  letter-spacing: .02em;
 }
 
 .scroll-note {
@@ -850,6 +909,14 @@ footer {
   to { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 
+@keyframes core-breathe {
+  50% { transform: scale(1.07); filter: saturate(1.25) brightness(1.15); }
+}
+
+@keyframes core-halo-turn {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 820px) {
   .site-header { padding: 18px 20px; }
   .site-header .system-state { font-size: 0; }
@@ -859,14 +926,14 @@ footer {
   .coordinate { display: none; }
   .orbital-system { width: min(102vw, 680px); transform: translateY(-1vh); }
   .core { width: min(72vw, 410px); }
-  .core h1 { font-size: clamp(58px, 16.5vw, 92px); }
+  .core h1 { font-size: clamp(52px, 15vw, 86px); }
   .orbit-outer { width: 98%; height: 70%; }
-  .portal-node { min-width: 154px; }
+  .portal-node { min-width: 174px; min-height: 72px; }
   .portal-blog { top: 15%; left: 11%; }
   .portal-github { top: 33%; right: 15%; }
   .portal-about { right: 20%; bottom: 11%; }
-  .node-copy em { display: none; }
-  .node-copy strong { font-size: 18px; }
+  .node-copy strong { font-size: 16px; }
+  .node-copy em { font-size: 11px; }
   .scroll-note { bottom: 69px; white-space: nowrap; }
   .fallback-content { grid-template-columns: 1fr; }
   .panel-shell {
@@ -900,7 +967,8 @@ footer {
   .portal-about { right: 25%; bottom: 14%; }
   .node-beacon { width: 38px; height: 38px; }
   .node-copy small { font-size: 7px; }
-  .node-copy strong { font-size: 16px; }
+  .node-copy strong { font-size: 15px; }
+  .node-copy em { font-size: 10px; }
   .scroll-note { font-size: 7px; }
 }
 

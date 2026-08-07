@@ -46,25 +46,25 @@ export const siteConfig = {
   portals: [
     {
       id: "blog",
-      label: "SIGNAL",
-      eyebrow: "BLOG",
+      label: "博客",
+      eyebrow: "WRITING",
       index: "01",
-      description: "接收来自博客的最新信号"
+      description: "文章与思考"
     },
     {
       id: "github",
-      label: "SOURCE",
-      eyebrow: "GITHUB",
+      label: "GitHub",
+      eyebrow: "BUILDING",
       index: "02",
-      description: "查看公开代码与实验轨迹",
+      description: "开源代码与实验",
       href: "https://github.com/zhesphere"
     },
     {
       id: "about",
-      label: "ORIGIN",
-      eyebrow: "ABOUT",
+      label: "关于我",
+      eyebrow: "ORIGIN",
       index: "03",
-      description: "关于这颗星球的简短注释"
+      description: "这颗星球的来历"
     }
   ],
   socialLinks: [
