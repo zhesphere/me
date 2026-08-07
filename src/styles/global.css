@@ -267,7 +267,7 @@ footer {
   top: 50%;
   left: 50%;
   display: flex;
-  width: min(46vw, 450px);
+  width: min(42vw, 430px);
   aspect-ratio: 1;
   align-items: center;
   flex-direction: column;
@@ -302,7 +302,7 @@ footer {
 .core-sun {
   position: absolute;
   z-index: -1;
-  width: 42%;
+  width: 72%;
   aspect-ratio: 1;
   border: 1px solid rgba(212, 224, 255, .42);
   border-radius: 50%;
@@ -351,7 +351,7 @@ footer {
   font-family: "Zhe Display", Impact, Haettenschweiler, sans-serif;
   position: relative;
   z-index: 1;
-  font-size: clamp(52px, 7.5vw, 110px);
+  font-size: clamp(50px, 6.4vw, 96px);
   font-stretch: condensed;
   font-weight: 700;
   letter-spacing: -.065em;
@@ -411,15 +411,15 @@ footer {
 }
 
 .orbiter-blog {
-  animation: orbit-blog 54s linear infinite;
+  animation: orbit-satellite 72s linear infinite;
 }
 
 .orbiter-github {
-  animation: orbit-github 46s linear infinite;
+  animation: orbit-satellite 72s linear infinite -24s;
 }
 
 .orbiter-about {
-  animation: orbit-about 38s linear infinite;
+  animation: orbit-satellite 72s linear infinite -48s;
 }
 
 .portal-node {
@@ -937,25 +937,18 @@ footer {
   to { transform: rotate(360deg); }
 }
 
-@keyframes orbit-blog {
-  0%, 100% { top: calc(50% - min(6vw, 60px)); left: calc(50% - min(38vw, 385px)); }
-  25% { top: calc(50% - min(23vw, 230px)); left: 50%; }
-  50% { top: calc(50% + min(6vw, 60px)); left: calc(50% + min(38vw, 385px)); }
-  75% { top: calc(50% + min(23vw, 230px)); left: 50%; }
+@keyframes orbit-satellite {
+  0%, 100% { top: 50%; left: calc(50% - min(39vw, 400px)); }
+  25% { top: calc(50% - min(29vw, 290px)); left: 50%; }
+  50% { top: 50%; left: calc(50% + min(39vw, 400px)); }
+  75% { top: calc(50% + min(29vw, 290px)); left: 50%; }
 }
 
-@keyframes orbit-github {
-  0%, 100% { top: calc(50% - min(18vw, 180px)); left: calc(50% + min(23vw, 235px)); }
-  25% { top: calc(50% - min(18vw, 180px)); left: calc(50% - min(23vw, 235px)); }
-  50% { top: calc(50% + min(18vw, 180px)); left: calc(50% - min(23vw, 235px)); }
-  75% { top: calc(50% + min(18vw, 180px)); left: calc(50% + min(23vw, 235px)); }
-}
-
-@keyframes orbit-about {
-  0%, 100% { top: calc(50% + min(19vw, 195px)); left: calc(50% + min(9vw, 90px)); }
-  25% { top: calc(50% + min(4vw, 42px)); left: calc(50% - min(19vw, 195px)); }
-  50% { top: calc(50% - min(19vw, 195px)); left: calc(50% - min(4vw, 42px)); }
-  75% { top: calc(50% - min(5vw, 52px)); left: calc(50% + min(20vw, 205px)); }
+@keyframes orbit-satellite-compact {
+  0%, 100% { top: 50%; left: calc(50% - min(38vw, 300px)); }
+  25% { top: calc(50% - min(42vw, 260px)); left: 50%; }
+  50% { top: 50%; left: calc(50% + min(38vw, 300px)); }
+  75% { top: calc(50% + min(42vw, 260px)); left: 50%; }
 }
 
 @media (max-width: 820px) {
@@ -966,8 +959,9 @@ footer {
   footer span:last-child { display: none; }
   .coordinate { display: none; }
   .orbital-system { width: min(102vw, 680px); transform: translateY(-1vh); }
-  .core { width: min(72vw, 410px); }
-  .core h1 { font-size: clamp(52px, 15vw, 86px); }
+  .orbiter { animation-name: orbit-satellite-compact; }
+  .core { width: min(62vw, 390px); }
+  .core h1 { font-size: clamp(46px, 12vw, 76px); }
   .orbit-outer { width: 98%; height: 70%; }
   .portal-node { min-width: 174px; min-height: 72px; }
   .node-copy strong { font-size: 16px; }
@@ -995,9 +989,9 @@ footer {
 
 @media (max-width: 480px) {
   .orbital-system { width: 124vw; }
-  .core { width: 70vw; }
+  .core { width: 60vw; }
   .core::before { inset: 7%; }
-  .core h1 { font-size: clamp(54px, 17vw, 76px); }
+  .core h1 { font-size: clamp(42px, 11.5vw, 58px); }
   .kicker { margin-bottom: 14px; font-size: 7px; }
   .tagline { max-width: 18em; margin-top: 22px; font-size: 11px; line-height: 1.7; }
   .node-beacon { width: 38px; height: 38px; }
