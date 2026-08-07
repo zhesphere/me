@@ -81,22 +81,24 @@ const structuredData = {
           </div>
 
           {siteConfig.portals.map((portal) => (
-            <a
-              class={`portal-node portal-${portal.id}`}
-              href={portal.href ?? `#panel-${portal.id}`}
-              data-panel={portal.href ? undefined : portal.id}
-              target={portal.href ? "_blank" : undefined}
-              rel={portal.href ? "noreferrer" : undefined}
-              aria-controls={portal.href ? undefined : `panel-${portal.id}`}
-              aria-expanded={portal.href ? undefined : "false"}
-            >
-              <span class="node-beacon" aria-hidden="true"><i></i></span>
-              <span class="node-copy">
-                <small>{portal.index} / {portal.eyebrow}</small>
-                <strong>{portal.label}</strong>
-                <em>{portal.description}</em>
-              </span>
-            </a>
+            <div class={`orbiter orbiter-${portal.id}`}>
+              <a
+                class="portal-node"
+                href={portal.href ?? `#panel-${portal.id}`}
+                data-panel={portal.href ? undefined : portal.id}
+                target={portal.href ? "_blank" : undefined}
+                rel={portal.href ? "noreferrer" : undefined}
+                aria-controls={portal.href ? undefined : `panel-${portal.id}`}
+                aria-expanded={portal.href ? undefined : "false"}
+              >
+                <span class="node-beacon" aria-hidden="true"><i></i></span>
+                <span class="node-copy">
+                  <small>{portal.index} / {portal.eyebrow}</small>
+                  <strong>{portal.label}</strong>
+                  <em>{portal.description}</em>
+                </span>
+              </a>
+            </div>
           ))}
         </div>
 
