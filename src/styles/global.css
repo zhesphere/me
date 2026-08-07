@@ -258,9 +258,9 @@ footer {
 
 .orbit::before { top: 11%; left: 22%; }
 .orbit::after { right: 8%; bottom: 29%; }
-.orbit-outer { width: 100%; height: 62%; }
-.orbit-middle { width: 72%; height: 72%; border-style: dashed; opacity: .64; transform: translate(-50%, -50%) rotate(23deg); }
-.orbit-inner { width: 42%; height: 42%; opacity: .75; transform: translate(-50%, -50%) rotate(-31deg); }
+.orbit-outer { width: 76%; height: 56%; }
+.orbit-middle { width: 68%; height: 62%; border-style: dashed; opacity: .64; }
+.orbit-inner { width: 60%; height: 68%; opacity: .75; }
 
 .core {
   position: absolute;
@@ -410,15 +410,15 @@ footer {
 }
 
 .orbiter-blog {
-  animation: orbit-satellite 72s linear infinite;
+  animation: orbit-outer-track 84s linear infinite;
 }
 
 .orbiter-github {
-  animation: orbit-satellite 72s linear infinite -24s;
+  animation: orbit-middle-track 84s linear infinite -28s;
 }
 
 .orbiter-about {
-  animation: orbit-satellite 72s linear infinite -48s;
+  animation: orbit-inner-track 84s linear infinite -56s;
 }
 
 .portal-node {
@@ -932,18 +932,37 @@ footer {
   50% { transform: scale(1.07); filter: saturate(1.25) brightness(1.15); }
 }
 
-@keyframes orbit-satellite {
-  0%, 100% { top: 50%; left: calc(50% - min(39vw, 400px)); }
-  25% { top: calc(50% - min(29vw, 290px)); left: 50%; }
-  50% { top: 50%; left: calc(50% + min(39vw, 400px)); }
-  75% { top: calc(50% + min(29vw, 290px)); left: 50%; }
+@keyframes orbit-outer-track {
+  0%, 100% { top: 42.1%; left: 87.16%; }
+  12.5% { top: 25%; left: 72.15%; }
+  25% { top: 22.61%; left: 44.18%; }
+  37.5% { top: 36.18%; left: 19.57%; }
+  50% { top: 57.9%; left: 12.84%; }
+  62.5% { top: 75%; left: 27.85%; }
+  75% { top: 77.39%; left: 55.82%; }
+  87.5% { top: 63.82%; left: 80.43%; }
 }
 
-@keyframes orbit-satellite-compact {
-  0%, 100% { top: 50%; left: calc(50% - min(38vw, 300px)); }
-  25% { top: calc(50% - min(42vw, 260px)); left: 50%; }
-  50% { top: 50%; left: calc(50% + min(38vw, 300px)); }
-  75% { top: calc(50% + min(42vw, 260px)); left: 50%; }
+@keyframes orbit-middle-track {
+  0%, 100% { top: 42.93%; left: 83.25%; }
+  12.5% { top: 21.39%; left: 73.14%; }
+  25% { top: 21.8%; left: 43.55%; }
+  37.5% { top: 33.56%; left: 21.95%; }
+  50% { top: 57.07%; left: 16.75%; }
+  62.5% { top: 78.61%; left: 26.86%; }
+  75% { top: 78.2%; left: 56.45%; }
+  87.5% { top: 66.44%; left: 78.05%; }
+}
+
+@keyframes orbit-inner-track {
+  0%, 100% { top: 43.76%; left: 79.35%; }
+  12.5% { top: 22.07%; left: 65.69%; }
+  25% { top: 23.46%; left: 42.93%; }
+  37.5% { top: 30.89%; left: 24.2%; }
+  50% { top: 56.24%; left: 20.65%; }
+  62.5% { top: 77.93%; left: 34.31%; }
+  75% { top: 76.54%; left: 57.07%; }
+  87.5% { top: 69.11%; left: 75.8%; }
 }
 
 @media (max-width: 820px) {
@@ -954,10 +973,8 @@ footer {
   footer span:last-child { display: none; }
   .coordinate { display: none; }
   .orbital-system { width: min(102vw, 680px); transform: translateY(-1vh); }
-  .orbiter { animation-name: orbit-satellite-compact; }
   .core { width: min(62vw, 390px); }
   .core h1 { font-size: clamp(42px, 10.5vw, 68px); }
-  .orbit-outer { width: 98%; height: 70%; }
   .portal-node { min-width: 174px; min-height: 72px; }
   .node-copy strong { font-size: 16px; }
   .node-copy em { font-size: 11px; }
