@@ -68,9 +68,7 @@ const structuredData = {
         <div class="coordinate coordinate-se" aria-hidden="true">SECTOR / A-01</div>
 
         <div class="orbital-system">
-          <div class="orbit orbit-outer" aria-hidden="true"></div>
-          <div class="orbit orbit-middle" aria-hidden="true"></div>
-          <div class="orbit orbit-inner" aria-hidden="true"></div>
+          <canvas id="orbit-tracks" aria-hidden="true"></canvas>
 
           <div class="core">
             <div class="core-sun" aria-hidden="true"><i></i><b></b><em></em></div>
@@ -181,6 +179,7 @@ const structuredData = {
     </footer>
 
     <script>
+      // ── Panel toggle ──────────────────────────────────────────────
       const panelTriggers = [...document.querySelectorAll<HTMLElement>("[data-panel]")];
       const panels = [...document.querySelectorAll<HTMLElement>("[data-panel-content]")];
       const closeControls = [...document.querySelectorAll<HTMLElement>("[data-close-panel]")];
@@ -229,6 +228,7 @@ const structuredData = {
       const initialPanel = window.location.hash.match(/^#panel-(blog|about)$/)?.[1];
       if (initialPanel) openPanel(initialPanel);
 
+      // ── Starfield canvas ──────────────────────────────────────────
       const canvas = document.querySelector<HTMLCanvasElement>("#starfield");
       const context = canvas?.getContext("2d", { alpha: true });
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -281,6 +281,228 @@ const structuredData = {
       });
       resizeStars();
       drawStars();
+
+      // ── Orbital mechanics ─────────────────────────────────────────
+      /** Solve Kepler's equation M = E - e*sin(E) via Newton's method. */
+      function keplerSolve(M: number, e: number, tol = 1e-8): number {
+        let E = M; // initial guess
+        for (let i = 0; i < 20; i++) {
+          const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+          E -= dE;
+          if (Math.abs(dE) < tol) break;
+        }
+        return E;
+      }
+
+      interface PlanetConfig {
+        id: string;
+        a: number;           // semi-major axis (fraction of container half-width)
+        e: number;           // eccentricity (0–1)
+        tilt: number;        // inclination in radians
+        period: number;      // orbital period in seconds
+        phase: number;       // starting phase in radians
+        clockwise: boolean;  // direction of travel
+        color: string;       // planet base colour
+        glow: string;        // planet glow colour
+        shadow: string;      // planet dark-side colour
+        size: number;        // beacon size in px
+      }
+
+      const PLANETS: PlanetConfig[] = [
+        { id: "blog",   a: 0.40, e: 0.07, tilt: -0.20944, period: 120, phase: 0,            clockwise: true,  color: "#65e6f5", glow: "rgba(101,230,245,0.6)",  shadow: "#0d4d5e", size: 48 },
+        { id: "github", a: 0.31, e: 0.14, tilt: -0.20944, period: 88,  phase: 2.094395,      clockwise: false, color: "#9b7bff", glow: "rgba(155,123,255,0.6)",  shadow: "#2d1f5e", size: 42 },
+        { id: "about",  a: 0.22, e: 0.05, tilt: -0.20944, period: 62,  phase: 4.188790,      clockwise: true,  color: "#6ea8fe", glow: "rgba(110,168,254,0.55)", shadow: "#1a3a5e", size: 36 },
+      ];
+
+      /**
+       * Compute orbital position in container-fraction units.
+       * Uses Kepler's equation for variable orbital speed (faster at periapsis).
+       */
+      function orbitalPosition(p: PlanetConfig, t: number): { x: number; y: number; behindStar: boolean } {
+        // Mean anomaly
+        const M = ((2 * Math.PI * t) / p.period + p.phase) % (2 * Math.PI);
+        // Eccentric anomaly via Newton's method
+        const E = keplerSolve(M, p.e);
+        const cosE = Math.cos(E);
+        const sinE = Math.sin(E);
+        // Semi-minor axis
+        const b = p.a * Math.sqrt(1 - p.e * p.e);
+        // Position in orbital plane
+        let xOrb = p.a * (cosE - p.e);
+        let yOrb = b * sinE;
+        if (p.clockwise) yOrb = -yOrb;
+        // Apply inclination rotation
+        const cosI = Math.cos(p.tilt);
+        const sinI = Math.sin(p.tilt);
+        return {
+          x: xOrb * cosI - yOrb * sinI,
+          y: xOrb * sinI + yOrb * cosI,
+          behindStar: yOrb < 0,  // above the star → behind it (from viewer's perspective)
+        };
+      }
+
+      // ── Orbit simulation engine ───────────────────────────────────
+      class OrbitEngine {
+        private container: HTMLElement;
+        private tracksCanvas: HTMLCanvasElement;
+        private tracksCtx: CanvasRenderingContext2D;
+        private orbiters: Map<string, HTMLElement> = new Map();
+        private portalNodes: Map<string, HTMLElement> = new Map();
+        private startTime: number = 0;
+        private rafId: number = 0;
+        private running: boolean = false;
+        private resizeObs: ResizeObserver | null = null;
+        private reduceMotion: MediaQueryList;
+        private halfW: number = 0;
+
+        constructor(container: HTMLElement, tracksCanvas: HTMLCanvasElement, reduceMotion: MediaQueryList) {
+          this.container = container;
+          this.tracksCanvas = tracksCanvas;
+          this.reduceMotion = reduceMotion;
+          const ctx = tracksCanvas.getContext("2d", { alpha: true });
+          if (!ctx) throw new Error("Cannot get 2d context for orbit tracks");
+          this.tracksCtx = ctx;
+          this.halfW = container.offsetWidth / 2;
+
+          for (const planet of PLANETS) {
+            const orbiter = container.querySelector<HTMLElement>(`.orbiter-${planet.id}`);
+            const node = container.querySelector<HTMLElement>(`.orbiter-${planet.id} .portal-node`);
+            if (orbiter) this.orbiters.set(planet.id, orbiter);
+            if (node) this.portalNodes.set(planet.id, node);
+
+            // Apply per-planet colours via custom properties on the beacon
+            const beacon = container.querySelector<HTMLElement>(`.orbiter-${planet.id} .node-beacon`);
+            if (beacon) {
+              beacon.style.setProperty("--planet-color", planet.color);
+              beacon.style.setProperty("--planet-glow", planet.glow);
+              beacon.style.setProperty("--planet-shadow", planet.shadow);
+              beacon.style.setProperty("--planet-size", `${planet.size}px`);
+            }
+          }
+        }
+
+        start(): void {
+          this.drawTracks();
+          if (this.reduceMotion.matches) {
+            this.setInitialPositions();
+            return;
+          }
+          this.running = true;
+          this.halfW = this.container.offsetWidth / 2;
+          this.startTime = performance.now();
+          this.resizeObs = new ResizeObserver(() => {
+            this.halfW = this.container.offsetWidth / 2;
+            this.drawTracks();
+          });
+          this.resizeObs.observe(this.container);
+          this.tick(performance.now());
+        }
+
+        stop(): void {
+          this.running = false;
+          cancelAnimationFrame(this.rafId);
+          this.resizeObs?.disconnect();
+        }
+
+        private tick(now: number): void {
+          if (!this.running) return;
+          const elapsed = (now - this.startTime) / 1000;
+
+          for (const planet of PLANETS) {
+            const orbiter = this.orbiters.get(planet.id);
+            const node = this.portalNodes.get(planet.id);
+            if (!orbiter) continue;
+
+            const pos = orbitalPosition(planet, elapsed);
+            const ox = pos.x * this.halfW;
+            const oy = pos.y * this.halfW;
+
+            // Compositor-only: use CSS custom properties + transform
+            orbiter.style.setProperty("--ox", `${ox}px`);
+            orbiter.style.setProperty("--oy", `${oy}px`);
+
+            // Depth cue: behind star when yOrb < 0, in front otherwise
+            orbiter.style.zIndex = pos.behindStar ? "3" : "6";
+
+            // Flip text side when planet is on the left half of the system
+            if (node) {
+              node.classList.toggle("is-flipped", pos.x < 0);
+            }
+          }
+
+          this.rafId = requestAnimationFrame((t) => this.tick(t));
+        }
+
+        private setInitialPositions(): void {
+          for (const planet of PLANETS) {
+            const orbiter = this.orbiters.get(planet.id);
+            const node = this.portalNodes.get(planet.id);
+            if (!orbiter) continue;
+            const pos = orbitalPosition(planet, 0);
+            orbiter.style.setProperty("--ox", `${pos.x * this.halfW}px`);
+            orbiter.style.setProperty("--oy", `${pos.y * this.halfW}px`);
+            orbiter.style.zIndex = pos.behindStar ? "3" : "6";
+            if (node) node.classList.toggle("is-flipped", pos.x < 0);
+          }
+        }
+
+        private drawTracks(): void {
+          const rect = this.container.getBoundingClientRect();
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          const w = rect.width;
+          const h = rect.height;
+          this.tracksCanvas.width = Math.floor(w * dpr);
+          this.tracksCanvas.height = Math.floor(h * dpr);
+          this.tracksCanvas.style.width = `${w}px`;
+          this.tracksCanvas.style.height = `${h}px`;
+          const ctx = this.tracksCtx;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          const cx = w / 2;
+          const cy = h / 2;
+          const scale = this.halfW; // pixels per fraction unit
+
+          for (let i = 0; i < PLANETS.length; i++) {
+            const p = PLANETS[i];
+            const b = p.a * Math.sqrt(1 - p.e * p.e);
+            const rx = p.a * scale;
+            const ry = b * scale;
+
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(p.tilt);
+
+            ctx.beginPath();
+            ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+
+            if (i === 1) {
+              ctx.setLineDash([6, 10]);
+              ctx.strokeStyle = "rgba(168, 188, 238, 0.13)";
+            } else {
+              ctx.setLineDash([]);
+              ctx.strokeStyle = i === 0
+                ? "rgba(168, 188, 238, 0.17)"
+                : "rgba(168, 188, 238, 0.15)";
+            }
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+
+      // Bootstrap orbit engine
+      const orbitalSystem = document.querySelector<HTMLElement>(".orbital-system");
+      const tracksCanvas = document.querySelector<HTMLCanvasElement>("#orbit-tracks");
+      if (orbitalSystem && tracksCanvas) {
+        const engine = new OrbitEngine(orbitalSystem, tracksCanvas, reduceMotion);
+        engine.start();
+
+        reduceMotion.addEventListener("change", () => {
+          engine.stop();
+          engine.start();
+        });
+      }
     </script>
 
   </body>
