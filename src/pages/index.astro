@@ -462,8 +462,7 @@ const structuredData = {
           const cy = h / 2;
           const scale = this.halfW; // pixels per fraction unit
 
-          for (let i = 0; i < PLANETS.length; i++) {
-            const p = PLANETS[i];
+          for (const [i, p] of PLANETS.entries()) {
             const b = p.a * Math.sqrt(1 - p.e * p.e);
             const rx = p.a * scale;
             const ry = b * scale;
