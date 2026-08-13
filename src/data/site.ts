@@ -39,7 +39,7 @@ export const siteConfig = {
   displayName: "ZHESPHERE",
   tagline: "在技术与想象之间，建立自己的宇宙。",
   description: "ZheSphere 的个人宇宙入口，记录技术、创造与持续探索。",
-  siteUrl: "https://a.zsphere.top",
+  siteUrl: "https://orbitvo.com",
   blogUrl: "https://blog.zsphere.top/",
   blogFeedUrl: "https://blog.zsphere.top/rss.xml",
   locale: "zh-CN",

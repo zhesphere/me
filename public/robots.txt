@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://a.zsphere.top/sitemap-index.xml
+Sitemap: https://orbitvo.com/sitemap-index.xml

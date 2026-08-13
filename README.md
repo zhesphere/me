@@ -1,6 +1,6 @@
 # ZheSphere Personal Universe
 
-`a.zsphere.top` 的 Astro 静态个人主页，使用 GitHub + Vercel 部署。
+`orbitvo.com` 的 Astro 静态个人主页，使用 GitHub + Vercel 部署。
 
 ## Local development
 
@@ -22,4 +22,4 @@ Vercel 项目应连接 GitHub 仓库 `zhesphere/me`：
 
 首次在 Vercel 导入仓库后，推送到 `main` 会自动发布生产环境；Pull Request 会生成预览部署。日常发布、验收、排错和回滚流程见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
 
-将 `a.zsphere.top` 添加到 Vercel 项目后，按 Vercel 显示的 DNS 记录更新该子域名。通常为 CNAME 指向 `cname.vercel-dns.com`；以 Vercel 控制台给出的记录为准。
+将 `orbitvo.com` 和 `www.orbitvo.com` 添加到 Vercel 项目后，按 Vercel 显示的值更新阿里云 DNS 记录，并将 `www` 重定向到根域名。根域名与子域名所需的记录类型可能不同，始终以 Vercel 控制台给出的记录为准。

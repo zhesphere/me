@@ -1,7 +1,7 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://a.zsphere.top",
+  site: "https://orbitvo.com",
   output: "static",
   build: {
     inlineStylesheets: "auto"
