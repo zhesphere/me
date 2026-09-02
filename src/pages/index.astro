@@ -58,41 +58,33 @@ const structuredData = {
         <span>ORBITVO <small>／ ZHESPHERE</small></span>
       </a>
       <nav aria-label="主要导航">
-        <a href="#explore">探索</a>
-        <a href="#writing">文章</a>
-        <a href="#about">关于</a>
+        <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
+        <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
       </nav>
-      <p class="system-state"><span></span> ONLINE</p>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow"><span>PERSONAL UNIVERSE</span> / 2026</p>
-          <h1 id="hero-title"><span>在技术与想象之间</span><strong>建立自己的宇宙。</strong></h1>
+          <p class="eyebrow"><span>ZHESPHERE</span> · PERSONAL UNIVERSE</p>
+          <h1 id="hero-title"><span>在技术与想象之间，</span><strong>建立自己的宇宙。</strong></h1>
           <p class="hero-lede">这里是 ZheSphere 的个人入口。记录硬件、软件、创造过程，以及仍在路上的好奇心。</p>
           <div class="hero-actions">
             <a class="button button-primary" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 <span>↗</span></a>
-            <a class="button button-secondary" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">查看 GitHub <span>↗</span></a>
+            <a class="github-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
           </div>
-          <dl class="hero-meta">
-            <div><dt>身份</dt><dd>硬件工程师 / 创作者</dd></div>
-            <div><dt>坐标</dt><dd>31°14′N / 121°28′E</dd></div>
-          </dl>
         </div>
 
-        <div class="orbit-visual" aria-label="Orbitvo 轨道视觉">
+        <div class="orbit-visual" aria-hidden="true">
           <div class="orbit-glow" aria-hidden="true"></div>
           <div class="orbit-ring ring-outer" aria-hidden="true"><i class="planet planet-cyan"></i></div>
           <div class="orbit-ring ring-middle" aria-hidden="true"><i class="planet planet-violet"></i></div>
           <div class="orbit-ring ring-inner" aria-hidden="true"><i class="planet planet-blue"></i></div>
           <div class="visual-core">
             <span>ORBITVO</span>
-            <small>ZHESPHERE'S<br />PERSONAL UNIVERSE</small>
           </div>
-          <span class="visual-label visual-label-top" aria-hidden="true">STABLE ORBIT / 01</span>
-          <span class="visual-label visual-label-bottom" aria-hidden="true">SYSTEM ONLINE</span>
         </div>
+        <a class="explore-cue" href="#writing">继续探索 <span aria-hidden="true">↓</span></a>
       </section>
 
       <section class="section explore-section" id="explore" aria-labelledby="explore-title">
