@@ -161,8 +161,10 @@ const structuredData = {
       const canvas = document.querySelector<HTMLCanvasElement>("#starfield");
       const context = canvas?.getContext("2d", { alpha: true });
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const compactMotionBudget = window.matchMedia("(max-width: 700px), (pointer: coarse)");
       let stars: Array<{ x: number; y: number; size: number; alpha: number; speed: number }> = [];
       let frame = 0;
+      let isRunning = false;
 
       function resizeStars() {
         if (!canvas || !context) return;
@@ -172,7 +174,12 @@ const structuredData = {
         canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${window.innerHeight}px`;
         context.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const count = reduceMotion.matches ? 28 : Math.min(72, Math.floor(window.innerWidth * window.innerHeight / 18000));
+        const area = window.innerWidth * window.innerHeight;
+        const count = reduceMotion.matches
+          ? 28
+          : compactMotionBudget.matches
+            ? Math.min(32, Math.max(12, Math.floor(area / 28000)))
+            : Math.min(72, Math.floor(area / 18000));
         stars = Array.from({ length: count }, (_, index) => ({
           x: ((index * 73.31) % 100) / 100 * window.innerWidth,
           y: ((index * index * 19.17 + 17) % 100) / 100 * window.innerHeight,
@@ -180,6 +187,7 @@ const structuredData = {
           alpha: 0.12 + (index % 6) * 0.055,
           speed: 0.012 + (index % 3) * 0.006
         }));
+        canvas.dataset.starCount = String(count);
       }
 
       function drawStars(time = 0) {
@@ -192,17 +200,31 @@ const structuredData = {
           context.arc(star.x + drift, star.y, star.size, 0, Math.PI * 2);
           context.fill();
         }
-        if (!reduceMotion.matches) frame = requestAnimationFrame(drawStars);
+        if (isRunning && !reduceMotion.matches) frame = requestAnimationFrame(drawStars);
       }
 
       function restartStars() {
         cancelAnimationFrame(frame);
         resizeStars();
+        isRunning = !document.hidden;
+        canvas?.toggleAttribute("data-starfield-paused", !isRunning);
         drawStars();
+      }
+
+      function updateVisibility() {
+        if (document.hidden) {
+          isRunning = false;
+          cancelAnimationFrame(frame);
+          canvas?.setAttribute("data-starfield-paused", "");
+          return;
+        }
+        restartStars();
       }
 
       window.addEventListener("resize", restartStars, { passive: true });
       reduceMotion.addEventListener("change", restartStars);
+      compactMotionBudget.addEventListener("change", restartStars);
+      document.addEventListener("visibilitychange", updateVisibility);
       restartStars();
     </script>
   </body>

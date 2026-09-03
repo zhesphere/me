@@ -50,6 +50,24 @@ test("keeps the complete first-screen story readable on a 360px phone", async ({
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
   await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "15px");
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(3900);
+  await expect(page.locator("#starfield")).toHaveAttribute("data-star-count", "12");
+});
+
+test("uses a smaller mobile star budget and pauses it while the page is hidden", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const desktopStars = Number(await page.locator("#starfield").getAttribute("data-star-count"));
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  await expect(page.locator("#starfield")).toHaveAttribute("data-star-count", "12");
+  expect(desktopStars).toBeGreaterThan(12);
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(page.locator("#starfield")).toHaveAttribute("data-starfield-paused", "");
 });
 
 test("keeps a visible keyboard path from navigation to the primary and secondary action", async ({ page }) => {
