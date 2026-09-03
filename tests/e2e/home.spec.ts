@@ -31,13 +31,14 @@ test("makes the statement and reading action the stable first-screen hierarchy",
   expect(contrast("061015", "6ce5ee")).toBeGreaterThanOrEqual(4.5);
 });
 
-test("offers working external destinations and an in-page about link", async ({ page }) => {
+test("presents one clear editorial journey with the new blog destination", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("link", { name: /GitHub.*开源代码与实验/i })).toHaveAttribute("href", "https://github.com/zhesphere");
-  await expect(page.getByRole("link", { name: /博客.*文章与思考/i })).toHaveAttribute("href", "https://blog.zsphere.top/");
-
-  await page.getByRole("link", { name: /关于我.*这颗星球的来历/i }).click();
-  await expect(page.locator("#about")).toBeInViewport();
+  await expect(page.getByRole("heading", { name: "正在抵达的思考。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /让不同的引力/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /把仍在生长的好奇心/ })).toBeVisible();
+  await expect(page.locator(".portal-grid, .portal-card")).toHaveCount(0);
+  await expect(page.locator('a[href^="https://blog.orbitvo.com/"]')).toHaveCount(7);
+  await expect(page.getByRole("link", { name: "全部文章" })).toHaveAttribute("href", "https://blog.orbitvo.com/");
 });
 
 test("keeps the complete first-screen story readable on a 360px phone", async ({ page }) => {
@@ -68,4 +69,14 @@ test("honors reduced motion preference", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await expect(page.locator(".ring-outer")).toHaveCSS("animation-iteration-count", "1");
+});
+
+test("keeps the redesigned story readable without horizontal overflow", async ({ page }) => {
+  await page.goto("/#writing");
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  expect(overflow).toBe(false);
+  await expect(page.locator(".signal-layout")).toBeVisible();
+  await expect(page.locator(".coordinate-point")).toHaveCount(4);
+  const bodySize = Number.parseFloat(await page.locator(".about-copy > p:not(.eyebrow)").evaluate((element) => getComputedStyle(element).fontSize));
+  expect(bodySize).toBeGreaterThanOrEqual((page.viewportSize()?.width ?? 1440) <= 700 ? 15 : 16);
 });

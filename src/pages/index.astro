@@ -7,6 +7,7 @@ const configErrors = validateSiteConfig(siteConfig);
 if (configErrors.length) throw new Error(`Invalid site configuration: ${configErrors.join(", ")}`);
 
 const { items: blogItems, source: blogSource } = await getBlogItems(siteConfig.blogFeedUrl);
+const [featuredArticle, ...secondaryArticles] = blogItems;
 const publishedYear = new Date().getFullYear();
 const formatDate = (value: string) => {
   const date = new Date(value);
@@ -87,54 +88,60 @@ const structuredData = {
         <a class="explore-cue" href="#writing">继续探索 <span aria-hidden="true">↓</span></a>
       </section>
 
-      <section class="section explore-section" id="explore" aria-labelledby="explore-title">
-        <header class="section-heading">
-          <div><p class="eyebrow">01 / EXPLORE</p><h2 id="explore-title">从这里开始</h2></div>
-          <p>文章、代码与个人介绍，各自拥有清晰而直接的入口。</p>
-        </header>
-        <div class="portal-grid">
-          {siteConfig.portals.map((portal) => (
-            <a
-              class={`portal-card portal-${portal.id}`}
-              href={portal.id === "about" ? "#about" : portal.href ?? siteConfig.blogUrl}
-              target={portal.id === "about" ? undefined : "_blank"}
-              rel={portal.id === "about" ? undefined : "noreferrer"}
-            >
-              <span class="portal-index">{portal.index}</span>
-              <span class="portal-icon" aria-hidden="true"><i></i></span>
-              <span class="portal-text"><small>{portal.eyebrow}</small><strong>{portal.label}</strong><em>{portal.description}</em></span>
-              <span class="portal-arrow" aria-hidden="true">{portal.id === "about" ? "↓" : "↗"}</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
       <section class="section writing-section" id="writing" aria-labelledby="writing-title">
         <header class="section-heading">
-          <div><p class="eyebrow">02 / WRITING</p><h2 id="writing-title">最近记录</h2></div>
-          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">查看全部文章 <span>↗</span></a>
+          <div><p class="eyebrow">01 / LATEST SIGNALS</p><h2 id="writing-title">正在抵达的思考。</h2></div>
+          <p>从正在发生的信号开始，沿着好奇心，进入每一次尚未定型的尝试。</p>
         </header>
-        <div class="article-grid">
-          {blogItems.length ? blogItems.map((item, index) => (
-            <a class="article-card" href={item.href} target="_blank" rel="noreferrer">
-              <span class="article-number">0{index + 1}</span>
-              <time datetime={item.publishedAt}>{formatDate(item.publishedAt)}</time>
-              <h3>{item.title}</h3>
-              <span class="article-arrow" aria-hidden="true">↗</span>
+        <div class="signal-layout">
+          {featuredArticle ? (
+            <a class="signal-feature" href={featuredArticle.href} target="_blank" rel="noreferrer">
+              <span class="signal-orbit" aria-hidden="true"></span>
+              <span class="article-number">01 / FEATURED</span>
+              <time datetime={featuredArticle.publishedAt}>{formatDate(featuredArticle.publishedAt)}</time>
+              <h3>{featuredArticle.title}</h3>
+              {featuredArticle.summary && <p>{featuredArticle.summary}</p>}
+              <span class="signal-read">阅读这篇文章 <b aria-hidden="true">↗</b></span>
             </a>
-          )) : (
+          ) : (
             <div class="article-empty"><p>最新文章正在穿越星际网络。</p></div>
           )}
+          <div class="signal-list">
+            {secondaryArticles.map((item, index) => (
+              <a class="signal-item" href={item.href} target="_blank" rel="noreferrer">
+                <span class="article-number">0{index + 2}</span>
+                <div><time datetime={item.publishedAt}>{formatDate(item.publishedAt)}</time><h3>{item.title}</h3></div>
+                <span class="article-arrow" aria-hidden="true">↗</span>
+              </a>
+            ))}
+            <a class="all-writing-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">全部文章 <span aria-hidden="true">↗</span></a>
+          </div>
         </div>
         <p class="feed-source">FEED SOURCE / {blogSource.toUpperCase()}</p>
+      </section>
+
+      <section class="section coordinates-section" aria-labelledby="coordinates-title">
+        <header class="section-heading coordinates-heading">
+          <div><p class="eyebrow">02 / CREATIVE COORDINATES</p><h2 id="coordinates-title">让不同的引力，<br />在同一条轨道相遇。</h2></div>
+          <p>不把兴趣分成孤立的栏目。硬件的真实触感、软件的结构、AI 的可能性与设计的叙事，在这里彼此校准。</p>
+        </header>
+        <div class="coordinate-field" aria-label="创造方向：硬件、软件、人工智能与设计">
+          <span class="coordinate-line line-one" aria-hidden="true"></span>
+          <span class="coordinate-line line-two" aria-hidden="true"></span>
+          <div class="coordinate-point point-hardware"><small>01</small><strong>硬件</strong><span>让想法拥有可触摸的起点</span></div>
+          <div class="coordinate-point point-software"><small>02</small><strong>软件</strong><span>把复杂的世界整理成体验</span></div>
+          <div class="coordinate-point point-ai"><small>03</small><strong>AI</strong><span>与新的工具共同试探边界</span></div>
+          <div class="coordinate-point point-design"><small>04</small><strong>设计</strong><span>让技术带着清晰的情绪抵达</span></div>
+          <p class="coordinate-center">BUILDING<br />BETWEEN<br />DISCIPLINES</p>
+        </div>
       </section>
 
       <section class="section about-section" id="about" aria-labelledby="about-title">
         <div class="about-mark" aria-hidden="true"><span>ZS</span></div>
         <div class="about-copy">
           <p class="eyebrow">03 / POINT OF ORIGIN</p>
-          <h2 id="about-title">你好，我是 ZheSphere。</h2>
-          <p>一名硬件工程师，也是持续探索软件、设计与 AI 的创造者。这里收集我做过的东西、写下的思考，以及下一次尝试的起点。</p>
+          <h2 id="about-title">把仍在生长的好奇心，<br />做成可以抵达的世界。</h2>
+          <p>你好，我是 ZheSphere，一名硬件工程师，也持续在软件、设计与 AI 的交界处创造。Orbitvo 不是一份履历，而是我的工作、思考与下一次试验留下的坐标。</p>
           <div class="about-links">
             {siteConfig.socialLinks.map((link) => (
               <a href={link.href} target="_blank" rel="noreferrer">{link.label}<span>↗</span></a>

@@ -6,7 +6,7 @@
 
 - [PROJECT_HUB.md](./PROJECT_HUB.md)：唯一项目中枢，记录当前阶段、设计方向、任务队列、模型策略与验收门槛。
 - [AGENTS.md](./AGENTS.md)：让后续任务自动遵循中枢、单任务制与 Terra Medium 模型规则。
-- [tasks/archive/TASK-001-hero-visual-hierarchy.md](./tasks/archive/TASK-001-hero-visual-hierarchy.md)：已完成的 P1 首屏视觉层级与可读性重构。
+- [tasks/archive/TASK-002-content-system-redesign.md](./tasks/archive/TASK-002-content-system-redesign.md)：已完成的 P2 内容系统重构与博客域名迁移。
 - [docs/archive/](./docs/archive/)：已经完成或不再作为当前依据的历史资料。
 - [DEPLOYMENT.md](./DEPLOYMENT.md)：生产发布、验收与回滚指南。
 

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { getBlogItems, parseFeed } from "../src/lib/blog";
 import { siteConfig, validateSiteConfig } from "../src/data/site";
 
-const atom = `<?xml version="1.0"?><feed><entry><title><![CDATA[第一条信号]]></title><link href="https://blog.zsphere.top/p/one"/><published>2026-08-06T00:00:00Z</published><summary>摘要 &amp; 记录</summary></entry></feed>`;
+const atom = `<?xml version="1.0"?><feed><entry><title><![CDATA[第一条信号]]></title><link href="https://blog.orbitvo.com/p/one"/><published>2026-08-06T00:00:00Z</published><summary>摘要 &amp; 记录</summary></entry></feed>`;
 
 describe("site config", () => {
   it("is valid", () => expect(validateSiteConfig(siteConfig)).toEqual([]));
@@ -13,7 +13,7 @@ describe("parseFeed", () => {
     expect(parseFeed(atom)).toEqual([
       {
         title: "第一条信号",
-        href: "https://blog.zsphere.top/p/one",
+        href: "https://blog.orbitvo.com/p/one",
         publishedAt: "2026-08-06T00:00:00Z",
         summary: "摘要 & 记录"
       }
@@ -39,5 +39,6 @@ describe("getBlogItems", () => {
     expect(result.source).toBe("fallback");
     expect(result.items).toHaveLength(3);
     expect(result.items[0]?.title).toBe("DSP");
+    expect(result.items.every((item) => item.href.startsWith("https://blog.orbitvo.com/"))).toBe(true);
   });
 });
