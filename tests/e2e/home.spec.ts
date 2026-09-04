@@ -39,6 +39,11 @@ test("presents one clear editorial journey with the new blog destination", async
   await expect(page.locator(".portal-grid, .portal-card")).toHaveCount(0);
   await expect(page.locator('a[href^="https://blog.orbitvo.com/"]')).toHaveCount(7);
   await expect(page.getByRole("link", { name: "全部文章" })).toHaveAttribute("href", "https://blog.orbitvo.com/");
+  await expect(page.locator(".signal-layout")).toHaveCSS("overflow", "hidden");
+  await expect(page.locator(".signal-layout")).toHaveCSS(
+    "border-radius",
+    (page.viewportSize()?.width ?? 1440) <= 700 ? "18px" : "22px"
+  );
 });
 
 test("keeps the complete first-screen story readable on a 360px phone", async ({ page }) => {

@@ -333,7 +333,15 @@ main { width: min(var(--content), calc(100% - 48px)); margin: 0 auto; }
 
 .section-heading > p { max-width: 32em; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.8; }
 
-.signal-layout { display: grid; border-top: 1px solid var(--line); grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); }
+.signal-layout {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(12, 17, 30, .52);
+  box-shadow: 0 28px 80px rgba(1, 4, 12, .22), inset 0 1px 0 rgba(255, 255, 255, .025);
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
+}
 .signal-feature { position: relative; display: flex; min-height: 410px; flex-direction: column; justify-content: flex-end; padding: clamp(30px, 5vw, 62px); overflow: hidden; border-right: 1px solid var(--line); background: radial-gradient(circle at 70% 18%, rgba(109, 120, 239, .25), transparent 28%), linear-gradient(135deg, rgba(118, 153, 255, .13), rgba(255, 255, 255, .015) 54%); transition: background .35s ease, transform .35s var(--ease); }
 .signal-feature::after { position: absolute; inset: 0; background: linear-gradient(135deg, transparent 48%, rgba(108, 229, 238, .11)); content: ""; pointer-events: none; }
 .signal-feature:hover { background-color: rgba(109, 120, 239, .11); transform: translateY(-4px); }
@@ -350,7 +358,7 @@ main { width: min(var(--content), calc(100% - 48px)); margin: 0 auto; }
 .signal-item:hover { padding-right: 24px; padding-left: 40px; background: rgba(255, 255, 255, .025); }
 .signal-item time { color: var(--muted-dark); }
 .signal-item h3 { margin: 8px 0 0; font-size: clamp(20px, 2.2vw, 30px); font-weight: 540; letter-spacing: -.035em; line-height: 1.2; }
-.all-writing-link { margin: 0; padding: 22px 32px; border-bottom: 1px solid var(--line); color: #d5dced; }
+.all-writing-link { margin: 0; padding: 22px 32px; color: #d5dced; }
 .article-empty { display: grid; min-height: 300px; place-items: center; color: var(--muted); }
 .feed-source { margin: 18px 0 0; }
 
@@ -460,6 +468,7 @@ footer a { display: inline-flex; min-height: 44px; align-items: center; color: v
   .section { padding: 88px 0; }
   .section-heading { display: grid; align-items: start; gap: 22px; margin-bottom: 34px; }
   .section-heading > p { max-width: none; font-size: 15px; }
+  .signal-layout { border-radius: 18px; }
   .signal-feature { min-height: 390px; padding: 30px 24px; }
   .signal-feature h3 { font-size: clamp(34px, 11vw, 48px); }
   .signal-feature p { font-size: 15px; }
