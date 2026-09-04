@@ -44,6 +44,14 @@ test("presents one clear editorial journey with the new blog destination", async
     "border-radius",
     (page.viewportSize()?.width ?? 1440) <= 700 ? "18px" : "22px"
   );
+  const coordinateMap = page.locator(".coordinate-field");
+  await expect(coordinateMap).toHaveAttribute("data-interaction", "static");
+  await expect(coordinateMap).toHaveCSS("overflow", "hidden");
+  await expect(coordinateMap).toHaveCSS(
+    "border-radius",
+    (page.viewportSize()?.width ?? 1440) <= 700 ? "18px" : "22px"
+  );
+  await expect(coordinateMap.locator("a, button")).toHaveCount(0);
 });
 
 test("keeps the complete first-screen story readable on a 360px phone", async ({ page }) => {

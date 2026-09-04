@@ -364,12 +364,20 @@ main { width: min(var(--content), calc(100% - 48px)); margin: 0 auto; }
 
 .coordinates-section { position: relative; }
 .coordinates-heading { margin-bottom: 72px; }
-.coordinate-field { position: relative; min-height: 510px; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: radial-gradient(circle at 50% 50%, rgba(97, 112, 207, .15), transparent 34%), linear-gradient(90deg, rgba(255, 255, 255, .025), transparent 32%, rgba(255, 255, 255, .02)); }
+.coordinate-field {
+  position: relative;
+  min-height: 510px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: radial-gradient(circle at 50% 50%, rgba(97, 112, 207, .15), transparent 34%), linear-gradient(90deg, rgba(255, 255, 255, .025), transparent 32%, rgba(255, 255, 255, .02));
+  box-shadow: 0 24px 72px rgba(1, 4, 12, .17), inset 0 1px 0 rgba(255, 255, 255, .022);
+}
 .coordinate-line { position: absolute; top: 50%; left: 50%; width: 93%; height: 38%; border: 1px solid rgba(180, 200, 255, .16); border-radius: 50%; transform: translate(-50%, -50%) rotate(-18deg); }
 .line-two { width: 60%; height: 74%; border-color: rgba(108, 229, 238, .17); transform: translate(-50%, -50%) rotate(34deg); }
 .coordinate-center { position: absolute; top: 50%; left: 50%; margin: 0; color: rgba(232, 239, 255, .68); font: 700 clamp(15px, 2vw, 23px)/1.1 "Zhe Display", Impact, sans-serif; letter-spacing: .03em; text-align: center; transform: translate(-50%, -50%); }
 .coordinate-point { position: absolute; display: flex; width: 184px; flex-direction: column; gap: 8px; }
-.coordinate-point::before { width: 8px; height: 8px; margin-bottom: 4px; border-radius: 50%; background: var(--point-color); box-shadow: 0 0 18px var(--point-color); content: ""; }
+.coordinate-point::before { width: 7px; height: 7px; margin-bottom: 4px; border-radius: 50%; background: var(--point-color); box-shadow: 0 0 10px color-mix(in srgb, var(--point-color) 58%, transparent); content: ""; }
 .coordinate-point small { color: #aeb9ce; font: 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .14em; }
 .coordinate-point strong { font-size: 23px; font-weight: 560; letter-spacing: -.03em; }
 .coordinate-point span { color: var(--muted); font-size: 16px; line-height: 1.65; }
@@ -476,7 +484,7 @@ footer a { display: inline-flex; min-height: 44px; align-items: center; color: v
   .signal-item:hover { padding-right: 18px; padding-left: 22px; }
   .all-writing-link { padding: 18px 20px; }
   .coordinates-heading { margin-bottom: 36px; }
-  .coordinate-field { display: grid; min-height: 0; padding: 38px 22px; gap: 0; grid-template-columns: 1fr; }
+  .coordinate-field { display: grid; min-height: 0; padding: 38px 22px; gap: 0; border-radius: 18px; grid-template-columns: 1fr; }
   .coordinate-line { top: 12%; left: 72%; width: 72%; height: 26%; transform: translate(-50%, -50%) rotate(-18deg); }
   .line-two { top: 86%; left: 25%; width: 62%; height: 30%; transform: translate(-50%, -50%) rotate(28deg); }
   .coordinate-center { position: relative; top: auto; left: auto; order: -1; margin: 0 0 24px; color: rgba(232, 239, 255, .76); font-size: 15px; line-height: 1.2; text-align: left; transform: none; }
