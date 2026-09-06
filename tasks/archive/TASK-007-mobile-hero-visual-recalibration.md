@@ -3,7 +3,7 @@
 ## 分发信息
 
 - 执行模型：`GPT-5.6 Terra / Medium`
-- 状态：READY FOR RELEASE
+- 状态：COMPLETED
 - 发布：用户完成真实手机视觉验收后再发布
 
 ## 背景与目标
@@ -62,8 +62,16 @@
 - 三张人工验收图：`artifacts/task-007/hero-360.png`、`hero-390.png`、`hero-430.png`。
 - 类型检查：0 错误、0 警告；单元测试：5/5；production build：成功；E2E：36/36。
 - 768、1440、1920 的 TASK-006 几何基线全部保持；动画、减少动态、粒子预算、链接、触控尺寸与首屏外区域回归通过。
-- 当前未提交、未推送、未部署，等待用户基于三张截图作视觉判断。
+- 当前候选已完成本地验收、提交、推送与生产发布。
 
 ## 用户视觉确认
 
 - 2026-09-06：用户认可当前移动端构图方向，并明确要求保持视觉参数不变，进入提交、Vercel 发布与生产验证流程。
+
+## 发布证据
+
+- 产品提交：`dff4342`（Recalibrate mobile hero visual center）。
+- GitHub 提交状态：Vercel `success`，描述为 `Deployment has completed`。
+- `https://orbitvo.com/` 与生产 CSS 均返回 HTTP 200。
+- 生产 CSS 已确认包含 `--mobile-orbit-lift`、手机端 28–34px Hero 间距、轨道 `translate` 与同变量的底部流式补偿；桌面 `100svh - 76px` 规则仍存在。
+- 最终本地复核：类型检查 0 错误 / 0 警告、单元测试 5/5、production build 成功、E2E 36/36；768、1440、1920 几何基线保持。
