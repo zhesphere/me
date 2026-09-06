@@ -67,7 +67,7 @@ test("keeps the complete first-screen story readable on a 360px phone", async ({
   await expect(page.locator("#starfield")).toHaveAttribute("data-star-count", "12");
 });
 
-test("brings the mobile core above the browser toolbar zone without crowding the actions", async ({ page }) => {
+test("lifts the mobile orbital system as one visual without changing the copy rhythm", async ({ page }) => {
   for (const viewport of [
     { width: 360, height: 800 },
     { width: 390, height: 844 },
@@ -86,24 +86,28 @@ test("brings the mobile core above the browser toolbar zone without crowding the
       const github = rect(".github-link");
       const orbit = rect(".orbit-visual");
       const core = rect(".visual-core");
+      const orbitStyle = getComputedStyle(document.querySelector(".orbit-visual")!);
 
       return {
         blog,
         github,
         orbit,
         core,
+        orbitTranslate: Number.parseFloat(orbitStyle.translate.split(" ").at(-1) ?? "0"),
+        orbitMarginBottom: Number.parseFloat(orbitStyle.marginBottom),
+        orbitAnimation: orbitStyle.animationName,
         overflow: document.documentElement.scrollWidth > window.innerWidth
       };
     });
 
     expect(geometry.overflow).toBe(false);
-    expect(geometry.orbit.top - geometry.github.bottom).toBeGreaterThanOrEqual(15);
-    expect(geometry.orbit.top - geometry.github.bottom).toBeLessThanOrEqual(21);
     expect(geometry.blog.bottom).toBeLessThanOrEqual(geometry.github.top);
-    expect(geometry.github.bottom).toBeLessThanOrEqual(geometry.orbit.top);
-    expect(geometry.core.top).toBeGreaterThan(geometry.orbit.top);
+    expect(geometry.core.top - geometry.github.bottom).toBeGreaterThanOrEqual(56);
     expect(geometry.core.bottom).toBeLessThan(geometry.orbit.bottom);
-    expect(geometry.core.bottom).toBeLessThanOrEqual(viewport.height - 96);
+    expect(geometry.orbitTranslate).toBeLessThanOrEqual(-46);
+    expect(geometry.orbitTranslate).toBeGreaterThanOrEqual(-58);
+    expect(geometry.orbitMarginBottom).toBeCloseTo(geometry.orbitTranslate, 1);
+    expect(geometry.orbitAnimation).toBe("visual-arrive");
     expect(geometry.blog.height).toBeGreaterThanOrEqual(44);
     expect(geometry.github.height).toBeGreaterThanOrEqual(44);
   }
