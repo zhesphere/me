@@ -3,7 +3,7 @@
 ## 分发信息
 
 - 执行模型：`GPT-5.6 Terra / Medium`
-- 状态：READY FOR RELEASE
+- 状态：COMPLETED
 - 发布：通过验收后自动部署
 
 ## 目标
@@ -51,3 +51,10 @@
 - 768 / 1440 / 1920px 的轨道与核心几何坐标逐项保持修改前基线。
 - 真实浏览器视觉复核通过 360、390、430 与 1440；CTA、文字和核心没有遮挡。
 - `npm run check`：0 错误、0 警告；`npm test`：5/5；`npm run build`：成功；`npm run test:e2e`：36/36。
+
+## 发布证据
+
+- 产品提交：`8345315`（Refine mobile hero composition）。
+- GitHub 提交状态：Vercel `success`，描述为 `Deployment has completed`。
+- `https://orbitvo.com/` 与生产 CSS 均返回 HTTP 200；线上 CSS 已确认包含手机 Hero 间距与轨道宽度新规则，并保留原桌面 Hero 最小高度规则。
+- 线上 HTML 继续指向 `https://blog.orbitvo.com/`，没有修改真实入口。
