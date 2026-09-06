@@ -67,6 +67,76 @@ test("keeps the complete first-screen story readable on a 360px phone", async ({
   await expect(page.locator("#starfield")).toHaveAttribute("data-star-count", "12");
 });
 
+test("brings the mobile core above the browser toolbar zone without crowding the actions", async ({ page }) => {
+  for (const viewport of [
+    { width: 360, height: 800 },
+    { width: 390, height: 844 },
+    { width: 430, height: 932 }
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    await page.locator(".orbit-visual").evaluate((element) => {
+      element.getAnimations().forEach((animation) => animation.finish());
+    });
+
+    const geometry = await page.evaluate(() => {
+      const rect = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
+      const blog = rect(".button-primary");
+      const github = rect(".github-link");
+      const orbit = rect(".orbit-visual");
+      const core = rect(".visual-core");
+
+      return {
+        blog,
+        github,
+        orbit,
+        core,
+        overflow: document.documentElement.scrollWidth > window.innerWidth
+      };
+    });
+
+    expect(geometry.overflow).toBe(false);
+    expect(geometry.orbit.top - geometry.github.bottom).toBeGreaterThanOrEqual(15);
+    expect(geometry.orbit.top - geometry.github.bottom).toBeLessThanOrEqual(21);
+    expect(geometry.blog.bottom).toBeLessThanOrEqual(geometry.github.top);
+    expect(geometry.github.bottom).toBeLessThanOrEqual(geometry.orbit.top);
+    expect(geometry.core.top).toBeGreaterThan(geometry.orbit.top);
+    expect(geometry.core.bottom).toBeLessThan(geometry.orbit.bottom);
+    expect(geometry.core.bottom).toBeLessThanOrEqual(viewport.height - 96);
+    expect(geometry.blog.height).toBeGreaterThanOrEqual(44);
+    expect(geometry.github.height).toBeGreaterThanOrEqual(44);
+  }
+});
+
+test("preserves the established Hero geometry from tablet through ultrawide", async ({ page }) => {
+  const baselines = [
+    { width: 768, height: 1024, orbitTop: 500.58, coreTop: 679.78, coreBottom: 881.38 },
+    { width: 1440, height: 900, orbitTop: 208, coreTop: 387.2, coreBottom: 588.8 },
+    { width: 1920, height: 1080, orbitTop: 298, coreTop: 477.2, coreBottom: 678.8 }
+  ];
+
+  for (const baseline of baselines) {
+    await page.setViewportSize({ width: baseline.width, height: baseline.height });
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    await page.locator(".orbit-visual").evaluate((element) => {
+      element.getAnimations().forEach((animation) => animation.finish());
+    });
+
+    const geometry = await page.evaluate(() => {
+      const orbit = document.querySelector(".orbit-visual")!.getBoundingClientRect();
+      const core = document.querySelector(".visual-core")!.getBoundingClientRect();
+      return { orbitTop: orbit.top, orbitWidth: orbit.width, coreTop: core.top, coreBottom: core.bottom };
+    });
+
+    expect(geometry.orbitWidth).toBeCloseTo(560, 0);
+    expect(geometry.orbitTop).toBeCloseTo(baseline.orbitTop, 0);
+    expect(geometry.coreTop).toBeCloseTo(baseline.coreTop, 0);
+    expect(geometry.coreBottom).toBeCloseTo(baseline.coreBottom, 0);
+  }
+});
+
 test("uses a smaller mobile star budget and pauses it while the page is hidden", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
