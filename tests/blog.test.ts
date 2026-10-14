@@ -23,6 +23,17 @@ describe("parseFeed", () => {
   it("rejects invalid and insecure links", () => {
     expect(parseFeed("<feed><entry><title>x</title><link href='http://unsafe.test'/></entry></feed>")).toEqual([]);
   });
+
+  it("parses RSS items and sorts them by publication date instead of source order", () => {
+    const rss = `<?xml version="1.0"?><rss><channel>
+      <item><title>较早</title><link>https://blog.orbitvo.com/p/older</link><pubDate>Tue, 01 Jul 2025 00:00:00 GMT</pubDate></item>
+      <item><title>最新</title><link>https://blog.orbitvo.com/p/newest</link><pubDate>Tue, 08 Sep 2026 00:00:00 GMT</pubDate></item>
+      <item><title>其次</title><link>https://blog.orbitvo.com/p/second</link><pubDate>Sun, 06 Sep 2026 00:00:00 GMT</pubDate></item>
+      <item><title>第四</title><link>https://blog.orbitvo.com/p/fourth</link><pubDate>Sat, 05 Sep 2026 00:00:00 GMT</pubDate></item>
+    </channel></rss>`;
+
+    expect(parseFeed(rss).map((item) => item.title)).toEqual(["最新", "其次", "第四"]);
+  });
 });
 
 describe("getBlogItems", () => {
@@ -40,5 +51,32 @@ describe("getBlogItems", () => {
     expect(result.items).toHaveLength(3);
     expect(result.items[0]?.title).toBe("DSP");
     expect(result.items.every((item) => item.href.startsWith("https://blog.orbitvo.com/"))).toBe(true);
+  });
+
+  it("falls back for an unsuccessful HTTP response", async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response("unavailable", { status: 503 }));
+    const result = await getBlogItems(siteConfig.blogFeedUrl, { fetcher });
+    expect(result.source).toBe("fallback");
+  });
+
+  it("falls back when the feed contains no valid entries", async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response("<rss><channel></channel></rss>", { status: 200 }));
+    const result = await getBlogItems(siteConfig.blogFeedUrl, { fetcher });
+    expect(result.source).toBe("fallback");
+  });
+
+  it("aborts a stalled feed request and falls back", async () => {
+    vi.useFakeTimers();
+    try {
+      const fetcher = vi.fn((_input: RequestInfo | URL, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
+      })) as typeof fetch;
+      const pending = getBlogItems(siteConfig.blogFeedUrl, { timeoutMs: 100, fetcher });
+      await vi.advanceTimersByTimeAsync(100);
+      const result = await pending;
+      expect(result.source).toBe("fallback");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
