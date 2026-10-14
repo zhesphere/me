@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 状态：本地验证通过，待发布验收
+- 状态：已完成并通过生产验收
 - 模型：GPT-5.6 Terra / Medium
 - 类型：必要维护，不涉及产品视觉重设计
 
@@ -53,3 +53,16 @@
 - UI 源码零改动，既有几何基线通过。
 - 提交并推送 `origin/main`，Vercel 生产部署与真实域名验证完成。
 - 更新中枢、归档本任务，最终工作区 clean 且与远程同步。
+
+## 完成证据
+
+- 依赖：Astro `7.3.8`、Vitest `4.1.11`；工具链使用明确版本，Node.js 基线为 `>=22.12.0`。
+- 安全：`npm audit` 与 `npm audit --omit=dev` 均为 0 项。
+- 源码：`npm run check` 通过，0 错误、0 警告、0 提示。
+- 单元测试：9/9 通过，新增 RSS 日期排序、RSS 格式、HTTP 错误、空 Feed 与超时回退覆盖。
+- 构建：production build 通过，静态输出首页与 404。
+- E2E：无需预先启动服务器，36/36 一次通过；移动端和桌面既有几何基线保持。
+- UI：`src/pages/index.astro`、`src/styles/global.css`、内容配置、RSS 生产逻辑和公开资源均无差异。
+- 提交：`12a5a8b` 已推送 `origin/main`。
+- Vercel：提交状态 `success`。
+- 生产：`https://orbitvo.com` 返回 HTTP 200，线上与本地 CSS 资产均为 `/_astro/global.CC3ZeYBH.css`，Hero 标题与 `FEED SOURCE / FEED` 正常。
