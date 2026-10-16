@@ -11,9 +11,9 @@
 | 主域名 | `https://orbitvo.com` |
 | 发布链路 | GitHub `main` -> Vercel -> `orbitvo.com` |
 | 内容入口 | 博客 `blog.orbitvo.com`、GitHub `zhesphere`、关于我 |
-| 当前阶段 | 稳定维护完成，等待下一项明确需求 |
-| 当前任务 | 无活动实施任务；`TASK-008` 已归档 |
-| 本轮边界 | 安全依赖和测试链路已更新；页面结构、视觉参数、文案和线上配置未改变 |
+| 当前阶段 | 编辑感新 UI 独立预览实施 |
+| 当前任务 | `TASK-009 / 编辑感新 UI 迁移` |
+| 本轮边界 | 只迁移表现层；Astro、RSS、真实链接、SEO 与 Vercel 链路保持 |
 
 ## 2. 模型调度规则
 
@@ -101,7 +101,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 - `README.md`：项目入口。
 - `PROJECT_HUB.md`：唯一控制中枢。
 - `DEPLOYMENT.md`：发布与回滚操作手册。
-- `tasks/active/`：当前没有实施任务；下一项修改由中枢按需分发。
+- `tasks/active/`：`TASK-009-editorial-ui-migration.md`，当前唯一活动实施任务。
 - `src/`、`tests/` 与工程配置：当前产品和验收基线。
 
 ### 归档
@@ -114,6 +114,8 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 新任务必须包含：目标、设计意图、允许修改范围、明确不做事项、验证矩阵、完成证据和模型。实施者先读本中枢，再读唯一活动任务；不得从历史归档中自行恢复需求。
 
 最近完成：`TASK-008 / 依赖安全与测试链路稳定化`，使用 `GPT-5.6 Terra / Medium`。Astro 升级到修复版本并固定工具链，安全审计降至 0；Playwright 可在 agent 环境直接启动前台测试服务器；RSS 关键回归测试扩充到 9 项。页面与样式源码零修改，36 项 E2E 和既有移动端、桌面几何基线全部通过。
+
+当前分发：`TASK-009 / 编辑感新 UI 迁移`，在 `codex/orbitvo-new-ui` 分支实施。已建立远程恢复标签 `backup/pre-new-ui-2026-10-16` 与项目外双重压缩备份；用户验收前不改动生产 `main`。
 
 ## 8. 最近一次发布
 

@@ -1,187 +1,132 @@
 import { expect, test } from "@playwright/test";
 
-function luminance(hex: string) {
-  const rgb = hex.match(/\w\w/g)?.map((part) => Number.parseInt(part, 16) / 255);
-  if (!rgb || rgb.length !== 3) throw new Error(`Expected hexadecimal color, received ${hex}`);
-  const linear = rgb.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
-  const [red, green, blue] = linear as [number, number, number];
-  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
-}
-
-function contrast(foreground: string, background: string) {
-  const [light, dark] = [luminance(foreground), luminance(background)].sort((a, b) => b - a) as [number, number];
-  return (light + 0.05) / (dark + 0.05);
-}
-
-test("makes the statement and reading action the stable first-screen hierarchy", async ({ page }) => {
-  await page.goto("/");
-  const title = page.getByRole("heading", { name: /在技术与想象之间/ });
-  const blog = page.getByRole("link", { name: /阅读博客/ });
-  await expect(title).toBeVisible();
-  await expect(blog).toBeVisible();
-  await expect(page.getByRole("link", { name: "GitHub", exact: true })).toBeVisible();
-  await expect(page.locator(".system-state, .hero-meta, .visual-label")).toHaveCount(0);
-
-  const titleBox = await title.boundingBox();
-  const blogBox = await blog.boundingBox();
-  expect(titleBox?.y).toBeLessThan(blogBox?.y ?? 0);
-  const expectedLedeSize = (page.viewportSize()?.width ?? 1440) <= 700 ? "15px" : "17px";
-  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", expectedLedeSize);
-  expect(contrast("d7ddec", "080b14")).toBeGreaterThanOrEqual(7);
-  expect(contrast("061015", "6ce5ee")).toBeGreaterThanOrEqual(4.5);
-});
-
-test("presents one clear editorial journey with the new blog destination", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "正在抵达的思考。" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /让不同的引力/ })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /把仍在生长的好奇心/ })).toBeVisible();
-  await expect(page.locator(".portal-grid, .portal-card")).toHaveCount(0);
-  await expect(page.locator('a[href^="https://blog.orbitvo.com/"]')).toHaveCount(7);
-  await expect(page.getByRole("link", { name: "全部文章" })).toHaveAttribute("href", "https://blog.orbitvo.com/");
-  await expect(page.locator(".signal-layout")).toHaveCSS("overflow", "hidden");
-  await expect(page.locator(".signal-layout")).toHaveCSS(
-    "border-radius",
-    (page.viewportSize()?.width ?? 1440) <= 700 ? "18px" : "22px"
-  );
-  const coordinateMap = page.locator(".coordinate-field");
-  await expect(coordinateMap).toHaveAttribute("data-interaction", "static");
-  await expect(coordinateMap).toHaveCSS("overflow", "hidden");
-  await expect(coordinateMap).toHaveCSS(
-    "border-radius",
-    (page.viewportSize()?.width ?? 1440) <= 700 ? "18px" : "22px"
-  );
-  await expect(coordinateMap.locator("a, button")).toHaveCount(0);
-});
-
-test("keeps the complete first-screen story readable on a 360px phone", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 800 });
+test("keeps the identity, statement, and real destinations clear", async ({ page }) => {
   await page.goto("/");
 
+  await expect(page.getByRole("link", { name: "返回 Orbitvo 首页顶部" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /在技术与想象之间/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /阅读博客/ })).toBeInViewport();
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-  expect(overflow).toBe(false);
-  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "15px");
-  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(3900);
-  await expect(page.locator("#starfield")).toHaveAttribute("data-star-count", "12");
+  await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveAttribute("href", "https://blog.orbitvo.com/");
+  await expect(page.getByRole("link", { name: /GitHub/ }).first()).toHaveAttribute("href", "https://github.com/zhesphere");
+  await expect(page.locator('a[href="#"], a[href^="mailto:"]')).toHaveCount(0);
 });
 
-test("lifts the mobile orbital system as one visual without changing the copy rhythm", async ({ page }) => {
+test("uses the existing feed for three real article cards", async ({ page }) => {
+  await page.goto("/#writing");
+
+  await expect(page.getByRole("heading", { name: "正在抵达的思考。" })).toBeVisible();
+  await expect(page.locator(".article-card")).toHaveCount(3);
+  const articleLinks = await page.locator(".article-card").evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
+  expect(articleLinks.every((href) => href.startsWith("https://blog.orbitvo.com/"))).toBe(true);
+  await expect(page.locator(".feed-source")).toContainText(/FEED SOURCE \/ (FEED|FALLBACK)/);
+  await expect(page.getByRole("link", { name: "RSS", exact: true })).toHaveAttribute("href", "https://blog.orbitvo.com/rss.xml");
+});
+
+test("forms one editorial journey without invented portfolio content", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: /把仍在生长的好奇心/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "沿着真实的记录，继续探索。" })).toBeVisible();
+  await expect(page.locator(".coordinate-list > div")).toHaveCount(4);
+  await expect(page.getByText("Mori", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Orbit OS", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Field Notes", { exact: true })).toHaveCount(0);
+});
+
+test("keeps every target viewport free of horizontal overflow", async ({ page }) => {
   for (const viewport of [
     { width: 360, height: 800 },
     { width: 390, height: 844 },
-    { width: 430, height: 932 }
+    { width: 430, height: 932 },
+    { width: 768, height: 1024 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 }
   ]) {
     await page.setViewportSize(viewport);
     await page.goto("/");
-    await page.evaluate(() => document.fonts.ready);
-    await page.locator(".orbit-visual").evaluate((element) => {
-      element.getAnimations().forEach((animation) => animation.finish());
-    });
-
-    const geometry = await page.evaluate(() => {
-      const rect = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
-      const blog = rect(".button-primary");
-      const github = rect(".github-link");
-      const orbit = rect(".orbit-visual");
-      const core = rect(".visual-core");
-      const orbitStyle = getComputedStyle(document.querySelector(".orbit-visual")!);
-
-      return {
-        blog,
-        github,
-        orbit,
-        core,
-        orbitTranslate: Number.parseFloat(orbitStyle.translate.split(" ").at(-1) ?? "0"),
-        orbitMarginBottom: Number.parseFloat(orbitStyle.marginBottom),
-        orbitAnimation: orbitStyle.animationName,
-        overflow: document.documentElement.scrollWidth > window.innerWidth
-      };
-    });
-
-    expect(geometry.overflow).toBe(false);
-    expect(geometry.blog.bottom).toBeLessThanOrEqual(geometry.github.top);
-    expect(geometry.core.top - geometry.github.bottom).toBeGreaterThanOrEqual(56);
-    expect(geometry.core.bottom).toBeLessThan(geometry.orbit.bottom);
-    expect(geometry.orbitTranslate).toBeLessThanOrEqual(-46);
-    expect(geometry.orbitTranslate).toBeGreaterThanOrEqual(-58);
-    expect(geometry.orbitMarginBottom).toBeCloseTo(geometry.orbitTranslate, 1);
-    expect(geometry.orbitAnimation).toBe("visual-arrive");
-    expect(geometry.blog.height).toBeGreaterThanOrEqual(44);
-    expect(geometry.github.height).toBeGreaterThanOrEqual(44);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
   }
 });
 
-test("preserves the established Hero geometry from tablet through ultrawide", async ({ page }) => {
-  const baselines = [
-    { width: 768, height: 1024, orbitTop: 500.58, coreTop: 679.78, coreBottom: 881.38 },
-    { width: 1440, height: 900, orbitTop: 208, coreTop: 387.2, coreBottom: 588.8 },
-    { width: 1920, height: 1080, orbitTop: 298, coreTop: 477.2, coreBottom: 678.8 }
-  ];
-
-  for (const baseline of baselines) {
-    await page.setViewportSize({ width: baseline.width, height: baseline.height });
-    await page.goto("/");
-    await page.evaluate(() => document.fonts.ready);
-    await page.locator(".orbit-visual").evaluate((element) => {
-      element.getAnimations().forEach((animation) => animation.finish());
-    });
-
-    const geometry = await page.evaluate(() => {
-      const orbit = document.querySelector(".orbit-visual")!.getBoundingClientRect();
-      const core = document.querySelector(".visual-core")!.getBoundingClientRect();
-      return { orbitTop: orbit.top, orbitWidth: orbit.width, coreTop: core.top, coreBottom: core.bottom };
-    });
-
-    expect(geometry.orbitWidth).toBeCloseTo(560, 0);
-    expect(geometry.orbitTop).toBeCloseTo(baseline.orbitTop, 0);
-    expect(geometry.coreTop).toBeCloseTo(baseline.coreTop, 0);
-    expect(geometry.coreBottom).toBeCloseTo(baseline.coreBottom, 0);
-  }
-});
-
-test("uses a smaller mobile star budget and pauses it while the page is hidden", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
-  const desktopStars = Number(await page.locator("#starfield").getAttribute("data-star-count"));
-
+test("keeps the mobile introduction readable and the hero art composed", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await expect(page.locator("#starfield")).toHaveAttribute("data-star-count", "12");
-  expect(desktopStars).toBeGreaterThan(12);
+  await page.goto("/");
 
-  await page.evaluate(() => {
-    Object.defineProperty(document, "hidden", { configurable: true, value: true });
-    document.dispatchEvent(new Event("visibilitychange"));
-  });
-  await expect(page.locator("#starfield")).toHaveAttribute("data-starfield-paused", "");
+  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "15px");
+  await expect(page.locator(".article-visual").first()).toHaveCSS("border-radius", "14px");
+  const hero = await page.locator(".hero").boundingBox();
+  const art = await page.locator(".hero-art").boundingBox();
+  const star = await page.locator(".star-sculpture").boundingBox();
+  expect(hero).not.toBeNull();
+  expect(art).not.toBeNull();
+  expect(star).not.toBeNull();
+  expect(star!.x).toBeGreaterThanOrEqual(0);
+  expect(star!.x + star!.width).toBeLessThanOrEqual(360);
+  expect(art!.y).toBeGreaterThan(hero!.y);
 });
 
-test("keeps a visible keyboard path from navigation to the primary and secondary action", async ({ page }) => {
+test("keeps the wide layout editorial rather than stretching without limit", async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto("/");
+
+  const header = await page.locator(".site-header").boundingBox();
+  const hero = await page.locator(".hero").boundingBox();
+  const cards = await page.locator(".article-grid").boundingBox();
+  for (const box of [header, hero, cards]) {
+    expect(box).not.toBeNull();
+    expect(box!.width).toBeLessThanOrEqual(1181);
+    expect(box!.x).toBeGreaterThan(300);
+  }
+  await expect(page.locator(".article-grid")).toHaveCSS("grid-template-columns", /.+ .+ .+/);
+});
+
+test("switches theme accessibly and persists the choice", async ({ page }) => {
+  await page.goto("/");
+  const toggle = page.getByRole("button", { name: "切换至深色模式" });
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "切换至浅色模式" })).toBeVisible();
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#111722");
+});
+
+test("provides a visible keyboard route through the primary controls", async ({ page }) => {
   await page.goto("/");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "返回主页顶部" })).toBeFocused();
+  await expect(page.getByRole("link", { name: "返回 Orbitvo 首页顶部" })).toBeFocused();
+  const navVisible = await page.locator(".nav-links").isVisible();
+  if (navVisible) {
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("link", { name: "文章", exact: true })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+  }
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "Blog", exact: true })).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "GitHub", exact: true }).first()).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: /阅读博客/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /切换至/ })).toBeFocused();
   await expect(page.locator(":focus-visible")).toHaveCSS("outline-style", "solid");
 });
 
-test("honors reduced motion preference", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
+test("keeps touch targets at least 44px where controls are compact", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/");
-  await expect(page.locator(".ring-outer")).toHaveCSS("animation-iteration-count", "1");
+  for (const locator of [
+    page.getByRole("button", { name: /切换至/ }),
+    page.getByRole("link", { name: "Blog", exact: true }).first(),
+    page.getByRole("link", { name: /阅读博客/ }),
+    page.getByRole("link", { name: /GitHub/ }).first()
+  ]) {
+    const box = await locator.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+  }
 });
 
-test("keeps the redesigned story readable without horizontal overflow", async ({ page }) => {
-  await page.goto("/#writing");
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-  expect(overflow).toBe(false);
-  await expect(page.locator(".signal-layout")).toBeVisible();
-  await expect(page.locator(".coordinate-point")).toHaveCount(4);
-  const bodySize = Number.parseFloat(await page.locator(".about-copy > p:not(.eyebrow)").evaluate((element) => getComputedStyle(element).fontSize));
-  expect(bodySize).toBeGreaterThanOrEqual((page.viewportSize()?.width ?? 1440) <= 700 ? 15 : 16);
+test("honors reduced motion without hiding the star composition", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+
+  await expect(page.locator(".star-sculpture")).toBeVisible();
+  await expect(page.locator(".star-sculpture")).toHaveCSS("animation-iteration-count", "1");
+  await expect(page.locator(".star-body")).toHaveCSS("animation-iteration-count", "1");
 });

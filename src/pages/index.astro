@@ -6,14 +6,20 @@ import "../styles/global.css";
 const configErrors = validateSiteConfig(siteConfig);
 if (configErrors.length) throw new Error(`Invalid site configuration: ${configErrors.join(", ")}`);
 
-const { items: blogItems, source: blogSource } = await getBlogItems(siteConfig.blogFeedUrl);
-const [featuredArticle, ...secondaryArticles] = blogItems;
+const { items: feedItems, source: blogSource } = await getBlogItems(siteConfig.blogFeedUrl);
+const blogItems = feedItems.slice(0, 3);
 const publishedYear = new Date().getFullYear();
 const formatDate = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "最近更新";
   return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 };
+const coordinates = [
+  ["01", "硬件系统", "让想法拥有可触摸的起点"],
+  ["02", "软件构建", "把复杂世界整理成清晰体验"],
+  ["03", "AI 探索", "与新的工具共同试探边界"],
+  ["04", "产品设计", "让技术带着情绪自然抵达"]
+];
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -29,7 +35,7 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#080b14" />
+    <meta id="theme-color" name="theme-color" content="#fbfcfe" />
     <meta name="description" content={siteConfig.description} />
     <meta name="author" content={siteConfig.name} />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -46,186 +52,138 @@ const structuredData = {
     <link rel="canonical" href={siteConfig.siteUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <title>{siteConfig.name} · Personal Universe</title>
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem("orbitvo-theme");
+        if (savedTheme === "dark") {
+          document.documentElement.dataset.theme = "dark";
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#111722");
+        }
+      } catch {}
+    </script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
-    <canvas id="starfield" aria-hidden="true"></canvas>
-    <div class="ambient ambient-a" aria-hidden="true"></div>
-    <div class="ambient ambient-b" aria-hidden="true"></div>
-
-    <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="返回主页顶部">
-        <span class="wordmark-mark" aria-hidden="true"></span>
-        <span>ORBITVO <small>／ ZHESPHERE</small></span>
+    <header class="site-header shell">
+      <a class="brand" href="#top" aria-label="返回 Orbitvo 首页顶部">
+        <span class="brand-mark" aria-hidden="true"></span><span>orbitvo</span>
       </a>
-      <nav aria-label="主要导航">
-        <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
-        <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
+      <nav class="nav-links" aria-label="页内导航">
+        <a href="#writing">文章</a><a href="#coordinates">坐标</a><a href="#about">关于</a>
       </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" type="button" aria-label="切换至深色模式" title="切换至深色模式">
+          <svg class="theme-icon theme-icon-sun" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4" /><circle cx="10" cy="10" r="3.2" /></svg>
+          <svg class="theme-icon theme-icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.2 12.4A6.6 6.6 0 0 1 7.6 3.8a6.6 6.6 0 1 0 8.6 8.6Z" /></svg>
+        </button>
+        <a class="nav-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+      </div>
     </header>
 
     <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
+      <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow"><span>ZHESPHERE</span> · PERSONAL UNIVERSE</p>
-          <h1 id="hero-title"><span>在技术与想象之间，</span><strong>建立自己的宇宙。</strong></h1>
+          <p class="eyebrow"><span aria-hidden="true"></span> ZheSphere · Personal Universe</p>
+          <h1 id="hero-title">在技术与想象之间，<br /><em>建立自己的宇宙。</em></h1>
           <p class="hero-lede">这里是 ZheSphere 的个人入口。记录硬件、软件、创造过程，以及仍在路上的好奇心。</p>
           <div class="hero-actions">
-            <a class="button button-primary" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 <span>↗</span></a>
-            <a class="github-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
+            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span></a>
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
           </div>
         </div>
 
-        <div class="orbit-visual" aria-hidden="true">
-          <div class="orbit-glow" aria-hidden="true"></div>
-          <div class="orbit-ring ring-outer" aria-hidden="true"><i class="planet planet-cyan"></i></div>
-          <div class="orbit-ring ring-middle" aria-hidden="true"><i class="planet planet-violet"></i></div>
-          <div class="orbit-ring ring-inner" aria-hidden="true"><i class="planet planet-blue"></i></div>
-          <div class="visual-core">
-            <span>ORBITVO</span>
-          </div>
+        <div class="hero-art" aria-label="象征方向、好奇心与创造的轨道星芒">
+          <span class="orbit orbit-one" aria-hidden="true"></span><span class="orbit orbit-two" aria-hidden="true"></span>
+          <span class="orbiting-star star-a" aria-hidden="true">✦</span><span class="orbiting-star star-b" aria-hidden="true">✧</span><span class="orbiting-dot" aria-hidden="true"></span>
+          <svg class="star-sculpture" viewBox="0 0 440 440" role="img" aria-label="立体轨道幸运星">
+            <defs>
+              <path id="star-shape" d="M212 62Q220 35 228 62l24 105q3 14 17 8l101-19q27-5 9 17l-94 69q-12 8-3 20l48 101q11 26-14 11l-87-72q-9-8-18 0l-87 72q-25 15-14-11l48-101q9-12-3-20l-94-69q-18-22 9-17l101 19q14 6 17-8Z" />
+              <clipPath id="star-clip"><use href="#star-shape" /></clipPath>
+              <radialGradient id="star-glow"><stop offset="0" stop-color="#7daeea" stop-opacity=".24" /><stop offset="1" stop-color="#7daeea" stop-opacity="0" /></radialGradient>
+            </defs>
+            <circle class="star-halo" cx="220" cy="220" r="205" fill="url(#star-glow)" />
+            <g class="star-body">
+              <use href="#star-shape" class="puffy-star" />
+              <g clip-path="url(#star-clip)">
+                <path class="puffy-facet top" d="M220 225 188 178 220 38 252 178Z" /><path class="puffy-facet right" d="m220 225 32-47 148-28-118 112Z" />
+                <path class="puffy-facet lower-right" d="m220 225 62 37 62 126-124-86Z" /><path class="puffy-facet lower-left" d="m220 225v77l-124 86 62-126Z" />
+                <path class="puffy-facet left" d="m220 225-62 37L40 150l148 28Z" /><ellipse class="star-soft-light" cx="186" cy="160" rx="75" ry="105" transform="rotate(-32 186 160)" />
+              </g>
+              <path class="star-fold" d="m220 225 32-47M220 225l62 37M220 225v77M220 225l-62 37M220 225l-32-47" />
+            </g>
+          </svg>
+          <p class="art-note"><span>ORBITAL STAR / 001</span><strong>Direction · Curiosity · Creation</strong></p>
         </div>
-        <a class="explore-cue" href="#writing">继续探索 <span aria-hidden="true">↓</span></a>
+        <a class="explore-cue" href="#writing">向下探索 <span aria-hidden="true"></span></a>
       </section>
 
-      <section class="section writing-section" id="writing" aria-labelledby="writing-title">
+      <section class="writing section shell" id="writing" aria-labelledby="writing-title">
         <header class="section-heading">
-          <div><p class="eyebrow">01 / LATEST SIGNALS</p><h2 id="writing-title">正在抵达的思考。</h2></div>
-          <p>从正在发生的信号开始，沿着好奇心，进入每一次尚未定型的尝试。</p>
+          <div><p class="eyebrow"><span aria-hidden="true"></span> Latest Signals</p><h2 id="writing-title">正在抵达的思考。</h2></div>
+          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">查看全部文章 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
         </header>
-        <div class="signal-layout">
-          {featuredArticle ? (
-            <a class="signal-feature" href={featuredArticle.href} target="_blank" rel="noreferrer">
-              <span class="signal-orbit" aria-hidden="true"></span>
-              <span class="article-number">01 / FEATURED</span>
-              <time datetime={featuredArticle.publishedAt}>{formatDate(featuredArticle.publishedAt)}</time>
-              <h3>{featuredArticle.title}</h3>
-              {featuredArticle.summary && <p>{featuredArticle.summary}</p>}
-              <span class="signal-read">阅读这篇文章 <b aria-hidden="true">↗</b></span>
+
+        <div class="article-grid">
+          {blogItems.map((article, index) => (
+            <a class={`article-card article-tone-${index + 1}`} href={article.href} target="_blank" rel="noreferrer">
+              <div class="article-visual">
+                <span class="article-index">0{index + 1}</span><span class="article-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
+                <span class="article-orbit orbit-a" aria-hidden="true"></span><span class="article-orbit orbit-b" aria-hidden="true"></span>
+                <div class="article-signal" aria-hidden="true"><small>SIGNAL / 0{index + 1}</small><b>{article.title.slice(0, 12)}</b><i></i></div>
+              </div>
+              <div class="article-copy"><div><h3>{article.title}</h3>{article.summary && <p>{article.summary}</p>}</div><time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time></div>
             </a>
-          ) : (
-            <div class="article-empty"><p>最新文章正在穿越星际网络。</p></div>
-          )}
-          <div class="signal-list">
-            {secondaryArticles.map((item, index) => (
-              <a class="signal-item" href={item.href} target="_blank" rel="noreferrer">
-                <span class="article-number">0{index + 2}</span>
-                <div><time datetime={item.publishedAt}>{formatDate(item.publishedAt)}</time><h3>{item.title}</h3></div>
-                <span class="article-arrow" aria-hidden="true">↗</span>
-              </a>
-            ))}
-            <a class="all-writing-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">全部文章 <span aria-hidden="true">↗</span></a>
-          </div>
+          ))}
         </div>
         <p class="feed-source">FEED SOURCE / {blogSource.toUpperCase()}</p>
       </section>
 
-      <section class="section coordinates-section" aria-labelledby="coordinates-title">
-        <header class="section-heading coordinates-heading">
-          <div><p class="eyebrow">02 / CREATIVE COORDINATES</p><h2 id="coordinates-title">让不同的引力，<br />在同一条轨道相遇。</h2></div>
-          <p>不把兴趣分成孤立的栏目。硬件的真实触感、软件的结构、AI 的可能性与设计的叙事，在这里彼此校准。</p>
-        </header>
-        <div class="coordinate-field" aria-label="个人创造方向图：硬件、软件、人工智能与设计" data-interaction="static">
-          <span class="coordinate-line line-one" aria-hidden="true"></span>
-          <span class="coordinate-line line-two" aria-hidden="true"></span>
-          <div class="coordinate-point point-hardware"><small>01</small><strong>硬件</strong><span>让想法拥有可触摸的起点</span></div>
-          <div class="coordinate-point point-software"><small>02</small><strong>软件</strong><span>把复杂的世界整理成体验</span></div>
-          <div class="coordinate-point point-ai"><small>03</small><strong>AI</strong><span>与新的工具共同试探边界</span></div>
-          <div class="coordinate-point point-design"><small>04</small><strong>设计</strong><span>让技术带着清晰的情绪抵达</span></div>
-          <p class="coordinate-center">BUILDING<br />BETWEEN<br />DISCIPLINES</p>
-        </div>
-      </section>
-
-      <section class="section about-section" id="about" aria-labelledby="about-title">
-        <div class="about-mark" aria-hidden="true"><span>ZS</span></div>
-        <div class="about-copy">
-          <p class="eyebrow">03 / POINT OF ORIGIN</p>
-          <h2 id="about-title">把仍在生长的好奇心，<br />做成可以抵达的世界。</h2>
+      <section class="about section shell" id="about" aria-labelledby="about-title">
+        <div class="about-label"><p class="eyebrow"><span aria-hidden="true"></span> Point of Origin</p><p class="side-note">BASED IN CHINA<br />BUILDING BETWEEN DISCIPLINES</p></div>
+        <div class="about-content">
+          <h2 id="about-title">把仍在生长的好奇心，<br />做成<em>可以抵达的世界。</em></h2>
           <p>你好，我是 ZheSphere，一名硬件工程师，也持续在软件、设计与 AI 的交界处创造。Orbitvo 不是一份履历，而是我的工作、思考与下一次试验留下的坐标。</p>
-          <div class="about-links">
-            {siteConfig.socialLinks.map((link) => (
-              <a href={link.href} target="_blank" rel="noreferrer">{link.label}<span>↗</span></a>
-            ))}
+          <div class="coordinate-list" id="coordinates" aria-label="个人创造方向">
+            {coordinates.map(([index, title, description]) => <div><span>{index}</span><b>{title}</b><p>{description}</p><i aria-hidden="true">↗</i></div>)}
           </div>
         </div>
       </section>
+
+      <section class="journal section shell" aria-labelledby="journal-title">
+        <p class="eyebrow"><span aria-hidden="true"></span> Journal</p>
+        <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer"><span>CONTINUE EXPLORING</span><h2 id="journal-title">沿着真实的记录，继续探索。</h2><i aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></i></a>
+      </section>
     </main>
 
-    <footer>
-      <span>© {publishedYear} ZHESPHERE</span>
-      <span>BUILDING QUIETLY IN THE VOID</span>
-      <a href="#top">回到顶部 ↑</a>
+    <footer class="site-footer shell">
+      <p>有一些新的信号？</p>
+      <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">去博客看看。<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+      <div class="footer-meta">
+        <span>© {publishedYear} ZHESPHERE</span><span>用电路、代码、光线与好奇心制作</span>
+        <p><a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a><a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a><a href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS</a><a href="#top">Top ↑</a></p>
+      </div>
     </footer>
 
     <script>
-      const canvas = document.querySelector<HTMLCanvasElement>("#starfield");
-      const context = canvas?.getContext("2d", { alpha: true });
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const compactMotionBudget = window.matchMedia("(max-width: 700px), (pointer: coarse)");
-      let stars: Array<{ x: number; y: number; size: number; alpha: number; speed: number }> = [];
-      let frame = 0;
-      let isRunning = false;
-
-      function resizeStars() {
-        if (!canvas || !context) return;
-        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        canvas.width = Math.floor(window.innerWidth * dpr);
-        canvas.height = Math.floor(window.innerHeight * dpr);
-        canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${window.innerHeight}px`;
-        context.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const area = window.innerWidth * window.innerHeight;
-        const count = reduceMotion.matches
-          ? 28
-          : compactMotionBudget.matches
-            ? Math.min(32, Math.max(12, Math.floor(area / 28000)))
-            : Math.min(72, Math.floor(area / 18000));
-        stars = Array.from({ length: count }, (_, index) => ({
-          x: ((index * 73.31) % 100) / 100 * window.innerWidth,
-          y: ((index * index * 19.17 + 17) % 100) / 100 * window.innerHeight,
-          size: 0.45 + (index % 4) * 0.2,
-          alpha: 0.12 + (index % 6) * 0.055,
-          speed: 0.012 + (index % 3) * 0.006
-        }));
-        canvas.dataset.starCount = String(count);
+      const root = document.documentElement;
+      const toggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
+      const themeColor = document.querySelector<HTMLMetaElement>("#theme-color");
+      const currentTheme = () => root.dataset.theme === "dark" ? "dark" : "light";
+      function updateToggle() {
+        if (!toggle) return;
+        const dark = currentTheme() === "dark";
+        const label = dark ? "切换至浅色模式" : "切换至深色模式";
+        toggle.setAttribute("aria-label", label);
+        toggle.title = label;
+        themeColor?.setAttribute("content", dark ? "#111722" : "#fbfcfe");
       }
-
-      function drawStars(time = 0) {
-        if (!canvas || !context) return;
-        context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        for (const star of stars) {
-          const drift = reduceMotion.matches ? 0 : Math.sin(time * star.speed * 0.001 + star.x) * 2;
-          context.beginPath();
-          context.fillStyle = `rgba(196, 220, 255, ${star.alpha})`;
-          context.arc(star.x + drift, star.y, star.size, 0, Math.PI * 2);
-          context.fill();
-        }
-        if (isRunning && !reduceMotion.matches) frame = requestAnimationFrame(drawStars);
-      }
-
-      function restartStars() {
-        cancelAnimationFrame(frame);
-        resizeStars();
-        isRunning = !document.hidden;
-        canvas?.toggleAttribute("data-starfield-paused", !isRunning);
-        drawStars();
-      }
-
-      function updateVisibility() {
-        if (document.hidden) {
-          isRunning = false;
-          cancelAnimationFrame(frame);
-          canvas?.setAttribute("data-starfield-paused", "");
-          return;
-        }
-        restartStars();
-      }
-
-      window.addEventListener("resize", restartStars, { passive: true });
-      reduceMotion.addEventListener("change", restartStars);
-      compactMotionBudget.addEventListener("change", restartStars);
-      document.addEventListener("visibilitychange", updateVisibility);
-      restartStars();
+      toggle?.addEventListener("click", () => {
+        const nextTheme = currentTheme() === "dark" ? "light" : "dark";
+        root.dataset.theme = nextTheme;
+        try { localStorage.setItem("orbitvo-theme", nextTheme); } catch {}
+        updateToggle();
+      });
+      updateToggle();
     </script>
   </body>
 </html>
