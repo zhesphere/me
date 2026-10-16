@@ -11,9 +11,9 @@
 | 主域名 | `https://orbitvo.com` |
 | 发布链路 | GitHub `main` -> Vercel -> `orbitvo.com` |
 | 内容入口 | 博客 `blog.orbitvo.com`、GitHub `zhesphere`、关于我 |
-| 当前阶段 | 新编辑感 UI 已上线，进入稳定维护 |
-| 当前任务 | 无活动实施任务；`TASK-009` 已归档 |
-| 当前基线 | 浅色编辑感主视觉 + 可选深色模式；Astro、RSS、真实链接、SEO 与 Vercel 链路保持 |
+| 当前阶段 | 新编辑感 UI 的首屏品牌标题精修 |
+| 当前任务 | `TASK-010 / ORBITVO 首屏品牌标题` |
+| 本轮边界 | 仅调整 Hero 标题与副标题排版；其他视觉、内容和功能保持 |
 
 ## 2. 模型调度规则
 
@@ -102,7 +102,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 - `README.md`：项目入口。
 - `PROJECT_HUB.md`：唯一控制中枢。
 - `DEPLOYMENT.md`：发布与回滚操作手册。
-- `tasks/active/`：当前没有实施任务；下一项修改由中枢按需分发。
+- `tasks/active/`：`TASK-010-orbitvo-hero-title.md`，当前唯一活动实施任务。
 - `src/`、`tests/` 与工程配置：当前产品和验收基线。
 
 ### 归档
@@ -119,6 +119,8 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 最近完成：`TASK-008 / 依赖安全与测试链路稳定化`，使用 `GPT-5.6 Terra / Medium`。Astro 升级到修复版本并固定工具链，安全审计降至 0；Playwright 可在 agent 环境直接启动前台测试服务器；RSS 关键回归测试扩充到 9 项。页面与样式源码零修改，36 项 E2E 和既有移动端、桌面几何基线全部通过。
 
 最近完成：`TASK-009 / 编辑感新 UI 迁移`。设计稿的浅色编辑语言、立体轨道星芒、文章卡片与主题切换已移植到原生 Astro 页面；RSS、博客、GitHub、SEO 和 Vercel 链路保持。用户已完成视觉验收，新 UI 自此成为唯一维护基线。
+
+当前分发：`TASK-010 / ORBITVO 首屏品牌标题`。只把中文长标题调整为更直接的品牌海报式层级，不扩大到星芒、下方内容或功能系统。
 
 ## 8. 最近一次发布
 

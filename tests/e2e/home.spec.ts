@@ -4,7 +4,8 @@ test("keeps the identity, statement, and real destinations clear", async ({ page
   await page.goto("/");
 
   await expect(page.getByRole("link", { name: "返回 Orbitvo 首页顶部" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /在技术与想象之间/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ORBITVO", exact: true })).toBeVisible();
+  await expect(page.getByText("技术与想象，在此交汇。", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.getByRole("link", { name: /GitHub/ }).first()).toHaveAttribute("href", "https://github.com/zhesphere");
   await expect(page.locator('a[href="#"], a[href^="mailto:"]')).toHaveCount(0);
@@ -52,6 +53,7 @@ test("keeps the mobile introduction readable and the hero art composed", async (
   await page.goto("/");
 
   await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "15px");
+  await expect(page.locator(".hero h1")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".article-visual").first()).toHaveCSS("border-radius", "14px");
   const hero = await page.locator(".hero").boundingBox();
   const art = await page.locator(".hero-art").boundingBox();
@@ -62,6 +64,9 @@ test("keeps the mobile introduction readable and the hero art composed", async (
   expect(star!.x).toBeGreaterThanOrEqual(0);
   expect(star!.x + star!.width).toBeLessThanOrEqual(360);
   expect(art!.y).toBeGreaterThan(hero!.y);
+  const title = await page.locator(".hero h1").boundingBox();
+  expect(title).not.toBeNull();
+  expect(title!.x + title!.width).toBeLessThanOrEqual(360);
 });
 
 test("keeps the wide layout editorial rather than stretching without limit", async ({ page }) => {

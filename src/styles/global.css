@@ -63,9 +63,25 @@ svg { width: 1em; fill: none; stroke: currentColor; stroke-linecap: round; strok
 .hero-copy { position: relative; z-index: 2; padding-bottom: 16px; }
 .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 26px; color: var(--blue-deep); font: 700 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .14em; text-transform: uppercase; }
 .eyebrow > span { width: 24px; height: 1px; flex: 0 0 auto; background: var(--blue); }
-.hero h1 { max-width: 690px; margin: 0; font-size: clamp(52px, 5.45vw, 78px); font-weight: 470; letter-spacing: -.065em; line-height: 1.13; }
+.hero h1 {
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  background: linear-gradient(105deg, var(--ink) 0 56%, var(--blue-deep) 100%);
+  background-clip: text;
+  color: var(--ink);
+  font-family: "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(72px, 7.7vw, 112px);
+  font-weight: 300;
+  letter-spacing: .075em;
+  line-height: .9;
+  white-space: nowrap;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 em { color: var(--blue-deep); font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-style: italic; font-weight: 400; }
-.hero-lede { width: min(500px, 100%); margin: 32px 0 34px; color: var(--muted); font-size: 16px; line-height: 1.85; text-wrap: balance; }
+.hero-statement { margin: 24px 0 0; color: var(--ink); font: 400 clamp(24px, 2.35vw, 34px)/1.35 Georgia, "Songti SC", "Noto Serif SC", serif; letter-spacing: -.035em; }
+.hero-lede { width: min(500px, 100%); margin: 18px 0 34px; color: var(--muted); font-size: 16px; line-height: 1.85; text-wrap: balance; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 23px; }
 .primary-link, .secondary-link { display: inline-flex; min-height: 48px; align-items: center; font-size: 14px; font-weight: 680; }
 .primary-link { gap: 14px; }
@@ -190,7 +206,7 @@ em { color: var(--blue-deep); font-family: Georgia, "Songti SC", "Noto Serif SC"
   .site-header { grid-template-columns: 1fr auto; }
   .nav-links { display: none; }
   .hero { min-height: auto; padding: 88px 0 64px; grid-template-columns: 1fr; }
-  .hero h1 { font-size: clamp(48px, 10.5vw, 72px); }
+  .hero h1 { font-size: clamp(68px, 12vw, 92px); letter-spacing: .065em; }
   .hero-art { height: 440px; }
   .star-sculpture { width: min(370px, 76%); }
   .explore-cue { display: none; }
@@ -212,8 +228,9 @@ em { color: var(--blue-deep); font-family: Georgia, "Songti SC", "Noto Serif SC"
   .nav-blog { padding-inline: 7px 0; }
   .hero { padding: 62px 0 42px; }
   .eyebrow { margin-bottom: 21px; font-size: 11px; letter-spacing: .1em; }
-  .hero h1 { font-size: clamp(40px, 12vw, 54px); line-height: 1.16; }
-  .hero-lede { margin: 26px 0 28px; font-size: 15px; line-height: 1.82; }
+  .hero h1 { font-size: clamp(50px, 14.4vw, 62px); letter-spacing: .045em; line-height: .92; }
+  .hero-statement { margin-top: 20px; font-size: clamp(22px, 6.5vw, 27px); }
+  .hero-lede { margin: 17px 0 28px; font-size: 15px; line-height: 1.82; }
   .hero-actions { gap: 18px; }
   .hero-art { height: 360px; margin-inline: -15px; }
   .orbit-one { width: 330px; height: 330px; }
