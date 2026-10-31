@@ -122,10 +122,38 @@ test("provides a visible keyboard route through the primary controls", async ({ 
     await expect(page.getByRole("link", { name: "创造", exact: true })).toBeFocused();
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
+  } else if (await page.locator(".nav-menu-toggle").isVisible()) {
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: /页内导航/ })).toBeFocused();
   }
   await page.keyboard.press("Tab");
   await expect(page.getByRole("button", { name: /切换至/ })).toBeFocused();
   await expect(page.locator(":focus-visible")).toHaveCSS("outline-style", "solid");
+});
+
+test("reveals back-to-top after deep scroll and returns to the top", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  await expect(page.locator(".back-to-top")).not.toHaveClass(/is-visible/);
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.8));
+  await expect(page.locator(".back-to-top")).toHaveClass(/is-visible/);
+  await page.locator(".back-to-top").click();
+  await expect.poll(async () => page.evaluate(() => window.scrollY)).toBeLessThan(8);
+});
+
+test("opens mobile page navigation to the creates section", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/");
+
+  const menu = page.getByRole("button", { name: "打开页内导航" });
+  await expect(menu).toBeVisible();
+  await expect(page.locator(".nav-links")).toBeHidden();
+  await menu.click();
+  await expect(page.locator(".nav-links")).toBeVisible();
+  await page.locator(".nav-links a[href='#creates']").click();
+  await expect(page.locator("#creates")).toBeInViewport();
+  await expect(page.locator(".nav-links")).toBeHidden();
 });
 
 test("keeps touch targets at least 44px where controls are compact", async ({ page }) => {
@@ -133,6 +161,7 @@ test("keeps touch targets at least 44px where controls are compact", async ({ pa
   await page.goto("/");
   for (const locator of [
     page.getByRole("button", { name: /切换至/ }),
+    page.getByRole("button", { name: /页内导航/ }),
     page.getByRole("link", { name: "Blog", exact: true }).first(),
     page.locator(".hero .primary-link"),
     page.getByRole("link", { name: /GitHub/ }).first()

@@ -76,12 +76,15 @@ const structuredData = {
       <a class="brand" href="#top" aria-label="返回 Orbitvo 首页顶部">
         <span class="brand-mark" aria-hidden="true"></span><span>orbitvo</span>
       </a>
-      <nav class="nav-links" aria-label="页内导航">
+      <nav class="nav-links" id="site-nav" aria-label="页内导航">
         <a href="#creates">创造</a>
         <a href="#writing">文章</a>
         <a href="#about">关于</a>
       </nav>
       <div class="nav-actions">
+        <button class="nav-menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开页内导航">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h12" /></svg>
+        </button>
         <button class="theme-toggle" type="button" aria-label="切换至深色模式" title="切换至深色模式">
           <svg class="theme-icon theme-icon-sun" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4" /><circle cx="10" cy="10" r="3.2" /></svg>
           <svg class="theme-icon theme-icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.2 12.4A6.6 6.6 0 0 1 7.6 3.8a6.6 6.6 0 1 0 8.6 8.6Z" /></svg>
@@ -215,16 +218,25 @@ const structuredData = {
           <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
           <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
           <a href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS</a>
-          <a href="#top">Top ↑</a>
+          <a href="#top">Top</a>
         </p>
       </div>
     </footer>
+
+    <button class="back-to-top" type="button" aria-label="回到顶部" aria-hidden="true" tabindex="-1">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V5m0 0 4.5 4.5M10 5 5.5 9.5" /></svg>
+    </button>
 
     <script>
       const root = document.documentElement;
       const toggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
       const themeColor = document.querySelector<HTMLMetaElement>("#theme-color");
+      const menuToggle = document.querySelector<HTMLButtonElement>(".nav-menu-toggle");
+      const siteNav = document.querySelector<HTMLElement>("#site-nav");
+      const backToTop = document.querySelector<HTMLButtonElement>(".back-to-top");
       const currentTheme = () => (root.dataset.theme === "dark" ? "dark" : "light");
+      const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       function updateToggle() {
         if (!toggle) return;
         const dark = currentTheme() === "dark";
@@ -233,6 +245,21 @@ const structuredData = {
         toggle.title = label;
         themeColor?.setAttribute("content", dark ? "#0c121c" : "#f4f7fc");
       }
+
+      function setMenuOpen(open: boolean) {
+        root.classList.toggle("nav-open", open);
+        menuToggle?.setAttribute("aria-expanded", String(open));
+        menuToggle?.setAttribute("aria-label", open ? "关闭页内导航" : "打开页内导航");
+      }
+
+      function updateBackToTop() {
+        if (!backToTop) return;
+        const show = window.scrollY > window.innerHeight * 1.5;
+        backToTop.classList.toggle("is-visible", show);
+        backToTop.setAttribute("aria-hidden", String(!show));
+        backToTop.tabIndex = show ? 0 : -1;
+      }
+
       toggle?.addEventListener("click", () => {
         const nextTheme = currentTheme() === "dark" ? "light" : "dark";
         root.dataset.theme = nextTheme;
@@ -241,7 +268,27 @@ const structuredData = {
         } catch {}
         updateToggle();
       });
+
+      menuToggle?.addEventListener("click", () => {
+        setMenuOpen(!root.classList.contains("nav-open"));
+      });
+
+      siteNav?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => setMenuOpen(false));
+      });
+
+      backToTop?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      });
+
+      window.addEventListener("scroll", updateBackToTop, { passive: true });
+      window.addEventListener("resize", () => {
+        if (window.matchMedia("(min-width: 901px)").matches) setMenuOpen(false);
+        updateBackToTop();
+      });
+
       updateToggle();
+      updateBackToTop();
     </script>
   </body>
 </html>
