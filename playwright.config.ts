@@ -12,12 +12,13 @@ export default defineConfig({
   },
   use: {
     baseURL: "http://127.0.0.1:4321",
-    trace: "retain-on-failure"
+    trace: "retain-on-failure",
+    channel: "chrome"
   },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
-    { name: "mobile", use: { ...devices["Pixel 5"], viewport: { width: 360, height: 780 } } },
-    { name: "tablet", use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 } } },
-    { name: "ultrawide", use: { ...devices["Desktop Chrome"], viewport: { width: 1920, height: 1080 } } }
+    { name: "desktop", use: { ...devices["Desktop Chrome"], channel: "chrome", viewport: { width: 1440, height: 900 } } },
+    { name: "mobile", use: { ...devices["Pixel 5"], channel: "chrome", viewport: { width: 360, height: 780 } } },
+    { name: "tablet", use: { ...devices["Desktop Chrome"], channel: "chrome", viewport: { width: 768, height: 1024 } } },
+    { name: "ultrawide", use: { ...devices["Desktop Chrome"], channel: "chrome", viewport: { width: 1920, height: 1080 } } }
   ]
 });

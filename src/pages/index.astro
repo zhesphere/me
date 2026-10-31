@@ -14,11 +14,31 @@ const formatDate = (value: string) => {
   if (Number.isNaN(date.getTime())) return "最近更新";
   return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 };
-const coordinates = [
-  ["01", "硬件系统", "让想法拥有可触摸的起点"],
-  ["02", "软件构建", "把复杂世界整理成清晰体验"],
-  ["03", "AI 探索", "与新的工具共同试探边界"],
-  ["04", "产品设计", "让技术带着情绪自然抵达"]
+const creates = [
+  {
+    key: "hardware",
+    title: "硬件系统",
+    description: "让想法拥有可触摸的起点，把电路与结构做成可验证的原型。",
+    hint: "Hardware"
+  },
+  {
+    key: "software",
+    title: "软件构建",
+    description: "把复杂世界整理成清晰体验，用代码收束流程与界面。",
+    hint: "Software"
+  },
+  {
+    key: "ai",
+    title: "AI 探索",
+    description: "与新的工具共同试探边界，记录可用的方法与失败。",
+    hint: "AI"
+  },
+  {
+    key: "design",
+    title: "产品设计",
+    description: "让技术带着情绪自然抵达，重视手感、节奏与可读性。",
+    hint: "Design"
+  }
 ];
 const structuredData = {
   "@context": "https://schema.org",
@@ -35,7 +55,7 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta id="theme-color" name="theme-color" content="#fbfcfe" />
+    <meta id="theme-color" name="theme-color" content="#f4f7fc" />
     <meta name="description" content={siteConfig.description} />
     <meta name="author" content={siteConfig.name} />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -51,25 +71,35 @@ const structuredData = {
     <meta name="twitter:image" content={`${siteConfig.siteUrl}/og.png`} />
     <link rel="canonical" href={siteConfig.siteUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>{siteConfig.name} · Personal Universe</title>
     <script is:inline>
       try {
         const savedTheme = localStorage.getItem("orbitvo-theme");
         if (savedTheme === "dark") {
           document.documentElement.dataset.theme = "dark";
-          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#111722");
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#0c121c");
         }
       } catch {}
     </script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+
     <header class="site-header shell">
       <a class="brand" href="#top" aria-label="返回 Orbitvo 首页顶部">
         <span class="brand-mark" aria-hidden="true"></span><span>orbitvo</span>
       </a>
       <nav class="nav-links" aria-label="页内导航">
-        <a href="#writing">文章</a><a href="#coordinates">坐标</a><a href="#about">关于</a>
+        <a href="#creates">创造</a>
+        <a href="#writing">文章</a>
+        <a href="#about">关于</a>
       </nav>
       <div class="nav-actions">
         <button class="theme-toggle" type="button" aria-label="切换至深色模式" title="切换至深色模式">
@@ -83,56 +113,107 @@ const structuredData = {
     <main id="top">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow"><span aria-hidden="true"></span> ZheSphere · Personal Universe</p>
+          <p class="hero-identity">ZheSphere · Personal Universe</p>
           <h1 id="hero-title">ORBITVO</h1>
           <p class="hero-statement">技术与想象，在此交汇。</p>
           <p class="hero-lede">这里是 ZheSphere 的个人入口。记录硬件、软件、创造过程，以及仍在路上的好奇心。</p>
           <div class="hero-actions">
-            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span></a>
-            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+              阅读博客
+              <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
+            </a>
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
+              GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            </a>
           </div>
         </div>
 
         <div class="hero-art" aria-label="象征方向、好奇心与创造的轨道星芒">
-          <span class="orbit orbit-one" aria-hidden="true"></span><span class="orbit orbit-two" aria-hidden="true"></span>
-          <span class="orbiting-star star-a" aria-hidden="true">✦</span><span class="orbiting-star star-b" aria-hidden="true">✧</span><span class="orbiting-dot" aria-hidden="true"></span>
+          <span class="orbit orbit-one" aria-hidden="true"></span>
+          <span class="orbit orbit-two" aria-hidden="true"></span>
+          <span class="orbiting-star star-a" aria-hidden="true">✦</span>
+          <span class="orbiting-star star-b" aria-hidden="true">✧</span>
+          <span class="orbiting-dot" aria-hidden="true"></span>
           <svg class="star-sculpture" viewBox="0 0 440 440" role="img" aria-label="立体轨道幸运星">
             <defs>
               <path id="star-shape" d="M212 62Q220 35 228 62l24 105q3 14 17 8l101-19q27-5 9 17l-94 69q-12 8-3 20l48 101q11 26-14 11l-87-72q-9-8-18 0l-87 72q-25 15-14-11l48-101q9-12-3-20l-94-69q-18-22 9-17l101 19q14 6 17-8Z" />
               <clipPath id="star-clip"><use href="#star-shape" /></clipPath>
-              <radialGradient id="star-glow"><stop offset="0" stop-color="#7daeea" stop-opacity=".24" /><stop offset="1" stop-color="#7daeea" stop-opacity="0" /></radialGradient>
+              <radialGradient id="star-glow"><stop offset="0" stop-color="#7daeea" stop-opacity=".34" /><stop offset="1" stop-color="#7daeea" stop-opacity="0" /></radialGradient>
             </defs>
             <circle class="star-halo" cx="220" cy="220" r="205" fill="url(#star-glow)" />
             <g class="star-body">
               <use href="#star-shape" class="puffy-star" />
               <g clip-path="url(#star-clip)">
-                <path class="puffy-facet top" d="M220 225 188 178 220 38 252 178Z" /><path class="puffy-facet right" d="m220 225 32-47 148-28-118 112Z" />
-                <path class="puffy-facet lower-right" d="m220 225 62 37 62 126-124-86Z" /><path class="puffy-facet lower-left" d="m220 225v77l-124 86 62-126Z" />
-                <path class="puffy-facet left" d="m220 225-62 37L40 150l148 28Z" /><ellipse class="star-soft-light" cx="186" cy="160" rx="75" ry="105" transform="rotate(-32 186 160)" />
+                <path class="puffy-facet top" d="M220 225 188 178 220 38 252 178Z" />
+                <path class="puffy-facet right" d="m220 225 32-47 148-28-118 112Z" />
+                <path class="puffy-facet lower-right" d="m220 225 62 37 62 126-124-86Z" />
+                <path class="puffy-facet lower-left" d="m220 225v77l-124 86 62-126Z" />
+                <path class="puffy-facet left" d="m220 225-62 37L40 150l148 28Z" />
+                <ellipse class="star-soft-light" cx="186" cy="160" rx="75" ry="105" transform="rotate(-32 186 160)" />
               </g>
               <path class="star-fold" d="m220 225 32-47M220 225l62 37M220 225v77M220 225l-62 37M220 225l-32-47" />
             </g>
           </svg>
-          <p class="art-note"><span>ORBITAL STAR / 001</span><strong>Direction · Curiosity · Creation</strong></p>
+          <p class="art-note"><span>ORBITAL STAR</span><strong>Direction · Curiosity · Creation</strong></p>
         </div>
-        <a class="explore-cue" href="#writing">向下探索 <span aria-hidden="true"></span></a>
+        <a class="explore-cue" href="#creates">继续探索 <span aria-hidden="true"></span></a>
+      </section>
+
+      <section class="creates section shell" id="creates" aria-labelledby="creates-title">
+        <header class="section-heading">
+          <div>
+            <h2 id="creates-title">正在推进的创造。</h2>
+            <p class="section-lede">四条真实方向，像精选作品一样并列呈现——不是履历墙，是下一步试验的坐标。</p>
+          </div>
+        </header>
+        <div class="create-grid" id="coordinates" aria-label="个人创造方向">
+          {creates.map((item) => (
+            <article class={`create-card create-${item.key}`}>
+              <div class="create-visual" aria-hidden="true">
+                <span class="create-glow"></span>
+                <span class="create-hint">{item.hint}</span>
+              </div>
+              <div class="create-copy">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section class="writing section shell" id="writing" aria-labelledby="writing-title">
         <header class="section-heading">
-          <div><p class="eyebrow"><span aria-hidden="true"></span> Latest Signals</p><h2 id="writing-title">正在抵达的思考。</h2></div>
-          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">查看全部文章 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+          <div>
+            <h2 id="writing-title">正在抵达的思考。</h2>
+            <p class="section-lede">来自博客的最新信号，标题优先，日期退居其次。</p>
+          </div>
+          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+            查看全部文章 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+          </a>
         </header>
 
         <div class="article-grid">
           {blogItems.map((article, index) => (
             <a class={`article-card article-tone-${index + 1}`} href={article.href} target="_blank" rel="noreferrer">
               <div class="article-visual">
-                <span class="article-index">0{index + 1}</span><span class="article-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
-                <span class="article-orbit orbit-a" aria-hidden="true"></span><span class="article-orbit orbit-b" aria-hidden="true"></span>
-                <div class="article-signal" aria-hidden="true"><small>SIGNAL / 0{index + 1}</small><b>{article.title.slice(0, 12)}</b><i></i></div>
+                <span class="article-index">0{index + 1}</span>
+                <span class="article-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
+                <span class="article-orbit orbit-a" aria-hidden="true"></span>
+                <span class="article-orbit orbit-b" aria-hidden="true"></span>
+                <div class="article-signal" aria-hidden="true">
+                  <small>SIGNAL</small>
+                  <b>{article.title.slice(0, 18)}</b>
+                  <i></i>
+                </div>
               </div>
-              <div class="article-copy"><div><h3>{article.title}</h3>{article.summary && <p>{article.summary}</p>}</div><time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time></div>
+              <div class="article-copy">
+                <div>
+                  <h3>{article.title}</h3>
+                  {article.summary && <p>{article.summary}</p>}
+                </div>
+                <time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
+              </div>
             </a>
           ))}
         </div>
@@ -140,28 +221,44 @@ const structuredData = {
       </section>
 
       <section class="about section shell" id="about" aria-labelledby="about-title">
-        <div class="about-label"><p class="eyebrow"><span aria-hidden="true"></span> Point of Origin</p><p class="side-note">BASED IN CHINA<br />BUILDING BETWEEN DISCIPLINES</p></div>
-        <div class="about-content">
-          <h2 id="about-title">把仍在生长的好奇心，<br />做成<em>可以抵达的世界。</em></h2>
+        <div class="about-panel">
+          <h2 id="about-title">把仍在生长的好奇心，做成<em>可以抵达的世界。</em></h2>
           <p>你好，我是 ZheSphere，一名硬件工程师，也持续在软件、设计与 AI 的交界处创造。Orbitvo 不是一份履历，而是我的工作、思考与下一次试验留下的坐标。</p>
-          <div class="coordinate-list" id="coordinates" aria-label="个人创造方向">
-            {coordinates.map(([index, title, description]) => <div><span>{index}</span><b>{title}</b><p>{description}</p><i aria-hidden="true">↗</i></div>)}
+          <div class="about-actions">
+            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+              去博客看看
+              <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
+            </a>
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
+              GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            </a>
           </div>
         </div>
       </section>
 
       <section class="journal section shell" aria-labelledby="journal-title">
-        <p class="eyebrow"><span aria-hidden="true"></span> Journal</p>
-        <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer"><span>CONTINUE EXPLORING</span><h2 id="journal-title">沿着真实的记录，继续探索。</h2><i aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></i></a>
+        <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+          <span>CONTINUE EXPLORING</span>
+          <h2 id="journal-title">沿着真实的记录，继续探索。</h2>
+          <i aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></i>
+        </a>
       </section>
     </main>
 
     <footer class="site-footer shell">
       <p>有一些新的信号？</p>
-      <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">去博客看看。<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+      <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+        去博客看看。<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+      </a>
       <div class="footer-meta">
-        <span>© {publishedYear} ZHESPHERE</span><span>用电路、代码、光线与好奇心制作</span>
-        <p><a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a><a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a><a href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS</a><a href="#top">Top ↑</a></p>
+        <span>© {publishedYear} ZHESPHERE</span>
+        <span>用电路、代码、光线与好奇心制作</span>
+        <p>
+          <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
+          <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
+          <a href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS</a>
+          <a href="#top">Top ↑</a>
+        </p>
       </div>
     </footer>
 
@@ -169,19 +266,21 @@ const structuredData = {
       const root = document.documentElement;
       const toggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
       const themeColor = document.querySelector<HTMLMetaElement>("#theme-color");
-      const currentTheme = () => root.dataset.theme === "dark" ? "dark" : "light";
+      const currentTheme = () => (root.dataset.theme === "dark" ? "dark" : "light");
       function updateToggle() {
         if (!toggle) return;
         const dark = currentTheme() === "dark";
         const label = dark ? "切换至浅色模式" : "切换至深色模式";
         toggle.setAttribute("aria-label", label);
         toggle.title = label;
-        themeColor?.setAttribute("content", dark ? "#111722" : "#fbfcfe");
+        themeColor?.setAttribute("content", dark ? "#0c121c" : "#f4f7fc");
       }
       toggle?.addEventListener("click", () => {
         const nextTheme = currentTheme() === "dark" ? "light" : "dark";
         root.dataset.theme = nextTheme;
-        try { localStorage.setItem("orbitvo-theme", nextTheme); } catch {}
+        try {
+          localStorage.setItem("orbitvo-theme", nextTheme);
+        } catch {}
         updateToggle();
       });
       updateToggle();

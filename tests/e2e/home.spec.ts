@@ -22,12 +22,13 @@ test("uses the existing feed for three real article cards", async ({ page }) => 
   await expect(page.getByRole("link", { name: "RSS", exact: true })).toHaveAttribute("href", "https://blog.orbitvo.com/rss.xml");
 });
 
-test("forms one editorial journey without invented portfolio content", async ({ page }) => {
+test("forms a create matrix and journey without invented portfolio content", async ({ page }) => {
   await page.goto("/");
 
+  await expect(page.getByRole("heading", { name: "正在推进的创造。" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /把仍在生长的好奇心/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "沿着真实的记录，继续探索。" })).toBeVisible();
-  await expect(page.locator(".coordinate-list > div")).toHaveCount(4);
+  await expect(page.locator(".create-card")).toHaveCount(4);
   await expect(page.getByText("Mori", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Orbit OS", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Field Notes", { exact: true })).toHaveCount(0);
@@ -69,7 +70,7 @@ test("keeps the mobile introduction readable and the hero art composed", async (
   expect(title!.x + title!.width).toBeLessThanOrEqual(360);
 });
 
-test("keeps the wide layout editorial rather than stretching without limit", async ({ page }) => {
+test("keeps the wide layout contained rather than stretching without limit", async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto("/");
 
@@ -78,7 +79,7 @@ test("keeps the wide layout editorial rather than stretching without limit", asy
   const cards = await page.locator(".article-grid").boundingBox();
   for (const box of [header, hero, cards]) {
     expect(box).not.toBeNull();
-    expect(box!.width).toBeLessThanOrEqual(1181);
+    expect(box!.width).toBeLessThanOrEqual(1121);
     expect(box!.x).toBeGreaterThan(300);
   }
   await expect(page.locator(".article-grid")).toHaveCSS("grid-template-columns", /.+ .+ .+/);
@@ -93,7 +94,7 @@ test("switches theme accessibly and persists the choice", async ({ page }) => {
   await expect(page.getByRole("button", { name: "切换至浅色模式" })).toBeVisible();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#111722");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#0c121c");
 });
 
 test("provides a visible keyboard route through the primary controls", async ({ page }) => {
@@ -103,7 +104,7 @@ test("provides a visible keyboard route through the primary controls", async ({ 
   const navVisible = await page.locator(".nav-links").isVisible();
   if (navVisible) {
     await page.keyboard.press("Tab");
-    await expect(page.getByRole("link", { name: "文章", exact: true })).toBeFocused();
+    await expect(page.getByRole("link", { name: "创造", exact: true })).toBeFocused();
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
   }
