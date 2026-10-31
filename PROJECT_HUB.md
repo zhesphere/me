@@ -11,9 +11,9 @@
 | 主域名 | `https://orbitvo.com` |
 | 发布链路 | GitHub `main` -> Vercel -> `orbitvo.com` |
 | 内容入口 | 博客 `blog.orbitvo.com`、GitHub `zhesphere`、关于我 |
-| 当前阶段 | CTA 清理进行中 |
-| 当前任务 | `TASK-014` 活动中 |
-| 当前基线 | Quiet Lumen + 短文案；备份标签 `visual-baseline-pre-redesign-20261031` |
+| 当前阶段 | Quiet Lumen + CTA 收口已上线，进入稳定维护 |
+| 当前任务 | 无活动实施任务；`TASK-014` 已归档 |
+| 当前基线 | Quiet Lumen + 短文案 + 单次页末博客收口；备份标签 `visual-baseline-pre-redesign-20261031` |
 
 ## 2. 模型调度规则
 
@@ -90,7 +90,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 | P7 Impeccable 重设计 | 已完成 | 备份后换视觉世界观；zhheo 结构原则 + 博客气质 | `TASK-011` 已上线并取得完整生产证据 |
 | P8 Folded Transit 首屏 | 已完成 | 航图替换星芒；重写主张与分区标题 | `TASK-012` 已上线并取得完整生产证据 |
 | P9 Quiet Lumen 首屏 | 已完成 | 静光雕塑 + 短文案，提升首访优雅感 | `TASK-013` 已上线并取得完整生产证据 |
-| P10 CTA 清理收口 | 进行中 | 去掉底部重复去博客；页末只收口一次 | `TASK-014` 活动中 |
+| P10 CTA 清理收口 | 已完成 | 去掉底部重复去博客；页末只收口一次 | `TASK-014` 已上线并取得完整生产证据 |
 
 规则：任意时刻只允许一个 `tasks/active/` 实施任务；上一任务达到出口条件后，才从本中枢生成下一任务。计划不是完成证据，构建、自动化测试、浏览器视觉检查和线上验证分别记录。
 
@@ -107,7 +107,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 - `README.md`：项目入口。
 - `PROJECT_HUB.md`：唯一控制中枢。
 - `DEPLOYMENT.md`：发布与回滚操作手册。
-- `tasks/active/TASK-014-cta-cleanup.md`：当前唯一活动任务。
+- `tasks/active/`：当前没有实施任务；下一项修改由中枢按需分发。
 - `PRODUCT.md` / `DESIGN.md`：Impeccable 产品与视觉权威。
 - `src/`、`tests/` 与工程配置：当前产品和验收基线。
 
@@ -121,6 +121,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 - `tasks/archive/TASK-011-impeccable-redesign.md`：Luminous Orbit Portal 重设计与生产验证证据。
 - `tasks/archive/TASK-012-folded-transit-hero.md`：Folded Transit 首屏与文案刷新证据。
 - `tasks/archive/TASK-013-quiet-lumen.md`：Quiet Lumen 静光雕塑与短文案证据。
+- `tasks/archive/TASK-014-cta-cleanup.md`：主页 CTA 清理与页末收口证据。
 - 旧深色宇宙 UI：远程标签 `backup/pre-new-ui-2026-10-16`，另有项目外源码压缩包及 SHA-256 校验文件。
 
 ## 7. 中枢分发协议
@@ -135,13 +136,13 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 
 最近完成：`TASK-011 / Impeccable 视觉重设计`。备份旧编辑感 UI 后切换至 Luminous Orbit Portal：磨砂顶栏、精选创造矩阵、发光星芒、博客桥接手感统一；参照 zhheo 结构原则但不克隆其皮肤。
 
-最近完成：`TASK-013 / Quiet Lumen`。航图改为无字静光雕塑；主张改为「好奇，做成东西。」；全站文案大幅缩短。
+最近完成：`TASK-014 / CTA 清理收口`。删除关于区「去博客」与 journal 横幅；页末只保留一次「阅读博客」。
 
 ## 8. 最近一次发布
 
 - 日期：2026-10-31
-- 产品提交：`7de1b82f33e0bdd9b549c30356cc36c8aee97f56`（Quiet Lumen）。
-- 生产域名：`https://orbitvo.com` 返回 HTTP 200；HTML 含新主张与 `lumen-sculpture`，无 `transit-chart` / `FEED SOURCE`。
-- 本地验收：Astro check 0 错误；9 项单测、生产构建和 40 项 E2E 全部通过。
+- 产品提交：`937eec7855ee8d74034d6b0bede414cc9cf525f0`（CTA 清理）。
+- 生产域名：`https://orbitvo.com` 返回 HTTP 200；HTML 含 `footer-blog` 与两处「阅读博客」，无 `journal` /「去博客」。
+- 本地验收：Astro check 0 错误；9 项单测、生产构建和 44 项 E2E 全部通过。
 - 回滚：`visual-baseline-pre-redesign-20261031` 与 `docs/archive/visual-baseline-20261031/`。
-- 长期基线：Quiet Lumen 为今后唯一维护版本。
+- 长期基线：Quiet Lumen + 单次页末博客收口。
