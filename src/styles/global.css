@@ -630,7 +630,7 @@ em {
 .back-to-top {
   position: fixed;
   right: max(18px, calc((100vw - var(--content)) / 2 - 8px));
-  bottom: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom, 0px) + 24px);
   z-index: 45;
   display: grid;
   width: 48px;
@@ -664,7 +664,7 @@ em {
   .nav-menu-toggle { display: none !important; }
 }
 
-.site-footer { padding: 72px 0 34px; }
+.site-footer { padding: 72px 0 88px; }
 .footer-blog {
   display: flex;
   width: fit-content;
@@ -770,7 +770,7 @@ em {
   .nav-links a:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
   .back-to-top {
     right: 16px;
-    bottom: 18px;
+    bottom: max(20px, env(safe-area-inset-bottom, 0px) + 20px);
   }
   .hero {
     min-height: auto;

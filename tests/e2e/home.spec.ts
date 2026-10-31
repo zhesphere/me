@@ -142,6 +142,15 @@ test("reveals back-to-top after deep scroll and returns to the top", async ({ pa
   await expect.poll(async () => page.evaluate(() => window.scrollY)).toBeLessThan(8);
 });
 
+test("hides back-to-top at the footer so it does not cover links", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect(page.locator(".back-to-top")).not.toHaveClass(/is-visible/);
+  await expect(page.getByRole("link", { name: "Top", exact: true })).toBeVisible();
+});
+
 test("opens mobile page navigation to the creates section", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/");

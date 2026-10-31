@@ -254,7 +254,10 @@ const structuredData = {
 
       function updateBackToTop() {
         if (!backToTop) return;
-        const show = window.scrollY > window.innerHeight * 1.5;
+        const scrolled = window.scrollY > window.innerHeight * 1.5;
+        const nearBottom =
+          window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 140;
+        const show = scrolled && !nearBottom;
         backToTop.classList.toggle("is-visible", show);
         backToTop.setAttribute("aria-hidden", String(!show));
         backToTop.tabIndex = show ? 0 : -1;
