@@ -193,30 +193,20 @@ const structuredData = {
           <h2 id="about-title">ZheSphere。硬件工程师。</h2>
           <p>也写软件，做设计，试 AI。</p>
           <div class="about-actions">
-            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-              去博客
-              <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
-            </a>
             <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
               GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            </a>
+            <a class="secondary-link" href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">
+              RSS <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
             </a>
           </div>
         </div>
       </section>
-
-      <section class="journal section shell" aria-labelledby="journal-title">
-        <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-          <span>BLOG</span>
-          <h2 id="journal-title">去博客</h2>
-          <i aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></i>
-        </a>
-      </section>
     </main>
 
     <footer class="site-footer shell">
-      <p>继续读</p>
       <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-        去博客<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+        阅读博客<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
       </a>
       <div class="footer-meta">
         <span>© {publishedYear} ZHESPHERE</span>

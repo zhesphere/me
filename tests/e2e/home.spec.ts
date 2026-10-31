@@ -7,7 +7,7 @@ test("keeps the identity, statement, and real destinations clear", async ({ page
   await expect(page.getByRole("heading", { name: "ORBITVO", exact: true })).toBeVisible();
   await expect(page.getByText("好奇，做成东西。", { exact: true })).toBeVisible();
   await expect(page.getByText("硬件 · 软件 · AI · 设计", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveAttribute("href", "https://blog.orbitvo.com/");
+  await expect(page.locator(".hero .primary-link")).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.getByRole("link", { name: /GitHub/ }).first()).toHaveAttribute("href", "https://github.com/zhesphere");
   await expect(page.locator('a[href="#"], a[href^="mailto:"]')).toHaveCount(0);
 });
@@ -20,7 +20,7 @@ test("uses the existing feed for three real article cards", async ({ page }) => 
   const articleLinks = await page.locator(".article-card").evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
   expect(articleLinks.every((href) => href.startsWith("https://blog.orbitvo.com/"))).toBe(true);
   await expect(page.locator(".feed-source")).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "RSS", exact: true })).toHaveAttribute("href", "https://blog.orbitvo.com/rss.xml");
+  await expect(page.locator(".footer-meta a[href='https://blog.orbitvo.com/rss.xml']")).toHaveCount(1);
 });
 
 test("forms a create matrix and journey without invented portfolio content", async ({ page }) => {
@@ -28,13 +28,25 @@ test("forms a create matrix and journey without invented portfolio content", asy
 
   await expect(page.getByRole("heading", { name: "创造", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "ZheSphere。硬件工程师。" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "去博客", exact: true })).toBeVisible();
+  await expect(page.locator(".journal")).toHaveCount(0);
+  await expect(page.locator(".about-actions a[href='https://blog.orbitvo.com/']")).toHaveCount(0);
+  await expect(page.locator(".footer-blog")).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.locator(".create-card")).toHaveCount(4);
   await expect(page.locator(".transit-chart")).toHaveCount(0);
   await expect(page.locator(".star-sculpture")).toHaveCount(0);
   await expect(page.getByText("Mori", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Orbit OS", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Field Notes", { exact: true })).toHaveCount(0);
+});
+
+test("keeps blog CTAs to a clear hierarchy without bottom stacking", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveCount(2);
+  await expect(page.locator(".hero .primary-link")).toHaveAttribute("href", "https://blog.orbitvo.com/");
+  await expect(page.locator(".section-link")).toHaveAttribute("href", "https://blog.orbitvo.com/");
+  await expect(page.locator(".footer-blog")).toBeVisible();
+  await expect(page.getByText("去博客", { exact: true })).toHaveCount(0);
 });
 
 test("keeps every target viewport free of horizontal overflow", async ({ page }) => {
@@ -122,7 +134,7 @@ test("keeps touch targets at least 44px where controls are compact", async ({ pa
   for (const locator of [
     page.getByRole("button", { name: /切换至/ }),
     page.getByRole("link", { name: "Blog", exact: true }).first(),
-    page.getByRole("link", { name: /阅读博客/ }),
+    page.locator(".hero .primary-link"),
     page.getByRole("link", { name: /GitHub/ }).first()
   ]) {
     const box = await locator.boundingBox();

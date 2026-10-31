@@ -11,9 +11,9 @@
 | 主域名 | `https://orbitvo.com` |
 | 发布链路 | GitHub `main` -> Vercel -> `orbitvo.com` |
 | 内容入口 | 博客 `blog.orbitvo.com`、GitHub `zhesphere`、关于我 |
-| 当前阶段 | Quiet Lumen 已上线，进入稳定维护 |
-| 当前任务 | 无活动实施任务；`TASK-013` 已归档 |
-| 当前基线 | 静光雕塑主视觉 + 短文案；备份标签 `visual-baseline-pre-redesign-20261031` |
+| 当前阶段 | CTA 清理进行中 |
+| 当前任务 | `TASK-014` 活动中 |
+| 当前基线 | Quiet Lumen + 短文案；备份标签 `visual-baseline-pre-redesign-20261031` |
 
 ## 2. 模型调度规则
 
@@ -90,6 +90,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 | P7 Impeccable 重设计 | 已完成 | 备份后换视觉世界观；zhheo 结构原则 + 博客气质 | `TASK-011` 已上线并取得完整生产证据 |
 | P8 Folded Transit 首屏 | 已完成 | 航图替换星芒；重写主张与分区标题 | `TASK-012` 已上线并取得完整生产证据 |
 | P9 Quiet Lumen 首屏 | 已完成 | 静光雕塑 + 短文案，提升首访优雅感 | `TASK-013` 已上线并取得完整生产证据 |
+| P10 CTA 清理收口 | 进行中 | 去掉底部重复去博客；页末只收口一次 | `TASK-014` 活动中 |
 
 规则：任意时刻只允许一个 `tasks/active/` 实施任务；上一任务达到出口条件后，才从本中枢生成下一任务。计划不是完成证据，构建、自动化测试、浏览器视觉检查和线上验证分别记录。
 
@@ -106,7 +107,7 @@ Orbitvo 不是履历页，也不是 SaaS 落地页，而是 ZheSphere 的个人�
 - `README.md`：项目入口。
 - `PROJECT_HUB.md`：唯一控制中枢。
 - `DEPLOYMENT.md`：发布与回滚操作手册。
-- `tasks/active/`：当前没有实施任务；下一项修改由中枢按需分发。
+- `tasks/active/TASK-014-cta-cleanup.md`：当前唯一活动任务。
 - `PRODUCT.md` / `DESIGN.md`：Impeccable 产品与视觉权威。
 - `src/`、`tests/` 与工程配置：当前产品和验收基线。
 

@@ -437,7 +437,7 @@ em {
 }
 .create-card {
   display: grid;
-  min-height: 220px;
+  min-height: 180px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -445,7 +445,7 @@ em {
   backdrop-filter: blur(12px);
   box-shadow: 0 14px 36px rgba(24, 48, 90, 0.06);
   transition: transform 0.28s var(--ease), border-color 0.28s ease, box-shadow 0.28s ease;
-  grid-template-rows: 110px 1fr;
+  grid-template-rows: 84px 1fr;
 }
 .create-card:hover {
   transform: translateY(-4px);
@@ -606,55 +606,7 @@ em {
   margin-top: 28px;
 }
 
-.journal {
-  padding-top: 48px;
-  padding-bottom: 24px;
-}
-.journal > a {
-  display: grid;
-  min-height: 108px;
-  align-items: center;
-  padding: 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  backdrop-filter: blur(12px);
-  transition: border-color 0.25s ease, transform 0.25s var(--ease);
-  grid-template-columns: 190px 1fr auto;
-}
-.journal > a:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
-}
-.journal > a > span {
-  color: var(--quiet);
-  font: 600 12px/1.5 var(--font-mono);
-  letter-spacing: 0.1em;
-}
-.journal h2 {
-  margin: 0;
-  font: 400 clamp(23px, 2.2vw, 30px)/1.35 var(--font-serif);
-}
-.journal i {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--ice);
-  color: var(--accent-deep);
-  font-style: normal;
-  transition: transform 0.25s var(--ease);
-}
-.journal a:hover i { transform: translate(3px, -3px); }
-.journal i svg { width: 18px; }
-
 .site-footer { padding: 72px 0 34px; }
-.site-footer > p {
-  margin: 0 0 10px;
-  color: var(--muted);
-  font-size: 14px;
-}
 .footer-blog {
   display: flex;
   width: fit-content;
@@ -745,11 +697,6 @@ em {
   .create-grid { grid-template-columns: 1fr; }
   .article-grid { grid-template-columns: 1fr; gap: 36px; }
   .article-visual { height: 320px; }
-  .journal > a {
-    grid-template-columns: 1fr auto;
-    gap: 14px;
-  }
-  .journal > a > span { grid-column: 1 / -1; }
   .footer-meta {
     grid-template-columns: 1fr auto;
     gap: 15px;
@@ -801,8 +748,6 @@ em {
   .about-panel { padding: 26px 20px; }
   .about-panel h2 { font-size: 28px; }
   .about-panel > p { font-size: 15px; line-height: 1.85; }
-  .journal > a { min-height: 120px; }
-  .journal h2 { font-size: 22px; }
   .site-footer { padding-top: 56px; }
   .footer-blog { font-size: clamp(36px, 12vw, 52px); }
   .footer-meta {
