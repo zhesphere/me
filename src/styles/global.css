@@ -646,12 +646,19 @@ em {
   opacity: 0;
   pointer-events: none;
   transform: translateY(8px);
-  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), border-color 0.2s ease;
+  transition:
+    opacity 0.25s var(--ease),
+    transform 0.25s var(--ease),
+    bottom 0.25s var(--ease),
+    border-color 0.2s ease;
 }
 .back-to-top.is-visible {
   opacity: 1;
   pointer-events: auto;
   transform: none;
+}
+.back-to-top.is-visible.is-raised {
+  bottom: max(88px, env(safe-area-inset-bottom, 0px) + 88px);
 }
 .back-to-top:hover { border-color: var(--accent); }
 .back-to-top svg {
@@ -685,6 +692,7 @@ em {
   display: grid;
   margin-top: 72px;
   padding-top: 22px;
+  padding-right: 64px;
   border-top: 1px solid var(--line);
   color: var(--quiet);
   font: 600 12px/1.5 var(--font-mono);
@@ -771,6 +779,9 @@ em {
   .back-to-top {
     right: 16px;
     bottom: max(20px, env(safe-area-inset-bottom, 0px) + 20px);
+  }
+  .back-to-top.is-visible.is-raised {
+    bottom: max(96px, env(safe-area-inset-bottom, 0px) + 96px);
   }
   .hero {
     min-height: auto;
