@@ -310,7 +310,7 @@ em {
 .hero-art {
   position: relative;
   display: grid;
-  height: 520px;
+  height: 480px;
   place-items: center;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -325,11 +325,16 @@ em {
 }
 .lumen-sculpture {
   position: relative;
-  width: min(380px, 88%);
+  width: min(100%, 96%);
   overflow: visible;
   animation: lumen-float 9s ease-in-out infinite;
 }
 .lumen-glow { opacity: 0.9; animation: lumen-breathe 6.5s ease-in-out infinite; }
+.lumen-core-disc {
+  stroke: color-mix(in srgb, #fff 40%, var(--accent));
+  stroke-width: 0.8;
+  animation: lumen-breathe 7s ease-in-out infinite;
+}
 .lumen-arc {
   fill: none;
   stroke: color-mix(in srgb, var(--accent) 42%, transparent);
@@ -350,11 +355,6 @@ em {
   stroke-width: 1.6;
   animation: lumen-breathe 5.5s ease-in-out infinite;
 }
-.lumen-plane {
-  stroke: color-mix(in srgb, #fff 45%, var(--accent));
-  stroke-width: 0.8;
-  animation: lumen-breathe 7s ease-in-out infinite;
-}
 .lumen-dot {
   fill: var(--accent-deep);
   opacity: 0.85;
@@ -371,9 +371,9 @@ em {
 [data-theme="dark"] .lumen-arc-b {
   stroke: color-mix(in srgb, var(--accent-deep) 48%, transparent);
 }
-[data-theme="dark"] .lumen-plane {
-  fill: color-mix(in srgb, var(--accent) 18%, transparent);
-  stroke: color-mix(in srgb, var(--accent-deep) 40%, transparent);
+[data-theme="dark"] .lumen-core-disc {
+  fill: color-mix(in srgb, var(--accent) 22%, transparent);
+  stroke: color-mix(in srgb, var(--accent-deep) 45%, transparent);
 }
 .explore-cue {
   position: absolute;
@@ -789,8 +789,8 @@ em {
     grid-template-columns: 1fr;
   }
   .hero h1 { font-size: clamp(58px, 12vw, 84px); }
-  .hero-art { height: 400px; }
-  .lumen-sculpture { width: min(340px, 86%); }
+  .hero-art { height: 380px; }
+  .lumen-sculpture { width: min(100%, 96%); }
   .explore-cue { display: none; }
   .create-grid { grid-template-columns: 1fr; }
   .article-grid { grid-template-columns: 1fr; gap: 36px; }
@@ -828,10 +828,10 @@ em {
     line-height: 1.6;
   }
   .hero-art {
-    height: 340px;
+    height: 320px;
     border-radius: 20px;
   }
-  .lumen-sculpture { width: min(300px, 90%); }
+  .lumen-sculpture { width: min(100%, 96%); }
   .section { padding-block: 68px; }
   .section-heading {
     align-items: start;
