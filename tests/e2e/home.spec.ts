@@ -142,24 +142,24 @@ test("reveals back-to-top after deep scroll and returns to the top", async ({ pa
   await expect.poll(async () => page.evaluate(() => window.scrollY)).toBeLessThan(8);
 });
 
-test("keeps back-to-top usable at the footer without covering Top", async ({ page }) => {
+test("keeps a single back-to-top control usable at the footer", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
 
+  await expect(page.getByRole("link", { name: "Top", exact: true })).toHaveCount(0);
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   const button = page.locator(".back-to-top");
-  const topLink = page.getByRole("link", { name: "Top", exact: true });
   await expect(button).toHaveClass(/is-visible/);
   await expect(button).toHaveClass(/is-raised/);
   const buttonBox = await button.boundingBox();
-  const topBox = await topLink.boundingBox();
+  const rssBox = await page.locator(".footer-meta a[href='https://blog.orbitvo.com/rss.xml']").boundingBox();
   expect(buttonBox).not.toBeNull();
-  expect(topBox).not.toBeNull();
+  expect(rssBox).not.toBeNull();
   const overlap =
-    buttonBox!.x < topBox!.x + topBox!.width &&
-    buttonBox!.x + buttonBox!.width > topBox!.x &&
-    buttonBox!.y < topBox!.y + topBox!.height &&
-    buttonBox!.y + buttonBox!.height > topBox!.y;
+    buttonBox!.x < rssBox!.x + rssBox!.width &&
+    buttonBox!.x + buttonBox!.width > rssBox!.x &&
+    buttonBox!.y < rssBox!.y + rssBox!.height &&
+    buttonBox!.y + buttonBox!.height > rssBox!.y;
   expect(overlap).toBe(false);
   await button.click();
   await expect.poll(async () => page.evaluate(() => window.scrollY)).toBeLessThan(8);

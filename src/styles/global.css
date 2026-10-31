@@ -692,7 +692,7 @@ em {
   display: grid;
   margin-top: 72px;
   padding-top: 22px;
-  padding-right: 64px;
+  padding-right: 72px;
   border-top: 1px solid var(--line);
   color: var(--quiet);
   font: 600 12px/1.5 var(--font-mono);
