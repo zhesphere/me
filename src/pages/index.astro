@@ -6,7 +6,7 @@ import "../styles/global.css";
 const configErrors = validateSiteConfig(siteConfig);
 if (configErrors.length) throw new Error(`Invalid site configuration: ${configErrors.join(", ")}`);
 
-const { items: feedItems, source: blogSource } = await getBlogItems(siteConfig.blogFeedUrl);
+const { items: feedItems } = await getBlogItems(siteConfig.blogFeedUrl);
 const blogItems = feedItems.slice(0, 3);
 const publishedYear = new Date().getFullYear();
 const formatDate = (value: string) => {
@@ -15,30 +15,10 @@ const formatDate = (value: string) => {
   return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 };
 const creates = [
-  {
-    key: "hardware",
-    title: "硬件系统",
-    description: "让想法拥有可触摸的起点，把电路与结构做成可验证的原型。",
-    hint: "Hardware"
-  },
-  {
-    key: "software",
-    title: "软件构建",
-    description: "把复杂世界整理成清晰体验，用代码收束流程与界面。",
-    hint: "Software"
-  },
-  {
-    key: "ai",
-    title: "AI 探索",
-    description: "与新的工具共同试探边界，记录可用的方法与失败。",
-    hint: "AI"
-  },
-  {
-    key: "design",
-    title: "产品设计",
-    description: "让技术带着情绪自然抵达，重视手感、节奏与可读性。",
-    hint: "Design"
-  }
+  { key: "hardware", title: "硬件系统", description: "可验证的原型", hint: "Hardware" },
+  { key: "software", title: "软件构建", description: "清晰的体验", hint: "Software" },
+  { key: "ai", title: "AI 探索", description: "可用的方法", hint: "AI" },
+  { key: "design", title: "产品设计", description: "手感与节奏", hint: "Design" }
 ];
 const structuredData = {
   "@context": "https://schema.org",
@@ -113,10 +93,10 @@ const structuredData = {
     <main id="top">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="hero-identity">ZheSphere · Personal Universe</p>
+          <p class="hero-identity">ZheSphere</p>
           <h1 id="hero-title">ORBITVO</h1>
-          <p class="hero-statement">把未成形的好奇，做成能抵达的东西。</p>
-          <p class="hero-lede">硬件、软件、AI 与设计交界处的工作笔记——真实试验，不编造履历。</p>
+          <p class="hero-statement">好奇，做成东西。</p>
+          <p class="hero-lede">硬件 · 软件 · AI · 设计</p>
           <div class="hero-actions">
             <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
               阅读博客
@@ -128,57 +108,38 @@ const structuredData = {
           </div>
         </div>
 
-        <div class="hero-art" aria-label="折纸航图：硬件、软件、AI 与设计四条航线">
-          <svg class="transit-chart" viewBox="0 0 440 440" role="img" aria-label="Folded Transit 航图面板">
+        <div class="hero-art" aria-label="静光雕塑">
+          <svg class="lumen-sculpture" viewBox="0 0 440 440" role="img" aria-label="Quiet Lumen 光影装置">
             <defs>
-              <linearGradient id="fold-a" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#9ec4f5" stop-opacity="0.55" />
-                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0.12" />
+              <radialGradient id="lumen-core" cx="48%" cy="42%" r="42%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                <stop offset="45%" stop-color="#b7d4f8" stop-opacity="0.55" />
+                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0" />
+              </radialGradient>
+              <linearGradient id="lumen-plane" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d7e8fb" stop-opacity="0.55" />
+                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0.08" />
               </linearGradient>
-              <linearGradient id="fold-b" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#c9ddf8" stop-opacity="0.5" />
-                <stop offset="100%" stop-color="#2459b5" stop-opacity="0.1" />
-              </linearGradient>
-              <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              <filter id="lumen-soft" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="8" />
               </filter>
             </defs>
-            <rect class="chart-plate" x="28" y="36" width="384" height="368" rx="28" />
-            <path class="fold-plane fold-1" d="M48 70 220 110 220 300 48 250Z" fill="url(#fold-a)" />
-            <path class="fold-plane fold-2" d="M220 110 392 78 392 250 220 300Z" fill="url(#fold-b)" />
-            <path class="fold-plane fold-3" d="M48 250 220 300 220 380 72 348Z" fill="url(#fold-b)" opacity="0.7" />
-            <path class="fold-plane fold-4" d="M220 300 392 250 368 360 220 380Z" fill="url(#fold-a)" opacity="0.65" />
-            <path class="fold-crease" d="M220 110V380M48 250 392 250" />
-            <path class="transit-path" pathLength="1" d="M96 168C150 140 190 190 220 220C255 255 300 210 344 188" />
-            <path class="transit-path transit-path-b" pathLength="1" d="M110 300C160 270 190 290 220 300C260 312 310 290 340 270" />
-            <g class="transit-nodes" filter="url(#node-glow)">
-              <g class="transit-node node-hw" transform="translate(96 168)">
-                <circle r="9" /><circle class="node-ring" r="16" /><text y="36">硬件</text>
-              </g>
-              <g class="transit-node node-sw" transform="translate(220 220)">
-                <circle r="10" /><circle class="node-ring" r="18" /><text y="38">软件</text>
-              </g>
-              <g class="transit-node node-ai" transform="translate(344 188)">
-                <circle r="9" /><circle class="node-ring" r="16" /><text y="36">AI</text>
-              </g>
-              <g class="transit-node node-ds" transform="translate(220 300)">
-                <circle r="9" /><circle class="node-ring" r="16" /><text y="36">设计</text>
-              </g>
-            </g>
-            <text class="chart-caption" x="52" y="58">TRANSIT / 01</text>
-            <text class="chart-caption chart-caption-end" x="388" y="386">UNFORMED → ARRIVAL</text>
+            <ellipse class="lumen-glow" cx="220" cy="220" rx="168" ry="168" fill="url(#lumen-core)" filter="url(#lumen-soft)" />
+            <ellipse class="lumen-arc lumen-arc-a" cx="220" cy="220" rx="150" ry="92" />
+            <ellipse class="lumen-arc lumen-arc-b" cx="220" cy="220" rx="118" ry="158" />
+            <ellipse class="lumen-arc lumen-arc-c" cx="220" cy="220" rx="78" ry="78" />
+            <path class="lumen-plane" d="M132 248C168 204 196 176 220 164C248 150 292 168 318 214C338 250 328 292 286 310C244 328 176 304 132 248Z" fill="url(#lumen-plane)" />
+            <circle class="lumen-dot" cx="286" cy="168" r="5" />
+            <circle class="lumen-dot lumen-dot-soft" cx="156" cy="278" r="3.5" />
           </svg>
-          <p class="art-note"><span>FOLDED TRANSIT</span><strong>Hardware · Software · AI · Design</strong></p>
         </div>
-        <a class="explore-cue" href="#creates">继续探索 <span aria-hidden="true"></span></a>
+        <a class="explore-cue" href="#creates">向下 <span aria-hidden="true"></span></a>
       </section>
 
       <section class="creates section shell" id="creates" aria-labelledby="creates-title">
         <header class="section-heading">
           <div>
-            <h2 id="creates-title">四条仍在飞的航线。</h2>
-            <p class="section-lede">不是履历墙——是下一步试验还在推进的四个方向。</p>
+            <h2 id="creates-title">创造</h2>
           </div>
         </header>
         <div class="create-grid" id="coordinates" aria-label="个人创造方向">
@@ -200,11 +161,10 @@ const structuredData = {
       <section class="writing section shell" id="writing" aria-labelledby="writing-title">
         <header class="section-heading">
           <div>
-            <h2 id="writing-title">刚写下的信号。</h2>
-            <p class="section-lede">来自博客的最新记录，标题优先，日期退居其次。</p>
+            <h2 id="writing-title">文章</h2>
           </div>
           <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-            查看全部文章 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            全部 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
           </a>
         </header>
 
@@ -216,32 +176,25 @@ const structuredData = {
                 <span class="article-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
                 <span class="article-orbit orbit-a" aria-hidden="true"></span>
                 <span class="article-orbit orbit-b" aria-hidden="true"></span>
-                <div class="article-signal" aria-hidden="true">
-                  <small>SIGNAL</small>
-                  <b>{article.title.slice(0, 18)}</b>
-                  <i></i>
-                </div>
               </div>
               <div class="article-copy">
                 <div>
                   <h3>{article.title}</h3>
-                  {article.summary && <p>{article.summary}</p>}
                 </div>
                 <time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
               </div>
             </a>
           ))}
         </div>
-        <p class="feed-source">FEED SOURCE / {blogSource.toUpperCase()}</p>
       </section>
 
       <section class="about section shell" id="about" aria-labelledby="about-title">
         <div class="about-panel">
-          <h2 id="about-title">你好，我是 ZheSphere——在交界处把好奇<em>做成东西。</em></h2>
-          <p>硬件工程师，也写软件、做设计、试 AI。Orbitvo 收集真实工作与试验留下的坐标，不是一份包装过的履历。</p>
+          <h2 id="about-title">ZheSphere。硬件工程师。</h2>
+          <p>也写软件，做设计，试 AI。</p>
           <div class="about-actions">
             <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-              去博客看看
+              去博客
               <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
             </a>
             <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
@@ -253,21 +206,21 @@ const structuredData = {
 
       <section class="journal section shell" aria-labelledby="journal-title">
         <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-          <span>CONTINUE EXPLORING</span>
-          <h2 id="journal-title">下一站，在博客里。</h2>
+          <span>BLOG</span>
+          <h2 id="journal-title">去博客</h2>
           <i aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></i>
         </a>
       </section>
     </main>
 
     <footer class="site-footer shell">
-      <p>有一些新的信号？</p>
+      <p>继续读</p>
       <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-        去博客看看。<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+        去博客<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
       </a>
       <div class="footer-meta">
         <span>© {publishedYear} ZHESPHERE</span>
-        <span>用电路、代码、光线与好奇心制作</span>
+        <span>电路 · 代码 · 光线</span>
         <p>
           <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
           <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>

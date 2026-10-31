@@ -5,7 +5,8 @@ test("keeps the identity, statement, and real destinations clear", async ({ page
 
   await expect(page.getByRole("link", { name: "返回 Orbitvo 首页顶部" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "ORBITVO", exact: true })).toBeVisible();
-  await expect(page.getByText("把未成形的好奇，做成能抵达的东西。", { exact: true })).toBeVisible();
+  await expect(page.getByText("好奇，做成东西。", { exact: true })).toBeVisible();
+  await expect(page.getByText("硬件 · 软件 · AI · 设计", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.getByRole("link", { name: /GitHub/ }).first()).toHaveAttribute("href", "https://github.com/zhesphere");
   await expect(page.locator('a[href="#"], a[href^="mailto:"]')).toHaveCount(0);
@@ -14,21 +15,22 @@ test("keeps the identity, statement, and real destinations clear", async ({ page
 test("uses the existing feed for three real article cards", async ({ page }) => {
   await page.goto("/#writing");
 
-  await expect(page.getByRole("heading", { name: "刚写下的信号。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "文章", exact: true })).toBeVisible();
   await expect(page.locator(".article-card")).toHaveCount(3);
   const articleLinks = await page.locator(".article-card").evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
   expect(articleLinks.every((href) => href.startsWith("https://blog.orbitvo.com/"))).toBe(true);
-  await expect(page.locator(".feed-source")).toContainText(/FEED SOURCE \/ (FEED|FALLBACK)/);
+  await expect(page.locator(".feed-source")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "RSS", exact: true })).toHaveAttribute("href", "https://blog.orbitvo.com/rss.xml");
 });
 
 test("forms a create matrix and journey without invented portfolio content", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "四条仍在飞的航线。" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /你好，我是 ZheSphere/ })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "下一站，在博客里。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "创造", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ZheSphere。硬件工程师。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "去博客", exact: true })).toBeVisible();
   await expect(page.locator(".create-card")).toHaveCount(4);
+  await expect(page.locator(".transit-chart")).toHaveCount(0);
   await expect(page.locator(".star-sculpture")).toHaveCount(0);
   await expect(page.getByText("Mori", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Orbit OS", { exact: true })).toHaveCount(0);
@@ -50,21 +52,21 @@ test("keeps every target viewport free of horizontal overflow", async ({ page })
   }
 });
 
-test("keeps the mobile introduction readable and the transit chart composed", async ({ page }) => {
+test("keeps the mobile introduction readable and the lumen sculpture composed", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/");
 
-  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "15px");
+  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "12px");
   await expect(page.locator(".hero h1")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".article-visual").first()).toHaveCSS("border-radius", "14px");
   const hero = await page.locator(".hero").boundingBox();
   const art = await page.locator(".hero-art").boundingBox();
-  const chart = await page.locator(".transit-chart").boundingBox();
+  const sculpture = await page.locator(".lumen-sculpture").boundingBox();
   expect(hero).not.toBeNull();
   expect(art).not.toBeNull();
-  expect(chart).not.toBeNull();
-  expect(chart!.x).toBeGreaterThanOrEqual(0);
-  expect(chart!.x + chart!.width).toBeLessThanOrEqual(360);
+  expect(sculpture).not.toBeNull();
+  expect(sculpture!.x).toBeGreaterThanOrEqual(0);
+  expect(sculpture!.x + sculpture!.width).toBeLessThanOrEqual(360);
   expect(art!.y).toBeGreaterThan(hero!.y);
   const title = await page.locator(".hero h1").boundingBox();
   expect(title).not.toBeNull();
@@ -129,11 +131,11 @@ test("keeps touch targets at least 44px where controls are compact", async ({ pa
   }
 });
 
-test("honors reduced motion without hiding the transit chart", async ({ page }) => {
+test("honors reduced motion without hiding the lumen sculpture", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
 
-  await expect(page.locator(".transit-chart")).toBeVisible();
-  await expect(page.locator(".transit-chart")).toHaveCSS("animation-iteration-count", "1");
-  await expect(page.locator(".transit-path").first()).toHaveCSS("animation-iteration-count", "1");
+  await expect(page.locator(".lumen-sculpture")).toBeVisible();
+  await expect(page.locator(".lumen-sculpture")).toHaveCSS("animation-iteration-count", "1");
+  await expect(page.locator(".lumen-arc-a")).toHaveCSS("animation-iteration-count", "1");
 });

@@ -25,8 +25,8 @@ export interface SiteConfig {
 export const siteConfig = {
   name: "ZheSphere",
   displayName: "ZHESPHERE",
-  tagline: "把未成形的好奇，做成能抵达的东西。",
-  description: "ZheSphere 的个人入口：硬件、软件、AI 与设计交界处的工作笔记。",
+  tagline: "好奇，做成东西。",
+  description: "ZheSphere 的个人入口。硬件 · 软件 · AI · 设计。",
   siteUrl: "https://orbitvo.com",
   blogUrl: "https://blog.orbitvo.com/",
   blogFeedUrl: "https://blog.orbitvo.com/rss.xml",

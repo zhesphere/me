@@ -29,15 +29,16 @@ Orbitvo（orbitvo.com）是 ZheSphere 的个人宇宙入口：把硬件、软件
 
 - 首页：品牌首屏、主题切换、页内导航、最新文章（最多 3 篇）、创造方向、博客 CTA、页脚链接
 - 必须保留：品牌名 ORBITVO / ZheSphere、博客主行动、GitHub 次行动、真实 RSS 内容
-- 主张句与分区标题可迭代；当前主张：「把未成形的好奇，做成能抵达的东西。」
+- 主张句与分区标题可迭代；当前主张：「好奇，做成东西。」
+- 文案原则：短、清、可读；去掉自我辩解与技术味装饰文案
 - 不做：虚构项目名/指标、移植第三方博客主题素材、托管商/DNS 变更
-- 视觉世界观：**Folded Transit**（折纸航图主视觉，不再使用幸运星雕塑）
+- 视觉世界观：**Quiet Lumen**（静光雕塑主视觉）
 
 ## Brand Commitments
 
 - 名称：Orbitvo / ORBITVO / ZheSphere
-- 主张：把未成形的好奇，做成能抵达的东西。
-- 气质锚点：贴近 blog.orbitvo.com；结构参照 zhheo.com 原则而非皮肤
+- 主张：好奇，做成东西。
+- 气质锚点：安静、精致、有艺术感；结构参照 zhheo.com 原则而非皮肤
 - 视觉备份：`docs/archive/visual-baseline-20261031/` 与 git tag `visual-baseline-pre-redesign-20261031`
 
 ## Evidence on Hand
