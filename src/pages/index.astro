@@ -115,8 +115,8 @@ const structuredData = {
         <div class="hero-copy">
           <p class="hero-identity">ZheSphere · Personal Universe</p>
           <h1 id="hero-title">ORBITVO</h1>
-          <p class="hero-statement">技术与想象，在此交汇。</p>
-          <p class="hero-lede">这里是 ZheSphere 的个人入口。记录硬件、软件、创造过程，以及仍在路上的好奇心。</p>
+          <p class="hero-statement">把未成形的好奇，做成能抵达的东西。</p>
+          <p class="hero-lede">硬件、软件、AI 与设计交界处的工作笔记——真实试验，不编造履历。</p>
           <div class="hero-actions">
             <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
               阅读博客
@@ -128,33 +128,48 @@ const structuredData = {
           </div>
         </div>
 
-        <div class="hero-art" aria-label="象征方向、好奇心与创造的轨道星芒">
-          <span class="orbit orbit-one" aria-hidden="true"></span>
-          <span class="orbit orbit-two" aria-hidden="true"></span>
-          <span class="orbiting-star star-a" aria-hidden="true">✦</span>
-          <span class="orbiting-star star-b" aria-hidden="true">✧</span>
-          <span class="orbiting-dot" aria-hidden="true"></span>
-          <svg class="star-sculpture" viewBox="0 0 440 440" role="img" aria-label="立体轨道幸运星">
+        <div class="hero-art" aria-label="折纸航图：硬件、软件、AI 与设计四条航线">
+          <svg class="transit-chart" viewBox="0 0 440 440" role="img" aria-label="Folded Transit 航图面板">
             <defs>
-              <path id="star-shape" d="M212 62Q220 35 228 62l24 105q3 14 17 8l101-19q27-5 9 17l-94 69q-12 8-3 20l48 101q11 26-14 11l-87-72q-9-8-18 0l-87 72q-25 15-14-11l48-101q9-12-3-20l-94-69q-18-22 9-17l101 19q14 6 17-8Z" />
-              <clipPath id="star-clip"><use href="#star-shape" /></clipPath>
-              <radialGradient id="star-glow"><stop offset="0" stop-color="#7daeea" stop-opacity=".34" /><stop offset="1" stop-color="#7daeea" stop-opacity="0" /></radialGradient>
+              <linearGradient id="fold-a" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#9ec4f5" stop-opacity="0.55" />
+                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0.12" />
+              </linearGradient>
+              <linearGradient id="fold-b" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c9ddf8" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#2459b5" stop-opacity="0.1" />
+              </linearGradient>
+              <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
             </defs>
-            <circle class="star-halo" cx="220" cy="220" r="205" fill="url(#star-glow)" />
-            <g class="star-body">
-              <use href="#star-shape" class="puffy-star" />
-              <g clip-path="url(#star-clip)">
-                <path class="puffy-facet top" d="M220 225 188 178 220 38 252 178Z" />
-                <path class="puffy-facet right" d="m220 225 32-47 148-28-118 112Z" />
-                <path class="puffy-facet lower-right" d="m220 225 62 37 62 126-124-86Z" />
-                <path class="puffy-facet lower-left" d="m220 225v77l-124 86 62-126Z" />
-                <path class="puffy-facet left" d="m220 225-62 37L40 150l148 28Z" />
-                <ellipse class="star-soft-light" cx="186" cy="160" rx="75" ry="105" transform="rotate(-32 186 160)" />
+            <rect class="chart-plate" x="28" y="36" width="384" height="368" rx="28" />
+            <path class="fold-plane fold-1" d="M48 70 220 110 220 300 48 250Z" fill="url(#fold-a)" />
+            <path class="fold-plane fold-2" d="M220 110 392 78 392 250 220 300Z" fill="url(#fold-b)" />
+            <path class="fold-plane fold-3" d="M48 250 220 300 220 380 72 348Z" fill="url(#fold-b)" opacity="0.7" />
+            <path class="fold-plane fold-4" d="M220 300 392 250 368 360 220 380Z" fill="url(#fold-a)" opacity="0.65" />
+            <path class="fold-crease" d="M220 110V380M48 250 392 250" />
+            <path class="transit-path" pathLength="1" d="M96 168C150 140 190 190 220 220C255 255 300 210 344 188" />
+            <path class="transit-path transit-path-b" pathLength="1" d="M110 300C160 270 190 290 220 300C260 312 310 290 340 270" />
+            <g class="transit-nodes" filter="url(#node-glow)">
+              <g class="transit-node node-hw" transform="translate(96 168)">
+                <circle r="9" /><circle class="node-ring" r="16" /><text y="36">硬件</text>
               </g>
-              <path class="star-fold" d="m220 225 32-47M220 225l62 37M220 225v77M220 225l-62 37M220 225l-32-47" />
+              <g class="transit-node node-sw" transform="translate(220 220)">
+                <circle r="10" /><circle class="node-ring" r="18" /><text y="38">软件</text>
+              </g>
+              <g class="transit-node node-ai" transform="translate(344 188)">
+                <circle r="9" /><circle class="node-ring" r="16" /><text y="36">AI</text>
+              </g>
+              <g class="transit-node node-ds" transform="translate(220 300)">
+                <circle r="9" /><circle class="node-ring" r="16" /><text y="36">设计</text>
+              </g>
             </g>
+            <text class="chart-caption" x="52" y="58">TRANSIT / 01</text>
+            <text class="chart-caption chart-caption-end" x="388" y="386">UNFORMED → ARRIVAL</text>
           </svg>
-          <p class="art-note"><span>ORBITAL STAR</span><strong>Direction · Curiosity · Creation</strong></p>
+          <p class="art-note"><span>FOLDED TRANSIT</span><strong>Hardware · Software · AI · Design</strong></p>
         </div>
         <a class="explore-cue" href="#creates">继续探索 <span aria-hidden="true"></span></a>
       </section>
@@ -162,8 +177,8 @@ const structuredData = {
       <section class="creates section shell" id="creates" aria-labelledby="creates-title">
         <header class="section-heading">
           <div>
-            <h2 id="creates-title">正在推进的创造。</h2>
-            <p class="section-lede">四条真实方向，像精选作品一样并列呈现——不是履历墙，是下一步试验的坐标。</p>
+            <h2 id="creates-title">四条仍在飞的航线。</h2>
+            <p class="section-lede">不是履历墙——是下一步试验还在推进的四个方向。</p>
           </div>
         </header>
         <div class="create-grid" id="coordinates" aria-label="个人创造方向">
@@ -185,8 +200,8 @@ const structuredData = {
       <section class="writing section shell" id="writing" aria-labelledby="writing-title">
         <header class="section-heading">
           <div>
-            <h2 id="writing-title">正在抵达的思考。</h2>
-            <p class="section-lede">来自博客的最新信号，标题优先，日期退居其次。</p>
+            <h2 id="writing-title">刚写下的信号。</h2>
+            <p class="section-lede">来自博客的最新记录，标题优先，日期退居其次。</p>
           </div>
           <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
             查看全部文章 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
@@ -222,8 +237,8 @@ const structuredData = {
 
       <section class="about section shell" id="about" aria-labelledby="about-title">
         <div class="about-panel">
-          <h2 id="about-title">把仍在生长的好奇心，做成<em>可以抵达的世界。</em></h2>
-          <p>你好，我是 ZheSphere，一名硬件工程师，也持续在软件、设计与 AI 的交界处创造。Orbitvo 不是一份履历，而是我的工作、思考与下一次试验留下的坐标。</p>
+          <h2 id="about-title">你好，我是 ZheSphere——在交界处把好奇<em>做成东西。</em></h2>
+          <p>硬件工程师，也写软件、做设计、试 AI。Orbitvo 收集真实工作与试验留下的坐标，不是一份包装过的履历。</p>
           <div class="about-actions">
             <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
               去博客看看
@@ -239,7 +254,7 @@ const structuredData = {
       <section class="journal section shell" aria-labelledby="journal-title">
         <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
           <span>CONTINUE EXPLORING</span>
-          <h2 id="journal-title">沿着真实的记录，继续探索。</h2>
+          <h2 id="journal-title">下一站，在博客里。</h2>
           <i aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></i>
         </a>
       </section>
