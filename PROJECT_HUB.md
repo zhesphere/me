@@ -11,7 +11,7 @@
 | 主域名 | `https://orbitvo.com` |
 | 发布链路 | GitHub `main` -> Vercel -> `orbitvo.com` |
 | 内容入口 | 博客 `blog.orbitvo.com`、GitHub `zhesphere`、关于我 |
-| 当前阶段 | Constellation UI 已上线；星图志 `/chart` 次级页接入中 |
+| 当前阶段 | Constellation UI 已上线；星图志 `/chart` 已接入生产 |
 | 当前任务 | 无活动实施任务；迁移备份见 `backups/pre-constellation-migrate-20261102-1700/` |
 | 当前基线 | Constellation + RSS + CTA + `/chart` 星图志轻入口；旧 Quiet Lumen 在上述备份目录 |
 
