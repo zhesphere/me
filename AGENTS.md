@@ -1,7 +1,7 @@
 # Orbitvo project instructions
 
-- Before substantial work, read `PROJECT_HUB.md` and, when present, the single file in `tasks/active/`.
-- Treat the live repository and `PROJECT_HUB.md` as authoritative. Files under `docs/archive/` and `tasks/archive/` are history only.
+- Before substantial work, read `PROJECT_HUB.md` and, when present, the single file in `history/tasks/active/`.
+- Treat the live repository and `PROJECT_HUB.md` as authoritative. Files under `history/` (including `history/docs/archive/` and `history/tasks/archive/`) are history only.
 - Keep at most one active implementation task. Do not begin a later phase before the current task meets its exit criteria.
 - Default model for this project: `GPT-5.6 Terra` with `medium` reasoning.
 - Escalate only for architecture or recovery work, difficult non-reproducible failures, security/privacy audits, or final high-risk release acceptance. Record the reason and return to Terra Medium afterward.

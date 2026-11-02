@@ -4,5 +4,5 @@
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true
   },
-  "exclude": ["dist", "个人网站设计"]
+  "exclude": ["dist", "history/个人网站设计"]
 }

@@ -21,11 +21,11 @@
 
 ### `02-demo-f-constellation/`
 **是什么**：迁移所用的 F Constellation demo（critique 修订后的最新版）。  
-**来源路径**：`demos/card-f-constellation/index.html`  
+**来源路径**：`history/demos/card-f-constellation/index.html`  
 **包含**：
 - `index.html` — 单文件 demo（HTML + CSS + 星座脚本）
 
-**说明**：`demos/card-f-constellation-backup-20261102/` 是更早一次 critique 前的备份；本目录是**迁移开始瞬间**的 demo 副本，以本目录为准。
+**说明**：`history/demos/card-f-constellation-backup-20261102/` 是更早一次 critique 前的备份；本目录是**迁移开始瞬间**的 demo 副本，以本目录为准。
 
 ## 不在本备份内（迁移中故意保留、不替换）
 - `src/lib/blog.ts` / `blog-fallback.json` / `site.ts` 的运行逻辑会继续留在主仓并沿用

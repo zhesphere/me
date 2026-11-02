@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>星图志 · Orbitvo Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --paper: #060a12;
+      --ink: #eef3fb;
+      --muted: #a9b6cb;
+      --gold: #ffcf6e;
+      --gold2: #e0a84a;
+      --line: rgba(255, 207, 110, 0.18);
+      --panel: rgba(10, 16, 28, 0.78);
+      --blue: #8fb7f2;
+      --glow: rgba(255, 207, 110, 0.28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Manrope, "PingFang SC", sans-serif;
+      background:
+        radial-gradient(ellipse 70% 50% at 18% 0%, rgba(54, 92, 160, 0.18), transparent 62%),
+        radial-gradient(ellipse 50% 40% at 92% 12%, rgba(255, 207, 110, 0.05), transparent 58%),
+        var(--paper);
+    }
+    ::selection { background: rgba(255, 207, 110, 0.28); color: var(--ink); }
+    a { color: inherit; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 20px 0 72px; }
+
+    .demo-note {
+      display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: baseline;
+      margin: 0 0 18px; padding: 10px 14px;
+      border: 1px dashed rgba(255, 207, 110, 0.35);
+      border-radius: 14px;
+      background: rgba(255, 207, 110, 0.05);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .demo-note strong { color: var(--gold); font-weight: 700; }
+    .demo-note code { color: var(--gold); font: 600 12px/1.4 ui-monospace, monospace; }
+
+    header.top {
+      display: flex; align-items: center; gap: 18px;
+      margin-bottom: 18px;
+    }
+    .brand {
+      display: inline-flex; align-items: center; gap: 10px;
+      flex: none;
+      text-decoration: none; color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 600; letter-spacing: -0.02em;
+    }
+    .brand svg { width: 18px; height: 18px; }
+    .brand span { opacity: 0.55; font-weight: 500; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .switcher {
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0; flex: 1;
+    }
+    .nav-btn {
+      appearance: none;
+      flex: none;
+      width: 36px; height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(10, 16, 28, 0.65);
+      color: var(--gold);
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .nav-btn:hover { border-color: rgba(255, 207, 110, 0.5); background: rgba(255, 207, 110, 0.08); }
+    .nav-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .nav-btn svg { width: 14px; height: 14px; }
+
+    .chip-rail {
+      display: flex; gap: 6px;
+      min-width: 0; flex: 1;
+      overflow-x: auto;
+      padding: 4px 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 207, 110, 0.35) transparent;
+    }
+    .chip {
+      appearance: none;
+      flex: none;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: transparent;
+      color: var(--muted);
+      font: 600 12px/1 Manrope, "PingFang SC", sans-serif;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .chip:hover { color: var(--ink); border-color: var(--line); }
+    .chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .chip[aria-pressed="true"] {
+      color: var(--paper);
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .switch-index {
+      flex: none;
+      color: var(--muted);
+      font: 600 11px/1 ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      min-width: 4.5em;
+      text-align: right;
+    }
+
+    .page-intro {
+      display: flex;
+      align-items: baseline;
+      gap: 16px 28px;
+      flex-wrap: wrap;
+      margin: 0 0 12px;
+      padding-bottom: 4px;
+    }
+    .page-intro h1 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .page-intro .lede {
+      margin: 0;
+      max-width: 42em;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .page-intro .lede em {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: 1.12em;
+      color: var(--ink);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      gap: 24px 40px;
+      align-items: center;
+      margin-bottom: 44px;
+    }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      header.top { flex-wrap: wrap; }
+      .switch-index { display: none; }
+    }
+
+    .stage {
+      position: relative;
+      height: 380px;
+      display: grid;
+      place-items: center;
+      overflow: visible;
+      padding: 12px 0;
+    }
+    .main-chart {
+      position: relative;
+      width: min(100%, 420px);
+      height: min(100%, 340px);
+      overflow: visible;
+    }
+    @media (max-width: 860px) {
+      .stage { height: 280px; }
+    }
+    .main-chart .ambient { pointer-events: none; }
+    .main-chart .line { fill: none; stroke: rgba(255, 207, 110, 0.55); stroke-width: 1.4; }
+    .main-chart .line.bright { stroke: var(--gold); stroke-width: 2.1; }
+    .main-chart .line.soft { stroke: rgba(255, 207, 110, 0.22); stroke-width: 1; }
+    .main-chart .node { fill: #eef3fb; }
+    .main-chart .node.gold,
+    .main-chart .focus { fill: var(--gold); }
+    .main-chart .focus-halo {
+      fill: none; stroke: rgba(255, 207, 110, 0.35); stroke-width: 1.2;
+    }
+
+    .detail-panel {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 28px 0 8px 28px;
+      border-left: 1px solid var(--line);
+    }
+    @media (max-width: 860px) {
+      .detail-panel {
+        border-left: 0;
+        border-top: 1px solid var(--line);
+        padding: 20px 0 0;
+      }
+      .stage { order: -1; }
+    }
+    .detail-label {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font: 700 10px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .meta-name {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      height: 2.4em;
+      overflow: hidden;
+    }
+    .meta-line {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      height: 1.5em;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .meta-coords {
+      margin: 0 0 16px;
+      color: var(--gold);
+      font: 600 11px/1.55 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      height: 1.55em;
+    }
+    .meta-blurb {
+      margin: 0;
+      max-width: 34em;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.7;
+      opacity: 0.92;
+      height: 5.1em;
+      overflow: hidden;
+    }
+    .role-slot {
+      margin-top: 16px;
+      min-height: 30px;
+    }
+    .role-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--gold);
+      font: 600 11px/1.4 ui-monospace, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .role-pill.is-empty {
+      visibility: hidden;
+      border-color: transparent;
+    }
+
+    .section-head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+      margin: 0 0 16px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+    .section-head p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .atlas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 10px;
+    }
+    .tile {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      padding: 12px 10px 14px;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+    .tile:hover {
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .tile:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+    .tile[aria-pressed="true"] {
+      border-color: rgba(255, 207, 110, 0.45);
+      background: rgba(255, 207, 110, 0.06);
+    }
+    .tile svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1.1;
+      margin-bottom: 10px;
+    }
+    .tile svg .line { fill: none; stroke: rgba(255, 207, 110, 0.45); stroke-width: 1.6; }
+    .tile svg .line.bright { stroke: var(--gold); stroke-width: 2.2; }
+    .tile svg .line.soft { stroke: rgba(255, 207, 110, 0.18); stroke-width: 1.2; }
+    .tile svg .node { fill: #dfe7f4; }
+    .tile svg .node.gold, .tile svg .focus { fill: var(--gold); }
+    .tile svg .focus-halo { fill: none; stroke: rgba(255, 207, 110, 0.28); stroke-width: 1.4; }
+    .tile .zh {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .tile .en {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font: 600 10px/1.3 ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .placement {
+      margin-top: 56px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+    }
+    .placement h2 {
+      margin: 0 0 10px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .placement ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .placement li {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      padding-left: 14px;
+      border-left: 1px solid rgba(255, 207, 110, 0.35);
+    }
+    .placement li b { color: var(--ink); font-weight: 600; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tile { transition: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="demo-note">
+      <strong>示例 · 不进生产</strong>
+      <span>独立星图志页：介绍首页用到的全部星座，不改首页叙事。若落地，建议做成轻入口（页脚 / 星图旁文字链），路由如 <code>/chart</code>。</span>
+    </p>
+
+    <header class="top">
+      <a class="brand" href="../">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <path d="M6 41 L32 6 L58 41 L32 30 Z" fill="#ffcf6e"/>
+          <path d="M20 47 L32 38 L44 47 L32 56 Z" fill="#e0a84a"/>
+        </svg>
+        orbitvo <span>Chart Atlas</span>
+      </a>
+      <div class="switcher" aria-label="切换星座">
+        <button type="button" class="nav-btn" id="prev-btn" aria-label="上一座">
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 2.5 4.5 7 9 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="chip-rail" id="chip-rail" role="listbox" aria-label="星座快捷切换"></div>
+        <button type="button" class="nav-btn" id="next-btn" aria-label="下一座">
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 2.5 9.5 7 5 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="switch-index" id="switch-index">01 / 16</span>
+      </div>
+    </header>
+
+    <div class="page-intro">
+      <h1 id="atlas-title">星图志</h1>
+      <p class="lede">首页「今夜星座」从这片星表里抽一颗。这里把它们摊开——<em>只讲星座，不抢主张。</em></p>
+    </div>
+
+    <section class="hero" aria-labelledby="meta-name">
+      <div class="stage" id="stage">
+        <svg class="main-chart" id="main-chart" viewBox="0 0 300 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      </div>
+      <aside class="detail-panel" id="detail" aria-live="polite">
+        <p class="detail-label">Tonight’s pick · 当前</p>
+        <h2 class="meta-name" id="meta-name">—</h2>
+        <p class="meta-line" id="meta-line"></p>
+        <p class="meta-coords" id="meta-coords"></p>
+        <p class="meta-blurb" id="meta-blurb"></p>
+        <div class="role-slot">
+          <span class="role-pill is-empty" id="meta-role"></span>
+        </div>
+      </aside>
+    </section>
+
+    <div class="section-head">
+      <h2>全部星座</h2>
+      <p>点选查看 · 与首页同源数据</p>
+    </div>
+    <div class="atlas" id="atlas" role="listbox" aria-label="星座列表"></div>
+
+    <section class="placement" aria-labelledby="place-title">
+      <h2 id="place-title">若接入主站，建议这样放</h2>
+      <ul>
+        <li><b>独立页</b>：<code>/chart</code> 或 <code>/atlas</code>，页脚加「星图志」文字链，首页结构不动。</li>
+        <li><b>星图旁轻链</b>：英雄区「今夜星座」旁加「全部星座 →」，跳到本页，不展开长列表。</li>
+        <li><b>不要</b>：塞进首屏、创造矩阵或文章区——那些仍是主张与作品。</li>
+      </ul>
+    </section>
+  </div>
+
+  <script type="module">
+    const NOTES = {
+      orion: {
+        blurb: "冬夜最醒目的猎人。腰带三星几乎人人能认；站点里它对应硬件与可验证的原型。",
+        role: "创造 · 硬件",
+      },
+      cassiopeia: {
+        blurb: "北天的 W / M，绕极常年可见。这里借它标记 AI 探索：可用的方法，而不是空话。",
+        role: "创造 · AI",
+      },
+      "ursa-major": {
+        blurb: "北斗七星是文章区 SIGNAL 点亮的原型——勺口指向北极，信号指向最近书写。",
+        role: "文章 · 北斗",
+      },
+      cygnus: {
+        blurb: "北十字横过银河。天鹅展翼，对应软件构建：清晰体验与开源坐标。",
+        role: "创造 · 软件",
+      },
+      lyra: {
+        blurb: "织女星所在的小琴。夏夜与牵牛遥望，提醒工作也有节奏与留白。",
+        role: null,
+      },
+      scorpius: {
+        blurb: "心宿二发红，蝎尾勾向南天。形状长而戏剧，适合作为「换一颗」里的强剪影。",
+        role: null,
+      },
+      leo: {
+        blurb: "春夜的镰刀与狮身。亮星不多，轮廓却稳，像一次把复杂收成一条线的设计。",
+        role: null,
+      },
+      crux: {
+        blurb: "南十字——关于页的水印坐标。北半球少见，却标出「你从哪里出发」。",
+        role: "关于 · 原点",
+      },
+      pegasus: {
+        blurb: "飞马大方四星，秋季导航的门槛。大而空，留给想象去补翅膀。",
+        role: null,
+      },
+      taurus: {
+        blurb: "毕宿五与昴星团。金牛低头，像把材料压进可交付的形状。",
+        role: null,
+      },
+      corona: {
+        blurb: "北冕的半圈金冠。站点里它落在产品设计：手感、节奏与工具链。",
+        role: "创造 · 设计",
+      },
+      aquila: {
+        blurb: "牵牛星所在的天鹰。与天琴隔河相对，是夏夜最熟的一对坐标。",
+        role: null,
+      },
+      gemini: {
+        blurb: "北河二与北河三并立。双子提醒并行：硬件与软件、试验与交付。",
+        role: null,
+      },
+      "canis-major": {
+        blurb: "天狼——全天最亮的恒星。大犬跟在猎人脚边，像紧贴主线的那一束光。",
+        role: null,
+      },
+      delphinus: {
+        blurb: "小菱形海豚，紧凑可爱。小星座也能把天空读成一句短句。",
+        role: null,
+      },
+      bootes: {
+        blurb: "大角星橙黄醒目，牧夫像把北斗的勺柄延长。指向清晰，适合收束一晚。",
+        role: null,
+      },
+    };
+
+    const res = await fetch("./constellations.json");
+    const CONSTELLATIONS = await res.json();
+
+    function starClass(role) {
+      if (role === "gold") return "node gold";
+      if (role === "focus") return "focus";
+      return "node";
+    }
+
+    function starBounds(c) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      let sx = 0, sy = 0;
+      c.stars.forEach(([x, y]) => {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+        sx += x;
+        sy += y;
+      });
+      return {
+        minX, minY, maxX, maxY,
+        bw: Math.max(1, maxX - minX),
+        bh: Math.max(1, maxY - minY),
+        cx: sx / c.stars.length,
+        cy: sy / c.stars.length,
+        midX: (minX + maxX) / 2,
+        midY: (minY + maxY) / 2,
+      };
+    }
+
+    // Square auto-frame: every chart is optically centered with consistent fill,
+    // and circular glows stay circular on screen.
+    function framedViewBox(c, { pad = 0.28, balance = 1.04 } = {}) {
+      const b = starBounds(c);
+      const side = Math.max(b.bw, b.bh) * (1 + pad * 2) * balance;
+      const x = b.midX - side / 2;
+      const y = b.midY - side / 2;
+      return { viewBox: `${x} ${y} ${side} ${side}`, bounds: b, x, y, w: side, h: side };
+    }
+
+    function chartMarkup(c, { halo = true, ambient = false, frame = null } = {}) {
+      const parts = [];
+      const f = frame || framedViewBox(c);
+      const { bounds: b, x: vx, y: vy, w: vw, h: vh } = f;
+      // Soft circular wash, always inside the frame and centered on the star cluster.
+      const fit = Math.min(b.midX - vx, vx + vw - b.midX, b.midY - vy, vy + vh - b.midY) * 0.92;
+      const span = Math.hypot(b.bw, b.bh) * 0.42;
+      const r = Math.min(Math.max(span, 36), fit);
+
+      if (ambient) {
+        const gid = `glow-${c.id}`;
+        parts.push(`
+          <defs>
+            <radialGradient id="${gid}" gradientUnits="userSpaceOnUse" cx="${b.midX}" cy="${b.midY}" r="${r}">
+              <stop offset="0%" stop-color="#ffcf6e" stop-opacity="0.28"/>
+              <stop offset="48%" stop-color="#e0a84a" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#ffcf6e" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle class="ambient" cx="${b.midX}" cy="${b.midY}" r="${r}" fill="url(#${gid})"/>
+        `);
+      }
+
+      const drawPoly = (idxs, cls) => {
+        const pts = idxs.map((i) => c.stars[i]).filter(Boolean);
+        if (pts.length < 2) return;
+        const d = pts.map((p, i) => `${i ? "L" : "M"}${p[0]} ${p[1]}`).join(" ");
+        parts.push(`<path class="${cls}" d="${d}"/>`);
+      };
+      (c.soft || []).forEach((seg) => drawPoly(seg, "line soft"));
+      (c.lines || []).forEach((seg) => {
+        const bright = seg[seg.length - 1] === "bright";
+        const idxs = bright ? seg.slice(0, -1) : seg;
+        drawPoly(idxs, bright ? "line bright" : "line");
+      });
+      c.stars.forEach((s) => {
+        const [x, y, r, role] = s;
+        if (halo && role === "gold") {
+          parts.push(`<circle class="focus-halo" cx="${x}" cy="${y}" r="${r * 1.9}"/>`);
+        }
+        parts.push(`<circle class="${starClass(role)}" cx="${x}" cy="${y}" r="${r}"/>`);
+      });
+      return parts.join("");
+    }
+
+    const atlas = document.getElementById("atlas");
+    const chipRail = document.getElementById("chip-rail");
+    const main = document.getElementById("main-chart");
+    const nameEl = document.getElementById("meta-name");
+    const lineEl = document.getElementById("meta-line");
+    const coordsEl = document.getElementById("meta-coords");
+    const blurbEl = document.getElementById("meta-blurb");
+    const roleEl = document.getElementById("meta-role");
+    const indexEl = document.getElementById("switch-index");
+    let activeId = null;
+
+    function shortZh(c) {
+      return c.zh.split("·")[0].trim().replace(/座$/, "");
+    }
+
+    function select(id) {
+      const idx = CONSTELLATIONS.findIndex((x) => x.id === id);
+      const c = CONSTELLATIONS[idx];
+      if (!c) return;
+      activeId = id;
+      const frame = framedViewBox(c, { pad: 0.3, balance: 1.04 });
+      main.setAttribute("viewBox", frame.viewBox);
+      main.innerHTML = chartMarkup(c, { ambient: true, frame });
+      nameEl.textContent = `${c.zh} · ${c.en}`;
+      lineEl.textContent = c.line;
+      coordsEl.textContent = `RA ${c.ra} · DEC ${c.dec}`;
+      const note = NOTES[c.id] || { blurb: c.line, role: null };
+      blurbEl.textContent = note.blurb;
+      if (note.role) {
+        roleEl.textContent = note.role;
+        roleEl.classList.remove("is-empty");
+      } else {
+        roleEl.textContent = "—";
+        roleEl.classList.add("is-empty");
+      }
+      if (indexEl) {
+        indexEl.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(CONSTELLATIONS.length).padStart(2, "0")}`;
+      }
+      atlas.querySelectorAll(".tile").forEach((btn) => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.id === id));
+      });
+      const activeChip = chipRail.querySelector(`.chip[data-id="${id}"]`);
+      chipRail.querySelectorAll(".chip").forEach((chip) => {
+        chip.setAttribute("aria-pressed", String(chip === activeChip));
+      });
+      if (activeChip) {
+        const rail = chipRail.getBoundingClientRect();
+        const chipBox = activeChip.getBoundingClientRect();
+        if (chipBox.left < rail.left || chipBox.right > rail.right) {
+          chipRail.scrollLeft += chipBox.left - rail.left - (rail.width - chipBox.width) / 2;
+        }
+      }
+    }
+
+    function step(delta) {
+      const idx = CONSTELLATIONS.findIndex((x) => x.id === activeId);
+      const next = (idx + delta + CONSTELLATIONS.length) % CONSTELLATIONS.length;
+      select(CONSTELLATIONS[next].id);
+    }
+
+    CONSTELLATIONS.forEach((c) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.dataset.id = c.id;
+      chip.setAttribute("role", "option");
+      chip.setAttribute("aria-pressed", "false");
+      chip.textContent = shortZh(c);
+      chip.title = `${c.zh} · ${c.en}`;
+      chip.addEventListener("click", () => select(c.id));
+      chipRail.appendChild(chip);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tile";
+      btn.dataset.id = c.id;
+      btn.setAttribute("role", "option");
+      btn.setAttribute("aria-pressed", "false");
+      const tileFrame = framedViewBox(c, { pad: 0.32, balance: 1.02 });
+      btn.innerHTML = `
+        <svg viewBox="${tileFrame.viewBox}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${chartMarkup(c, { halo: false, frame: tileFrame })}</svg>
+        <span class="zh">${c.zh.split("·")[0].trim()}</span>
+        <span class="en">${c.en}</span>
+      `;
+      btn.addEventListener("click", () => select(c.id));
+      atlas.appendChild(btn);
+    });
+
+    document.getElementById("prev-btn")?.addEventListener("click", () => step(-1));
+    document.getElementById("next-btn")?.addEventListener("click", () => step(1));
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "ArrowRight") step(1);
+    });
+
+    const start = CONSTELLATIONS.find((c) => c.id === "corona") || CONSTELLATIONS[0];
+    select(start.id);
+  </script>
+</body>
+</html>

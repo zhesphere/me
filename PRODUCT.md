@@ -40,7 +40,7 @@ Orbitvo（orbitvo.com）是 ZheSphere 的个人宇宙入口：把硬件、软件
 - 名称：Orbitvo / ORBITVO / ZheSphere
 - 主张：好奇，做成东西。
 - 气质锚点：安静、精致、有艺术感；结构参照 zhheo.com 原则而非皮肤
-- 视觉备份：`docs/archive/visual-baseline-20261031/` 与 git tag `visual-baseline-pre-redesign-20261031`
+- 视觉备份：`history/docs/archive/visual-baseline-20261031/` 与 git tag `visual-baseline-pre-redesign-20261031`
 
 ## Evidence on Hand
 
