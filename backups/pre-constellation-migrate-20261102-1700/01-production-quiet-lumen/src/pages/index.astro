@@ -1,0 +1,297 @@
+---
+import { getBlogItems } from "../lib/blog";
+import { siteConfig, validateSiteConfig } from "../data/site";
+import "../styles/global.css";
+
+const configErrors = validateSiteConfig(siteConfig);
+if (configErrors.length) throw new Error(`Invalid site configuration: ${configErrors.join(", ")}`);
+
+const { items: feedItems } = await getBlogItems(siteConfig.blogFeedUrl);
+const blogItems = feedItems.slice(0, 3);
+const publishedYear = new Date().getFullYear();
+const formatDate = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "最近更新";
+  return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+};
+const creates = [
+  { key: "hardware", title: "硬件系统", description: "可验证的原型", hint: "Hardware" },
+  { key: "software", title: "软件构建", description: "清晰的体验", hint: "Software" },
+  { key: "ai", title: "AI 探索", description: "可用的方法", hint: "AI" },
+  { key: "design", title: "产品设计", description: "手感与节奏", hint: "Design" }
+];
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteConfig.name,
+  url: siteConfig.siteUrl,
+  sameAs: siteConfig.socialLinks.map((link) => link.href),
+  description: siteConfig.description
+};
+---
+
+<!doctype html>
+<html lang={siteConfig.locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta id="theme-color" name="theme-color" content="#f4f7fc" />
+    <meta name="description" content={siteConfig.description} />
+    <meta name="author" content={siteConfig.name} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content={`${siteConfig.name} · Personal Universe`} />
+    <meta property="og:description" content={siteConfig.description} />
+    <meta property="og:url" content={siteConfig.siteUrl} />
+    <meta property="og:image" content={`${siteConfig.siteUrl}/og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${siteConfig.name} · Personal Universe`} />
+    <meta name="twitter:description" content={siteConfig.description} />
+    <meta name="twitter:image" content={`${siteConfig.siteUrl}/og.png`} />
+    <link rel="canonical" href={siteConfig.siteUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{siteConfig.name} · Personal Universe</title>
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem("orbitvo-theme");
+        if (savedTheme === "dark") {
+          document.documentElement.dataset.theme = "dark";
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#0c121c");
+        }
+      } catch {}
+    </script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="site-header shell">
+      <a class="brand" href="#top" aria-label="返回 Orbitvo 首页顶部">
+        <span class="brand-mark" aria-hidden="true"></span><span>orbitvo</span>
+      </a>
+      <nav class="nav-links" id="site-nav" aria-label="页内导航">
+        <a href="#creates">创造</a>
+        <a href="#writing">文章</a>
+        <a href="#about">关于</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开页内导航">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h12" /></svg>
+        </button>
+        <button class="theme-toggle" type="button" aria-label="切换至深色模式" title="切换至深色模式">
+          <svg class="theme-icon theme-icon-sun" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4" /><circle cx="10" cy="10" r="3.2" /></svg>
+          <svg class="theme-icon theme-icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.2 12.4A6.6 6.6 0 0 1 7.6 3.8a6.6 6.6 0 1 0 8.6 8.6Z" /></svg>
+        </button>
+        <a class="nav-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero shell" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="hero-identity">ZheSphere</p>
+          <h1 id="hero-title">ORBITVO</h1>
+          <p class="hero-statement">好奇，做成东西。</p>
+          <p class="hero-lede">硬件 · 软件 · AI · 设计</p>
+          <div class="hero-actions">
+            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+              阅读博客
+              <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
+            </a>
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
+              GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-label="静光雕塑">
+          <svg class="lumen-sculpture" viewBox="0 0 440 440" role="img" aria-label="Quiet Lumen 光影装置">
+            <defs>
+              <radialGradient id="lumen-core" cx="50%" cy="46%" r="48%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                <stop offset="42%" stop-color="#b7d4f8" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="lumen-nucleus" cx="50%" cy="48%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+                <stop offset="55%" stop-color="#9ec4f5" stop-opacity="0.45" />
+                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0.05" />
+              </radialGradient>
+              <filter id="lumen-soft" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="8" />
+              </filter>
+            </defs>
+            <ellipse class="lumen-glow" cx="220" cy="220" rx="198" ry="198" fill="url(#lumen-core)" filter="url(#lumen-soft)" />
+            <ellipse class="lumen-arc lumen-arc-a" cx="220" cy="220" rx="198" ry="118" />
+            <ellipse class="lumen-arc lumen-arc-b" cx="220" cy="220" rx="152" ry="198" />
+            <ellipse class="lumen-arc lumen-arc-c" cx="220" cy="220" rx="96" ry="96" />
+            <ellipse class="lumen-core-disc" cx="220" cy="220" rx="42" ry="42" fill="url(#lumen-nucleus)" />
+            <circle class="lumen-dot" cx="318" cy="148" r="5" />
+            <circle class="lumen-dot lumen-dot-soft" cx="132" cy="298" r="3.5" />
+          </svg>
+        </div>
+        <a class="explore-cue" href="#creates">向下 <span aria-hidden="true"></span></a>
+      </section>
+
+      <section class="creates section shell" id="creates" aria-labelledby="creates-title">
+        <header class="section-heading">
+          <div>
+            <h2 id="creates-title">创造</h2>
+          </div>
+        </header>
+        <div class="create-grid" id="coordinates" aria-label="个人创造方向">
+          {creates.map((item) => (
+            <article class={`create-card create-${item.key}`}>
+              <div class="create-visual" aria-hidden="true">
+                <span class="create-glow"></span>
+                <span class="create-hint">{item.hint}</span>
+              </div>
+              <div class="create-copy">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="writing section shell" id="writing" aria-labelledby="writing-title">
+        <header class="section-heading">
+          <div>
+            <h2 id="writing-title">文章</h2>
+          </div>
+          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+            全部 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+          </a>
+        </header>
+
+        <div class="article-grid">
+          {blogItems.map((article, index) => (
+            <a class={`article-card article-tone-${index + 1}`} href={article.href} target="_blank" rel="noreferrer">
+              <div class="article-visual">
+                <span class="article-index">0{index + 1}</span>
+                <span class="article-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
+                <span class="article-orbit orbit-a" aria-hidden="true"></span>
+                <span class="article-orbit orbit-b" aria-hidden="true"></span>
+              </div>
+              <div class="article-copy">
+                <div>
+                  <h3>{article.title}</h3>
+                </div>
+                <time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="about section shell" id="about" aria-labelledby="about-title">
+        <div class="about-panel">
+          <h2 id="about-title">ZheSphere。硬件工程师。</h2>
+          <p>也写软件，做设计，试 AI。</p>
+          <div class="about-actions">
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
+              GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            </a>
+            <a class="secondary-link" href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">
+              RSS <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer shell">
+      <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
+        阅读博客<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
+      </a>
+      <div class="footer-meta">
+        <span>© {publishedYear} ZHESPHERE</span>
+        <span>电路 · 代码 · 光线</span>
+        <p>
+          <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
+          <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
+          <a href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS</a>
+        </p>
+      </div>
+    </footer>
+
+    <button class="back-to-top" type="button" aria-label="回到顶部" aria-hidden="true" tabindex="-1">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V5m0 0 4.5 4.5M10 5 5.5 9.5" /></svg>
+    </button>
+
+    <script>
+      const root = document.documentElement;
+      const toggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
+      const themeColor = document.querySelector<HTMLMetaElement>("#theme-color");
+      const menuToggle = document.querySelector<HTMLButtonElement>(".nav-menu-toggle");
+      const siteNav = document.querySelector<HTMLElement>("#site-nav");
+      const backToTop = document.querySelector<HTMLButtonElement>(".back-to-top");
+      const currentTheme = () => (root.dataset.theme === "dark" ? "dark" : "light");
+      const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function updateToggle() {
+        if (!toggle) return;
+        const dark = currentTheme() === "dark";
+        const label = dark ? "切换至浅色模式" : "切换至深色模式";
+        toggle.setAttribute("aria-label", label);
+        toggle.title = label;
+        themeColor?.setAttribute("content", dark ? "#0c121c" : "#f4f7fc");
+      }
+
+      function setMenuOpen(open: boolean) {
+        root.classList.toggle("nav-open", open);
+        menuToggle?.setAttribute("aria-expanded", String(open));
+        menuToggle?.setAttribute("aria-label", open ? "关闭页内导航" : "打开页内导航");
+      }
+
+      function updateBackToTop() {
+        if (!backToTop) return;
+        const show = window.scrollY > window.innerHeight * 1.5;
+        const nearBottom =
+          window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 160;
+        backToTop.classList.toggle("is-visible", show);
+        backToTop.classList.toggle("is-raised", show && nearBottom);
+        backToTop.setAttribute("aria-hidden", String(!show));
+        backToTop.tabIndex = show ? 0 : -1;
+      }
+
+      toggle?.addEventListener("click", () => {
+        const nextTheme = currentTheme() === "dark" ? "light" : "dark";
+        root.dataset.theme = nextTheme;
+        try {
+          localStorage.setItem("orbitvo-theme", nextTheme);
+        } catch {}
+        updateToggle();
+      });
+
+      menuToggle?.addEventListener("click", () => {
+        setMenuOpen(!root.classList.contains("nav-open"));
+      });
+
+      siteNav?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => setMenuOpen(false));
+      });
+
+      backToTop?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      });
+
+      window.addEventListener("scroll", updateBackToTop, { passive: true });
+      window.addEventListener("resize", () => {
+        if (window.matchMedia("(min-width: 901px)").matches) setMenuOpen(false);
+        updateBackToTop();
+      });
+
+      updateToggle();
+      updateBackToTop();
+    </script>
+  </body>
+</html>

@@ -10,6 +10,7 @@ test("keeps the identity, statement, and real destinations clear", async ({ page
   await expect(page.locator(".hero .primary-link")).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.getByRole("link", { name: /GitHub/ }).first()).toHaveAttribute("href", "https://github.com/zhesphere");
   await expect(page.locator('a[href="#"], a[href^="mailto:"]')).toHaveCount(0);
+  await expect(page.locator(".demo-bar")).toHaveCount(0);
 });
 
 test("uses the existing feed for three real article cards", async ({ page }) => {
@@ -17,7 +18,9 @@ test("uses the existing feed for three real article cards", async ({ page }) => 
 
   await expect(page.getByRole("heading", { name: "文章", exact: true })).toBeVisible();
   await expect(page.locator(".article-card")).toHaveCount(3);
-  const articleLinks = await page.locator(".article-card").evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
+  const articleLinks = await page.locator(".article-card").evaluateAll((links) =>
+    links.map((link) => (link as HTMLAnchorElement).href)
+  );
   expect(articleLinks.every((href) => href.startsWith("https://blog.orbitvo.com/"))).toBe(true);
   await expect(page.locator(".feed-source")).toHaveCount(0);
   await expect(page.locator(".footer-meta a[href='https://blog.orbitvo.com/rss.xml']")).toHaveCount(1);
@@ -34,6 +37,7 @@ test("forms a create matrix and journey without invented portfolio content", asy
   await expect(page.locator(".create-card")).toHaveCount(4);
   await expect(page.locator(".transit-chart")).toHaveCount(0);
   await expect(page.locator(".star-sculpture")).toHaveCount(0);
+  await expect(page.locator(".lumen-sculpture")).toHaveCount(0);
   await expect(page.getByText("Mori", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Orbit OS", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Field Notes", { exact: true })).toHaveCount(0);
@@ -64,21 +68,19 @@ test("keeps every target viewport free of horizontal overflow", async ({ page })
   }
 });
 
-test("keeps the mobile introduction readable and the lumen sculpture composed", async ({ page }) => {
+test("keeps the mobile introduction readable and the constellation chart composed", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/");
 
-  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "12px");
-  await expect(page.locator(".hero h1")).toHaveCSS("white-space", "nowrap");
-  await expect(page.locator(".article-visual").first()).toHaveCSS("border-radius", "14px");
+  await expect(page.locator(".hero-lede")).toHaveCSS("font-size", "13px");
   const hero = await page.locator(".hero").boundingBox();
   const art = await page.locator(".hero-art").boundingBox();
-  const sculpture = await page.locator(".lumen-sculpture").boundingBox();
+  const chart = await page.locator("#hero-chart").boundingBox();
   expect(hero).not.toBeNull();
   expect(art).not.toBeNull();
-  expect(sculpture).not.toBeNull();
-  expect(sculpture!.x).toBeGreaterThanOrEqual(0);
-  expect(sculpture!.x + sculpture!.width).toBeLessThanOrEqual(360);
+  expect(chart).not.toBeNull();
+  expect(art!.x).toBeGreaterThanOrEqual(0);
+  expect(art!.x + art!.width).toBeLessThanOrEqual(360);
   expect(art!.y).toBeGreaterThan(hero!.y);
   const title = await page.locator(".hero h1").boundingBox();
   expect(title).not.toBeNull();
@@ -94,7 +96,7 @@ test("keeps the wide layout contained rather than stretching without limit", asy
   const cards = await page.locator(".article-grid").boundingBox();
   for (const box of [header, hero, cards]) {
     expect(box).not.toBeNull();
-    expect(box!.width).toBeLessThanOrEqual(1121);
+    expect(box!.width).toBeLessThanOrEqual(1188);
     expect(box!.x).toBeGreaterThan(300);
   }
   await expect(page.locator(".article-grid")).toHaveCSS("grid-template-columns", /.+ .+ .+/);
@@ -109,7 +111,7 @@ test("switches theme accessibly and persists the choice", async ({ page }) => {
   await expect(page.getByRole("button", { name: "切换至浅色模式" })).toBeVisible();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#0c121c");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#060a12");
 });
 
 test("provides a visible keyboard route through the primary controls", async ({ page }) => {
@@ -195,11 +197,10 @@ test("keeps touch targets at least 44px where controls are compact", async ({ pa
   }
 });
 
-test("honors reduced motion without hiding the lumen sculpture", async ({ page }) => {
+test("honors reduced motion without hiding the constellation chart", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
 
-  await expect(page.locator(".lumen-sculpture")).toBeVisible();
-  await expect(page.locator(".lumen-sculpture")).toHaveCSS("animation-iteration-count", "1");
-  await expect(page.locator(".lumen-arc-a")).toHaveCSS("animation-iteration-count", "1");
+  await expect(page.locator("#hero-chart")).toBeVisible();
+  await expect(page.locator(".hero-art")).toHaveCSS("animation", "none");
 });

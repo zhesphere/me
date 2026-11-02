@@ -1,6 +1,7 @@
 ---
 import { getBlogItems } from "../lib/blog";
 import { siteConfig, validateSiteConfig } from "../data/site";
+import { CONSTELLATIONS } from "../data/constellations";
 import "../styles/global.css";
 
 const configErrors = validateSiteConfig(siteConfig);
@@ -14,12 +15,56 @@ const formatDate = (value: string) => {
   if (Number.isNaN(date.getTime())) return "最近更新";
   return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 };
+
 const creates = [
-  { key: "hardware", title: "硬件系统", description: "可验证的原型", hint: "Hardware" },
-  { key: "software", title: "软件构建", description: "清晰的体验", hint: "Software" },
-  { key: "ai", title: "AI 探索", description: "可用的方法", hint: "AI" },
-  { key: "design", title: "产品设计", description: "手感与节奏", hint: "Design" }
-];
+  {
+    key: "hardware",
+    title: "硬件系统",
+    description: "可验证的原型 · 电子笔记",
+    hint: "HARDWARE",
+    hintSub: "ORION · 猎户",
+    go: "读 DSP",
+    href: "https://blog.orbitvo.com/posts/electronic/dsp/",
+    chart: "orion"
+  },
+  {
+    key: "software",
+    title: "软件构建",
+    description: "清晰的体验 · 开源坐标",
+    hint: "SOFTWARE",
+    hintSub: "CYGNUS · 天鹅",
+    go: "GitHub",
+    href: "https://github.com/zhesphere",
+    chart: "cygnus"
+  },
+  {
+    key: "ai",
+    title: "AI 探索",
+    description: "可用的方法 · 部署实践",
+    hint: "AI",
+    hintSub: "CASSIOPEIA · 仙后",
+    go: "读 Twikoo 接入",
+    href: "https://blog.orbitvo.com/posts/blog/twikoo_firefly/",
+    chart: "cassiopeia"
+  },
+  {
+    key: "design",
+    title: "产品设计",
+    description: "手感与节奏 · 工具链",
+    hint: "DESIGN",
+    hintSub: "CORONA · 北冕",
+    go: "读高级操作",
+    href: "https://blog.orbitvo.com/posts/obsidian/%E9%AB%98%E7%BA%A7%E6%93%8D%E4%BD%9C/",
+    chart: "corona"
+  }
+] as const;
+
+const articleZones = [
+  { label: "DIPPER · BOWL", lit: "bowl" },
+  { label: "DIPPER · HANDLE", lit: "handle" },
+  { label: "DIPPER · FULL BOWL", lit: "full" }
+] as const;
+
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -28,6 +73,8 @@ const structuredData = {
   sameAs: siteConfig.socialLinks.map((link) => link.href),
   description: siteConfig.description
 };
+
+const constellationJson = JSON.stringify(CONSTELLATIONS);
 ---
 
 <!doctype html>
@@ -35,7 +82,7 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta id="theme-color" name="theme-color" content="#f4f7fc" />
+    <meta id="theme-color" name="theme-color" content="#eef2f8" />
     <meta name="description" content={siteConfig.description} />
     <meta name="author" content={siteConfig.name} />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -54,7 +101,12 @@ const structuredData = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
     <title>{siteConfig.name} · Personal Universe</title>
@@ -63,18 +115,16 @@ const structuredData = {
         const savedTheme = localStorage.getItem("orbitvo-theme");
         if (savedTheme === "dark") {
           document.documentElement.dataset.theme = "dark";
-          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#0c121c");
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#060a12");
         }
       } catch {}
     </script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
   <body>
-    <div class="atmosphere" aria-hidden="true"></div>
-
     <header class="site-header shell">
       <a class="brand" href="#top" aria-label="返回 Orbitvo 首页顶部">
-        <span class="brand-mark" aria-hidden="true"></span><span>orbitvo</span>
+        <i aria-hidden="true"></i><span>orbitvo</span>
       </a>
       <nav class="nav-links" id="site-nav" aria-label="页内导航">
         <a href="#creates">创造</a>
@@ -111,31 +161,20 @@ const structuredData = {
           </div>
         </div>
 
-        <div class="hero-art" aria-label="静光雕塑">
-          <svg class="lumen-sculpture" viewBox="0 0 440 440" role="img" aria-label="Quiet Lumen 光影装置">
-            <defs>
-              <radialGradient id="lumen-core" cx="50%" cy="46%" r="48%">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-                <stop offset="42%" stop-color="#b7d4f8" stop-opacity="0.5" />
-                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0" />
-              </radialGradient>
-              <radialGradient id="lumen-nucleus" cx="50%" cy="48%" r="50%">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-                <stop offset="55%" stop-color="#9ec4f5" stop-opacity="0.45" />
-                <stop offset="100%" stop-color="#3d7be0" stop-opacity="0.05" />
-              </radialGradient>
-              <filter id="lumen-soft" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="8" />
-              </filter>
-            </defs>
-            <ellipse class="lumen-glow" cx="220" cy="220" rx="198" ry="198" fill="url(#lumen-core)" filter="url(#lumen-soft)" />
-            <ellipse class="lumen-arc lumen-arc-a" cx="220" cy="220" rx="198" ry="118" />
-            <ellipse class="lumen-arc lumen-arc-b" cx="220" cy="220" rx="152" ry="198" />
-            <ellipse class="lumen-arc lumen-arc-c" cx="220" cy="220" rx="96" ry="96" />
-            <ellipse class="lumen-core-disc" cx="220" cy="220" rx="42" ry="42" fill="url(#lumen-nucleus)" />
-            <circle class="lumen-dot" cx="318" cy="148" r="5" />
-            <circle class="lumen-dot lumen-dot-soft" cx="132" cy="298" r="3.5" />
-          </svg>
+        <div class="hero-art" id="hero-art" aria-label="星座">
+          <div class="chart-toolbar">
+            <p class="chart-tonight">今夜星座 · Tonight</p>
+            <button class="chart-shuffle" id="chart-shuffle" type="button">换一颗</button>
+          </div>
+          <div class="starfield" aria-hidden="true" id="hero-stars"></div>
+          <svg class="main-chart" id="hero-chart" viewBox="0 0 300 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+          <div class="hero-caption">
+            <div>
+              <small id="hero-const-name">CONSTELLATION</small>
+              <b id="hero-const-line">Direction · Curiosity · Creation</b>
+            </div>
+            <div class="meta" id="hero-const-meta"></div>
+          </div>
         </div>
         <a class="explore-cue" href="#creates">向下 <span aria-hidden="true"></span></a>
       </section>
@@ -143,21 +182,83 @@ const structuredData = {
       <section class="creates section shell" id="creates" aria-labelledby="creates-title">
         <header class="section-heading">
           <div>
+            <p class="section-kicker">Star Catalogue</p>
             <h2 id="creates-title">创造</h2>
           </div>
         </header>
         <div class="create-grid" id="coordinates" aria-label="个人创造方向">
           {creates.map((item) => (
-            <article class={`create-card create-${item.key}`}>
-              <div class="create-visual" aria-hidden="true">
-                <span class="create-glow"></span>
-                <span class="create-hint">{item.hint}</span>
+            <a class={`create-card create-${item.key}`} href={item.href} target="_blank" rel="noreferrer">
+              <div class="create-visual">
+                <div class="create-ticks" aria-hidden="true"></div>
+                <div class="create-dust" aria-hidden="true"></div>
+                {item.chart === "orion" && (
+                  <svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <path class="line" d="M32 40 L60 12 L88 38" />
+                    <path class="line" d="M32 40 L48 72" />
+                    <path class="line" d="M88 38 L72 74" />
+                    <path class="line bright" d="M48 72 L60 74 L72 74" />
+                    <path class="line" d="M48 72 L40 118" />
+                    <path class="line" d="M72 74 L84 120" />
+                    <path class="line soft" d="M60 74 L58 96 L56 110" />
+                    <circle class="node" cx="60" cy="12" r="2.4" />
+                    <circle class="focus-halo" cx="32" cy="40" r="7" /><circle class="node gold" cx="32" cy="40" r="3.6" />
+                    <circle class="node" cx="88" cy="38" r="2.8" />
+                    <circle class="node" cx="48" cy="72" r="2.6" />
+                    <circle class="node" cx="60" cy="74" r="2.8" />
+                    <circle class="node" cx="72" cy="74" r="2.6" />
+                    <circle class="node" cx="56" cy="110" r="1.8" />
+                    <circle class="node" cx="40" cy="118" r="2.6" />
+                    <circle class="focus-halo" cx="84" cy="120" r="7" /><circle class="node gold" cx="84" cy="120" r="3.6" />
+                  </svg>
+                )}
+                {item.chart === "cygnus" && (
+                  <svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <path class="line" d="M60 16 L60 52" />
+                    <path class="line bright" d="M60 52 L60 88" />
+                    <path class="line" d="M60 88 L60 124" />
+                    <path class="line" d="M18 70 L60 52 L102 70" />
+                    <circle class="focus-halo" cx="60" cy="16" r="6" /><circle class="node gold" cx="60" cy="16" r="3.2" />
+                    <circle class="node" cx="60" cy="52" r="2.6" />
+                    <circle class="focus-halo" cx="60" cy="88" r="7" /><circle class="node gold" cx="60" cy="88" r="3.8" />
+                    <circle class="node" cx="60" cy="124" r="2.4" />
+                    <circle class="node" cx="18" cy="70" r="2.6" />
+                    <circle class="node" cx="102" cy="70" r="2.6" />
+                  </svg>
+                )}
+                {item.chart === "cassiopeia" && (
+                  <svg viewBox="0 0 140 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <path class="line" d="M16 42 L42 78" />
+                    <path class="line" d="M42 78 L70 28" />
+                    <path class="line bright" d="M70 28 L98 76" />
+                    <path class="line" d="M98 76 L124 38" />
+                    <circle class="node" cx="16" cy="42" r="2.6" />
+                    <circle class="node" cx="42" cy="78" r="2.8" />
+                    <circle class="focus-halo" cx="70" cy="28" r="7" /><circle class="node gold" cx="70" cy="28" r="3.6" />
+                    <circle class="node" cx="98" cy="76" r="2.8" />
+                    <circle class="node" cx="124" cy="38" r="2.6" />
+                  </svg>
+                )}
+                {item.chart === "corona" && (
+                  <svg viewBox="0 0 140 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <path class="line" d="M18 72 L36 42 L58 22 L78 18 L100 28 L118 52 L128 74" />
+                    <circle class="node" cx="18" cy="72" r="2.2" />
+                    <circle class="node" cx="36" cy="42" r="2.4" />
+                    <circle class="node" cx="58" cy="22" r="2.6" />
+                    <circle class="focus-halo" cx="78" cy="18" r="7" /><circle class="node gold" cx="78" cy="18" r="3.6" />
+                    <circle class="node" cx="100" cy="28" r="2.5" />
+                    <circle class="node" cx="118" cy="52" r="2.3" />
+                    <circle class="node" cx="128" cy="74" r="2.2" />
+                  </svg>
+                )}
+                <span class="create-hint">{item.hint}<em>{item.hintSub}</em></span>
               </div>
               <div class="create-copy">
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
+                <span class="create-go">{item.go} ↗</span>
               </div>
-            </article>
+            </a>
           ))}
         </div>
       </section>
@@ -165,6 +266,7 @@ const structuredData = {
       <section class="writing section shell" id="writing" aria-labelledby="writing-title">
         <header class="section-heading">
           <div>
+            <p class="section-kicker">Signals On The Chart</p>
             <h2 id="writing-title">文章</h2>
           </div>
           <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
@@ -173,29 +275,92 @@ const structuredData = {
         </header>
 
         <div class="article-grid">
-          {blogItems.map((article, index) => (
-            <a class={`article-card article-tone-${index + 1}`} href={article.href} target="_blank" rel="noreferrer">
-              <div class="article-visual">
-                <span class="article-index">0{index + 1}</span>
-                <span class="article-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
-                <span class="article-orbit orbit-a" aria-hidden="true"></span>
-                <span class="article-orbit orbit-b" aria-hidden="true"></span>
-              </div>
-              <div class="article-copy">
-                <div>
-                  <h3>{article.title}</h3>
+          {blogItems.map((article, index) => {
+            const zone = articleZones[index] ?? articleZones[0];
+            const signal = String(index + 1).padStart(2, "0");
+            return (
+              <a class="article-card" href={article.href} target="_blank" rel="noreferrer">
+                <div class="article-visual">
+                  <div class="mini-field" aria-hidden="true"></div>
+                  <span class="article-badge">SIGNAL {signal}</span>
+                  {zone.lit === "bowl" && (
+                    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                      <path class="line dim" d="M48 58 L48 128 L118 138 L130 62 Z" />
+                      <path class="line dim" d="M130 62 L186 70 L236 52 L286 28" />
+                      <path class="line lit" d="M48 58 L48 128" />
+                      <path class="line lit" d="M130 62 L186 70" />
+                      <circle class="node lit-core" cx="48" cy="58" r="6" />
+                      <circle class="focus-halo" cx="48" cy="58" r="12" />
+                      <circle class="node lit" cx="48" cy="128" r="4.5" />
+                      <circle class="node dim" cx="118" cy="138" r="3.2" />
+                      <circle class="node lit" cx="130" cy="62" r="4.5" />
+                      <circle class="node lit" cx="186" cy="70" r="4.2" />
+                      <circle class="node dim" cx="236" cy="52" r="3.2" />
+                      <circle class="node dim" cx="286" cy="28" r="3.4" />
+                    </svg>
+                  )}
+                  {zone.lit === "handle" && (
+                    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                      <path class="line dim" d="M48 58 L48 128 L118 138 L130 62 Z" />
+                      <path class="line dim" d="M130 62 L186 70 L236 52 L286 28" />
+                      <path class="line lit" d="M186 70 L236 52 L286 28" />
+                      <circle class="node dim" cx="48" cy="58" r="3.4" />
+                      <circle class="node dim" cx="48" cy="128" r="3.2" />
+                      <circle class="node dim" cx="118" cy="138" r="3.2" />
+                      <circle class="node dim" cx="130" cy="62" r="3.4" />
+                      <circle class="node lit" cx="186" cy="70" r="4.4" />
+                      <circle class="node lit-core" cx="236" cy="52" r="5.8" />
+                      <circle class="focus-halo" cx="236" cy="52" r="12" />
+                      <circle class="node lit" cx="286" cy="28" r="4.6" />
+                    </svg>
+                  )}
+                  {zone.lit === "full" && (
+                    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                      <path class="line dim" d="M48 58 L48 128 L118 138 L130 62 Z" />
+                      <path class="line dim" d="M130 62 L186 70 L236 52 L286 28" />
+                      <path class="line lit" d="M48 58 L48 128 L118 138 L130 62 Z" />
+                      <circle class="node lit" cx="48" cy="58" r="4.4" />
+                      <circle class="node lit" cx="48" cy="128" r="4.2" />
+                      <circle class="node lit-core" cx="118" cy="138" r="5.6" />
+                      <circle class="focus-halo" cx="118" cy="138" r="12" />
+                      <circle class="node lit" cx="130" cy="62" r="4.4" />
+                      <circle class="node dim" cx="186" cy="70" r="3.2" />
+                      <circle class="node dim" cx="236" cy="52" r="3.2" />
+                      <circle class="node dim" cx="286" cy="28" r="3.4" />
+                    </svg>
+                  )}
                 </div>
-                <time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
-              </div>
-            </a>
-          ))}
+                <div class="article-copy">
+                  <div class="meta-row">
+                    <span>{zone.label}</span>
+                    <time datetime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
+                  </div>
+                  <h3>{article.title}</h3>
+                  {article.summary ? <p>{article.summary}</p> : null}
+                </div>
+              </a>
+            );
+          })}
         </div>
       </section>
 
       <section class="about section shell" id="about" aria-labelledby="about-title">
         <div class="about-panel">
+          <svg class="about-mark" viewBox="0 0 220 260" aria-hidden="true">
+            <path class="line" d="M110 28 L110 118" />
+            <path class="line bright" d="M110 118 L110 232" />
+            <path class="line" d="M38 140 L110 118 L182 128" />
+            <circle class="focus-halo" cx="110" cy="28" r="12" />
+            <circle class="node gold" cx="110" cy="28" r="5.2" />
+            <circle class="node" cx="110" cy="118" r="4" />
+            <circle class="focus-halo" cx="110" cy="232" r="14" />
+            <circle class="node gold" cx="110" cy="232" r="6" />
+            <circle class="node" cx="38" cy="140" r="4.2" />
+            <circle class="node" cx="182" cy="128" r="3.8" />
+          </svg>
+          <p class="section-kicker">Point Of Origin · Crux</p>
           <h2 id="about-title">ZheSphere。硬件工程师。</h2>
-          <p>也写软件，做设计，试 AI。</p>
+          <p>也写软件，做设计，试 AI。Orbitvo 不是履历，而是工作、思考与下一次试验留下的坐标。</p>
           <div class="about-actions">
             <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
               GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
@@ -227,13 +392,14 @@ const structuredData = {
       <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V5m0 0 4.5 4.5M10 5 5.5 9.5" /></svg>
     </button>
 
-    <script>
+    <script is:inline define:vars={{ constellationJson }}>
+      const CONSTELLATIONS = JSON.parse(constellationJson);
       const root = document.documentElement;
-      const toggle = document.querySelector<HTMLButtonElement>(".theme-toggle");
-      const themeColor = document.querySelector<HTMLMetaElement>("#theme-color");
-      const menuToggle = document.querySelector<HTMLButtonElement>(".nav-menu-toggle");
-      const siteNav = document.querySelector<HTMLElement>("#site-nav");
-      const backToTop = document.querySelector<HTMLButtonElement>(".back-to-top");
+      const toggle = document.querySelector(".theme-toggle");
+      const themeColor = document.querySelector("#theme-color");
+      const menuToggle = document.querySelector(".nav-menu-toggle");
+      const siteNav = document.querySelector("#site-nav");
+      const backToTop = document.querySelector(".back-to-top");
       const currentTheme = () => (root.dataset.theme === "dark" ? "dark" : "light");
       const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -243,10 +409,10 @@ const structuredData = {
         const label = dark ? "切换至浅色模式" : "切换至深色模式";
         toggle.setAttribute("aria-label", label);
         toggle.title = label;
-        themeColor?.setAttribute("content", dark ? "#0c121c" : "#f4f7fc");
+        themeColor?.setAttribute("content", dark ? "#060a12" : "#eef2f8");
       }
 
-      function setMenuOpen(open: boolean) {
+      function setMenuOpen(open) {
         root.classList.toggle("nav-open", open);
         menuToggle?.setAttribute("aria-expanded", String(open));
         menuToggle?.setAttribute("aria-label", open ? "关闭页内导航" : "打开页内导航");
@@ -265,7 +431,8 @@ const structuredData = {
 
       toggle?.addEventListener("click", () => {
         const nextTheme = currentTheme() === "dark" ? "light" : "dark";
-        root.dataset.theme = nextTheme;
+        if (nextTheme === "dark") root.dataset.theme = "dark";
+        else delete root.dataset.theme;
         try {
           localStorage.setItem("orbitvo-theme", nextTheme);
         } catch {}
@@ -292,6 +459,86 @@ const structuredData = {
 
       updateToggle();
       updateBackToTop();
+
+      const field = document.getElementById("hero-stars");
+      if (field) {
+        const positions = [
+          [10, 14], [22, 28], [38, 12], [58, 20], [74, 16], [88, 30],
+          [14, 62], [30, 78], [48, 70], [66, 82], [82, 68], [92, 54],
+          [6, 42], [44, 48], [70, 44]
+        ];
+        field.innerHTML = positions
+          .map(([x, y], i) => `<span style="left:${x}%;top:${y}%;animation-delay:${(i % 7) * 0.45}s"></span>`)
+          .join("");
+      }
+
+      function pickConstellation() {
+        const prevKey = "orbitvo-last-const";
+        let prev = null;
+        try {
+          prev = sessionStorage.getItem(prevKey);
+        } catch {}
+        const pool = CONSTELLATIONS.filter((c) => c.id !== prev);
+        const list = pool.length ? pool : CONSTELLATIONS;
+        const chosen = list[Math.floor(Math.random() * list.length)];
+        try {
+          sessionStorage.setItem(prevKey, chosen.id);
+        } catch {}
+        return chosen;
+      }
+
+      function starClass(role) {
+        if (role === "gold") return "node gold";
+        if (role === "focus") return "focus";
+        return "node";
+      }
+
+      function renderConstellation(c) {
+        const svg = document.getElementById("hero-chart");
+        const art = document.getElementById("hero-art");
+        if (!svg || !art) return;
+
+        svg.setAttribute("viewBox", c.viewBox);
+        const vb = c.viewBox.split(/\s+/).map(Number);
+        if (vb.length === 4) svg.style.aspectRatio = `${vb[2]} / ${vb[3]}`;
+        const parts = [];
+
+        const drawPoly = (idxs, cls) => {
+          const pts = idxs.map((i) => c.stars[i]).filter(Boolean);
+          if (pts.length < 2) return;
+          const d = pts.map((p, i) => `${i ? "L" : "M"}${p[0]} ${p[1]}`).join(" ");
+          parts.push(`<path class="${cls}" d="${d}"/>`);
+        };
+
+        (c.soft || []).forEach((seg) => drawPoly(seg, "line soft"));
+        (c.lines || []).forEach((seg) => {
+          const bright = seg[seg.length - 1] === "bright";
+          const idxs = bright ? seg.slice(0, -1) : seg;
+          drawPoly(idxs, bright ? "line bright" : "line");
+        });
+
+        c.stars.forEach((s) => {
+          const [x, y, r, role] = s;
+          if (role === "gold") {
+            parts.push(`<circle class="focus-halo" cx="${x}" cy="${y}" r="${r * 1.9}"/>`);
+          }
+          parts.push(`<circle class="${starClass(role)}" cx="${x}" cy="${y}" r="${r}"/>`);
+        });
+
+        svg.innerHTML = parts.join("");
+        art.setAttribute("aria-label", `${c.zh} ${c.en}`);
+        const name = document.getElementById("hero-const-name");
+        const line = document.getElementById("hero-const-line");
+        const meta = document.getElementById("hero-const-meta");
+        if (name) name.textContent = `${c.en} · ${c.zh}`;
+        if (line) line.textContent = c.line;
+        if (meta) meta.innerHTML = `RA ${c.ra}<br />DEC ${c.dec}`;
+      }
+
+      renderConstellation(pickConstellation());
+      document.getElementById("chart-shuffle")?.addEventListener("click", () => {
+        renderConstellation(pickConstellation());
+      });
     </script>
   </body>
 </html>
