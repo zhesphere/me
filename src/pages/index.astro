@@ -160,7 +160,10 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
         <div class="hero-art" id="hero-art" aria-label="星座">
           <div class="chart-toolbar">
             <p class="chart-tonight">今夜星座 · Tonight</p>
-            <button class="chart-shuffle" id="chart-shuffle" type="button">换一颗</button>
+            <div class="chart-toolbar-actions">
+              <a class="chart-atlas-link" href="/chart">全部星座</a>
+              <button class="chart-shuffle" id="chart-shuffle" type="button">换一颗</button>
+            </div>
           </div>
           <div class="starfield" aria-hidden="true" id="hero-stars"></div>
           <svg class="main-chart" id="hero-chart" viewBox="0 0 300 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
@@ -370,6 +373,7 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
         <span>© {publishedYear} ZHESPHERE</span>
         <span>CONSTELLATION</span>
         <p>
+          <a href="/chart">星图志</a>
           <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
           <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
           <a href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS</a>

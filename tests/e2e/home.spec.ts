@@ -205,3 +205,17 @@ test("honors reduced motion without hiding the constellation chart", async ({ pa
   await expect(page.locator("#hero-chart")).toBeVisible();
   await expect(page.locator(".hero-art")).toHaveCSS("animation", "none");
 });
+
+test("opens the constellation atlas from light home entries", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: "全部星座", exact: true })).toHaveAttribute("href", "/chart");
+  await expect(page.locator(".footer-meta a[href='/chart']")).toHaveCount(1);
+
+  await page.goto("/chart");
+  await expect(page.getByRole("heading", { name: "星图志", exact: true })).toBeVisible();
+  await expect(page.locator(".atlas-tile")).toHaveCount(16);
+  await expect(page.locator(".atlas-chip")).toHaveCount(16);
+  await page.locator(".atlas-chip[data-id='orion']").click();
+  await expect(page.getByRole("heading", { name: /猎户座/ })).toBeVisible();
+  await expect(page).toHaveURL(/c=orion/);
+});

@@ -37,10 +37,11 @@ No eyebrow walls of explanation. No gradient text.
 ## Layout
 
 1. Frosted header + theme + Blog
-2. Hero: claim-led copy + constellation chart (tonight / shuffle)
+2. Hero: claim-led copy + constellation chart (tonight / shuffle + light「全部星座」→ `/chart`)
 3. Creates 2×2 / 4-col（星座卡 + 真实外链）
 4. Writing（RSS 最多 3 篇；SIGNAL 北斗点亮变体）
-5. About（Crux 水印）+ footer 收口
+5. About（Crux 水印）+ footer 收口（含星图志轻链）
+6. Secondary page `/chart` 星图志：全部星座图鉴，不挤占首页叙事
 
 ## Motion
 

@@ -1,0 +1,350 @@
+---
+import { siteConfig, validateSiteConfig } from "../data/site";
+import { CONSTELLATIONS } from "../data/constellations";
+import { CONSTELLATION_NOTES } from "../data/constellationNotes";
+import "../styles/global.css";
+import "../styles/chart.css";
+
+const configErrors = validateSiteConfig(siteConfig);
+if (configErrors.length) throw new Error(`Invalid site configuration: ${configErrors.join(", ")}`);
+
+const constellationJson = JSON.stringify(CONSTELLATIONS);
+const notesJson = JSON.stringify(CONSTELLATION_NOTES);
+const pageDescription = "Orbitvo 星图志：首页今夜星座的全部星表与短介绍。";
+---
+
+<!doctype html>
+<html lang={siteConfig.locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta id="theme-color" name="theme-color" content="#060a12" />
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={siteConfig.name} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content="星图志 · Orbitvo" />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={`${siteConfig.siteUrl}/chart`} />
+    <meta property="og:image" content={`${siteConfig.siteUrl}/og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="星图志 · Orbitvo" />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={`${siteConfig.siteUrl}/og.png`} />
+    <link rel="canonical" href={`${siteConfig.siteUrl}/chart`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>星图志 · Orbitvo</title>
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem("orbitvo-theme");
+        if (savedTheme !== "light") {
+          document.documentElement.dataset.theme = "dark";
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#060a12");
+        }
+      } catch {
+        document.documentElement.dataset.theme = "dark";
+      }
+    </script>
+  </head>
+  <body class="atlas-page">
+    <header class="site-header shell">
+      <a class="brand" href="/" aria-label="返回 Orbitvo 首页">
+        <i aria-hidden="true"></i><span>orbitvo</span>
+      </a>
+      <div class="atlas-switcher" aria-label="切换星座">
+        <button type="button" class="atlas-nav-btn" id="prev-btn" aria-label="上一座">
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 2.5 4.5 7 9 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="atlas-chip-rail" id="chip-rail" role="listbox" aria-label="星座快捷切换"></div>
+        <button type="button" class="atlas-nav-btn" id="next-btn" aria-label="下一座">
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 2.5 9.5 7 5 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="atlas-switch-index" id="switch-index">01 / 16</span>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" type="button" aria-label="切换至浅色模式" title="切换至浅色模式" aria-pressed="false">◐</button>
+        <a class="nav-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog ↗</a>
+      </div>
+    </header>
+
+    <main class="atlas-main shell">
+      <div class="atlas-intro">
+        <h1 id="atlas-title">星图志</h1>
+        <p class="lede">首页「今夜星座」从这片星表里抽一颗。这里把它们摊开——<em>只讲星座，不抢主张。</em></p>
+      </div>
+
+      <section class="atlas-hero" aria-labelledby="meta-name">
+        <div class="atlas-stage" id="stage">
+          <svg class="atlas-main-chart" id="main-chart" viewBox="0 0 300 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+        </div>
+        <aside class="atlas-detail" id="detail" aria-live="polite">
+          <p class="atlas-detail-label">Tonight’s pick · 当前</p>
+          <h2 class="atlas-meta-name" id="meta-name">—</h2>
+          <p class="atlas-meta-line" id="meta-line"></p>
+          <p class="atlas-meta-coords" id="meta-coords"></p>
+          <p class="atlas-meta-blurb" id="meta-blurb"></p>
+          <div class="atlas-role-slot">
+            <span class="atlas-role-pill is-empty" id="meta-role"></span>
+          </div>
+        </aside>
+      </section>
+
+      <div class="atlas-section-head">
+        <h2>全部星座</h2>
+        <p>点选查看 · 与首页同源数据</p>
+      </div>
+      <div class="atlas-grid" id="atlas" role="listbox" aria-label="星座列表"></div>
+    </main>
+
+    <footer class="site-footer shell">
+      <a class="footer-blog" href="/">返回首页</a>
+      <div class="footer-meta">
+        <span>CHART ATLAS</span>
+        <span>CONSTELLATION</span>
+        <p>
+          <a href="/">Home</a>
+          <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
+          <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
+        </p>
+      </div>
+    </footer>
+
+    <script is:inline define:vars={{ constellationJson, notesJson }}>
+      const CONSTELLATIONS = JSON.parse(constellationJson);
+      const NOTES = JSON.parse(notesJson);
+      const root = document.documentElement;
+      const toggle = document.querySelector(".theme-toggle");
+      const themeColor = document.querySelector("#theme-color");
+      const currentTheme = () => (root.dataset.theme === "dark" ? "dark" : "light");
+
+      function updateToggle() {
+        if (!toggle) return;
+        const dark = currentTheme() === "dark";
+        const label = dark ? "切换至浅色模式" : "切换至深色模式";
+        toggle.setAttribute("aria-label", label);
+        toggle.title = label;
+        toggle.setAttribute("aria-pressed", dark ? "false" : "true");
+        themeColor?.setAttribute("content", dark ? "#060a12" : "#eef2f8");
+      }
+
+      toggle?.addEventListener("click", () => {
+        const nextTheme = currentTheme() === "dark" ? "light" : "dark";
+        if (nextTheme === "dark") root.dataset.theme = "dark";
+        else delete root.dataset.theme;
+        try {
+          localStorage.setItem("orbitvo-theme", nextTheme);
+        } catch {}
+        updateToggle();
+        if (activeId) select(activeId);
+      });
+      updateToggle();
+
+      function themeColors() {
+        const styles = getComputedStyle(root);
+        return {
+          gold: styles.getPropertyValue("--gold").trim() || "#ffcf6e",
+          goldDeep: styles.getPropertyValue("--gold-deep").trim() || "#e0a84a"
+        };
+      }
+
+      function starClass(role) {
+        if (role === "gold") return "node gold";
+        if (role === "focus") return "focus";
+        return "node";
+      }
+
+      function starBounds(c) {
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        let sx = 0, sy = 0;
+        c.stars.forEach(([x, y]) => {
+          minX = Math.min(minX, x);
+          minY = Math.min(minY, y);
+          maxX = Math.max(maxX, x);
+          maxY = Math.max(maxY, y);
+          sx += x;
+          sy += y;
+        });
+        return {
+          minX, minY, maxX, maxY,
+          bw: Math.max(1, maxX - minX),
+          bh: Math.max(1, maxY - minY),
+          midX: (minX + maxX) / 2,
+          midY: (minY + maxY) / 2
+        };
+      }
+
+      function framedViewBox(c, { pad = 0.28, balance = 1.04 } = {}) {
+        const b = starBounds(c);
+        const side = Math.max(b.bw, b.bh) * (1 + pad * 2) * balance;
+        const x = b.midX - side / 2;
+        const y = b.midY - side / 2;
+        return { viewBox: `${x} ${y} ${side} ${side}`, bounds: b, x, y, w: side, h: side };
+      }
+
+      function chartMarkup(c, { halo = true, ambient = false, frame = null } = {}) {
+        const parts = [];
+        const f = frame || framedViewBox(c);
+        const { bounds: b, x: vx, y: vy, w: vw, h: vh } = f;
+        const fit = Math.min(b.midX - vx, vx + vw - b.midX, b.midY - vy, vy + vh - b.midY) * 0.92;
+        const span = Math.hypot(b.bw, b.bh) * 0.42;
+        const r = Math.min(Math.max(span, 36), fit);
+
+        if (ambient) {
+          const { gold, goldDeep } = themeColors();
+          const gid = `glow-${c.id}`;
+          parts.push(`
+            <defs>
+              <radialGradient id="${gid}" gradientUnits="userSpaceOnUse" cx="${b.midX}" cy="${b.midY}" r="${r}">
+                <stop offset="0%" stop-color="${gold}" stop-opacity="0.28"/>
+                <stop offset="48%" stop-color="${goldDeep}" stop-opacity="0.1"/>
+                <stop offset="100%" stop-color="${gold}" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle class="ambient" cx="${b.midX}" cy="${b.midY}" r="${r}" fill="url(#${gid})"/>
+          `);
+        }
+
+        const drawPoly = (idxs, cls) => {
+          const pts = idxs.map((i) => c.stars[i]).filter(Boolean);
+          if (pts.length < 2) return;
+          const d = pts.map((p, i) => `${i ? "L" : "M"}${p[0]} ${p[1]}`).join(" ");
+          parts.push(`<path class="${cls}" d="${d}"/>`);
+        };
+        (c.soft || []).forEach((seg) => drawPoly(seg, "line soft"));
+        (c.lines || []).forEach((seg) => {
+          const bright = seg[seg.length - 1] === "bright";
+          const idxs = bright ? seg.slice(0, -1) : seg;
+          drawPoly(idxs, bright ? "line bright" : "line");
+        });
+        c.stars.forEach((s) => {
+          const [x, y, r, role] = s;
+          if (halo && role === "gold") {
+            parts.push(`<circle class="focus-halo" cx="${x}" cy="${y}" r="${r * 1.9}"/>`);
+          }
+          parts.push(`<circle class="${starClass(role)}" cx="${x}" cy="${y}" r="${r}"/>`);
+        });
+        return parts.join("");
+      }
+
+      const atlas = document.getElementById("atlas");
+      const chipRail = document.getElementById("chip-rail");
+      const main = document.getElementById("main-chart");
+      const nameEl = document.getElementById("meta-name");
+      const lineEl = document.getElementById("meta-line");
+      const coordsEl = document.getElementById("meta-coords");
+      const blurbEl = document.getElementById("meta-blurb");
+      const roleEl = document.getElementById("meta-role");
+      const indexEl = document.getElementById("switch-index");
+      let activeId = null;
+
+      function shortZh(c) {
+        return c.zh.split("·")[0].trim().replace(/座$/, "");
+      }
+
+      function select(id) {
+        const idx = CONSTELLATIONS.findIndex((x) => x.id === id);
+        const c = CONSTELLATIONS[idx];
+        if (!c) return;
+        activeId = id;
+        const frame = framedViewBox(c, { pad: 0.3, balance: 1.04 });
+        main.setAttribute("viewBox", frame.viewBox);
+        main.innerHTML = chartMarkup(c, { ambient: true, frame });
+        nameEl.textContent = `${c.zh} · ${c.en}`;
+        lineEl.textContent = c.line;
+        coordsEl.textContent = `RA ${c.ra} · DEC ${c.dec}`;
+        const note = NOTES[c.id] || { blurb: c.line, role: null };
+        blurbEl.textContent = note.blurb;
+        if (note.role) {
+          roleEl.textContent = note.role;
+          roleEl.classList.remove("is-empty");
+        } else {
+          roleEl.textContent = "—";
+          roleEl.classList.add("is-empty");
+        }
+        if (indexEl) {
+          indexEl.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(CONSTELLATIONS.length).padStart(2, "0")}`;
+        }
+        atlas.querySelectorAll(".atlas-tile").forEach((btn) => {
+          btn.setAttribute("aria-pressed", String(btn.dataset.id === id));
+        });
+        const activeChip = chipRail.querySelector(`.atlas-chip[data-id="${id}"]`);
+        chipRail.querySelectorAll(".atlas-chip").forEach((chip) => {
+          chip.setAttribute("aria-pressed", String(chip === activeChip));
+        });
+        if (activeChip) {
+          const rail = chipRail.getBoundingClientRect();
+          const chipBox = activeChip.getBoundingClientRect();
+          if (chipBox.left < rail.left || chipBox.right > rail.right) {
+            chipRail.scrollLeft += chipBox.left - rail.left - (rail.width - chipBox.width) / 2;
+          }
+        }
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set("c", id);
+          history.replaceState(null, "", url);
+        } catch {}
+      }
+
+      function step(delta) {
+        const idx = CONSTELLATIONS.findIndex((x) => x.id === activeId);
+        const next = (idx + delta + CONSTELLATIONS.length) % CONSTELLATIONS.length;
+        select(CONSTELLATIONS[next].id);
+      }
+
+      CONSTELLATIONS.forEach((c) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "atlas-chip";
+        chip.dataset.id = c.id;
+        chip.setAttribute("role", "option");
+        chip.setAttribute("aria-pressed", "false");
+        chip.textContent = shortZh(c);
+        chip.title = `${c.zh} · ${c.en}`;
+        chip.addEventListener("click", () => select(c.id));
+        chipRail.appendChild(chip);
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "atlas-tile";
+        btn.dataset.id = c.id;
+        btn.setAttribute("role", "option");
+        btn.setAttribute("aria-pressed", "false");
+        const tileFrame = framedViewBox(c, { pad: 0.32, balance: 1.02 });
+        btn.innerHTML = `
+          <svg viewBox="${tileFrame.viewBox}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${chartMarkup(c, { halo: false, frame: tileFrame })}</svg>
+          <span class="zh">${c.zh.split("·")[0].trim()}</span>
+          <span class="en">${c.en}</span>
+        `;
+        btn.addEventListener("click", () => select(c.id));
+        atlas.appendChild(btn);
+      });
+
+      document.getElementById("prev-btn")?.addEventListener("click", () => step(-1));
+      document.getElementById("next-btn")?.addEventListener("click", () => step(1));
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") step(-1);
+        if (e.key === "ArrowRight") step(1);
+      });
+
+      let startId = "corona";
+      try {
+        const requested = new URLSearchParams(window.location.search).get("c");
+        if (requested && CONSTELLATIONS.some((c) => c.id === requested)) startId = requested;
+      } catch {}
+      const start = CONSTELLATIONS.find((c) => c.id === startId) || CONSTELLATIONS[0];
+      select(start.id);
+    </script>
+  </body>
+</html>
