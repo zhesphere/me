@@ -556,14 +556,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .nav-menu-toggle:hover { border-color: var(--gold); color: var(--gold); }
 .nav-menu-toggle svg { width: 18px; stroke-width: 1.7; }
 .theme-toggle {
-  display: grid; width: 44px; height: 44px; padding: 0; place-items: center;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; min-height: 44px; padding: 0;
   border: 1px solid var(--line-soft); border-radius: 999px; background: transparent;
 }
 .theme-toggle:hover, .theme-toggle[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
-.theme-icon { width: 18px; height: 18px; grid-area: 1 / 1; }
-.theme-icon-moon { display: none; }
-[data-theme="dark"] .theme-icon-sun { display: none; }
-[data-theme="dark"] .theme-icon-moon { display: block; }
 .nav-links a { position: relative; }
 .back-to-top {
   position: fixed;

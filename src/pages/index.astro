@@ -82,7 +82,7 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta id="theme-color" name="theme-color" content="#eef2f8" />
+    <meta id="theme-color" name="theme-color" content="#060a12" />
     <meta name="description" content={siteConfig.description} />
     <meta name="author" content={siteConfig.name} />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -113,11 +113,14 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
     <script is:inline>
       try {
         const savedTheme = localStorage.getItem("orbitvo-theme");
-        if (savedTheme === "dark") {
+        // Match F demo: dark is the default first paint.
+        if (savedTheme !== "light") {
           document.documentElement.dataset.theme = "dark";
           document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#060a12");
         }
-      } catch {}
+      } catch {
+        document.documentElement.dataset.theme = "dark";
+      }
     </script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
@@ -135,29 +138,21 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
         <button class="nav-menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="打开页内导航">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h12" /></svg>
         </button>
-        <button class="theme-toggle" type="button" aria-label="切换至深色模式" title="切换至深色模式">
-          <svg class="theme-icon theme-icon-sun" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4" /><circle cx="10" cy="10" r="3.2" /></svg>
-          <svg class="theme-icon theme-icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.2 12.4A6.6 6.6 0 0 1 7.6 3.8a6.6 6.6 0 1 0 8.6 8.6Z" /></svg>
-        </button>
-        <a class="nav-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></a>
+        <button class="theme-toggle" type="button" aria-label="切换至浅色模式" title="切换至浅色模式" aria-pressed="false">◐</button>
+        <a class="nav-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog ↗</a>
       </div>
     </header>
 
     <main id="top">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="hero-identity">ZheSphere</p>
+          <p class="hero-identity">ZheSphere · Chart 40</p>
           <h1 id="hero-title">ORBITVO</h1>
           <p class="hero-statement">好奇，做成东西。</p>
           <p class="hero-lede">硬件 · 软件 · AI · 设计</p>
           <div class="hero-actions">
-            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-              阅读博客
-              <span aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg></span>
-            </a>
-            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
-              GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
-            </a>
+            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 <span aria-hidden="true">↗</span></a>
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub ↗</a>
           </div>
         </div>
 
@@ -176,7 +171,7 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
             <div class="meta" id="hero-const-meta"></div>
           </div>
         </div>
-        <a class="explore-cue" href="#creates">向下 <span aria-hidden="true"></span></a>
+        <a class="explore-cue" href="#creates">向下探索 <span aria-hidden="true"></span></a>
       </section>
 
       <section class="creates section shell" id="creates" aria-labelledby="creates-title">
@@ -269,9 +264,7 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
             <p class="section-kicker">Signals On The Chart</p>
             <h2 id="writing-title">文章</h2>
           </div>
-          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-            全部 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
-          </a>
+          <a class="section-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">全部 ↗</a>
         </header>
 
         <div class="article-grid">
@@ -362,24 +355,19 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
           <h2 id="about-title">ZheSphere。硬件工程师。</h2>
           <p>也写软件，做设计，试 AI。Orbitvo 不是履历，而是工作、思考与下一次试验留下的坐标。</p>
           <div class="about-actions">
-            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">
-              GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
-            </a>
-            <a class="secondary-link" href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">
-              RSS <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
-            </a>
+            <a class="secondary-link" href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub ↗</a>
+            <a class="secondary-link" href={siteConfig.blogFeedUrl} target="_blank" rel="noreferrer">RSS ↗</a>
+            <a class="primary-link" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer shell">
-      <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">
-        阅读博客<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5m0 0H7m8 0v8" /></svg>
-      </a>
+      <a class="footer-blog" href={siteConfig.blogUrl} target="_blank" rel="noreferrer">阅读博客 ↗</a>
       <div class="footer-meta">
         <span>© {publishedYear} ZHESPHERE</span>
-        <span>电路 · 代码 · 光线</span>
+        <span>CONSTELLATION</span>
         <p>
           <a href={siteConfig.blogUrl} target="_blank" rel="noreferrer">Blog</a>
           <a href="https://github.com/zhesphere" target="_blank" rel="noreferrer">GitHub</a>
@@ -409,6 +397,7 @@ const constellationJson = JSON.stringify(CONSTELLATIONS);
         const label = dark ? "切换至浅色模式" : "切换至深色模式";
         toggle.setAttribute("aria-label", label);
         toggle.title = label;
+        toggle.setAttribute("aria-pressed", dark ? "false" : "true");
         themeColor?.setAttribute("content", dark ? "#060a12" : "#eef2f8");
       }
 

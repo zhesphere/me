@@ -32,7 +32,7 @@ test("forms a create matrix and journey without invented portfolio content", asy
   await expect(page.getByRole("heading", { name: "创造", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "ZheSphere。硬件工程师。" })).toBeVisible();
   await expect(page.locator(".journal")).toHaveCount(0);
-  await expect(page.locator(".about-actions a[href='https://blog.orbitvo.com/']")).toHaveCount(0);
+  await expect(page.locator(".about-actions a[href='https://blog.orbitvo.com/']")).toHaveCount(1);
   await expect(page.locator(".footer-blog")).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.locator(".create-card")).toHaveCount(4);
   await expect(page.locator(".transit-chart")).toHaveCount(0);
@@ -46,7 +46,7 @@ test("forms a create matrix and journey without invented portfolio content", asy
 test("keeps blog CTAs to a clear hierarchy without bottom stacking", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveCount(2);
+  await expect(page.getByRole("link", { name: /阅读博客/ })).toHaveCount(3);
   await expect(page.locator(".hero .primary-link")).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.locator(".section-link")).toHaveAttribute("href", "https://blog.orbitvo.com/");
   await expect(page.locator(".footer-blog")).toBeVisible();
@@ -104,14 +104,15 @@ test("keeps the wide layout contained rather than stretching without limit", asy
 
 test("switches theme accessibly and persists the choice", async ({ page }) => {
   await page.goto("/");
-  const toggle = page.getByRole("button", { name: "切换至深色模式" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  const toggle = page.getByRole("button", { name: "切换至浅色模式" });
   await expect(toggle).toBeVisible();
   await toggle.click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.getByRole("button", { name: "切换至浅色模式" })).toBeVisible();
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "切换至深色模式" })).toBeVisible();
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#060a12");
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#eef2f8");
 });
 
 test("provides a visible keyboard route through the primary controls", async ({ page }) => {
@@ -187,7 +188,7 @@ test("keeps touch targets at least 44px where controls are compact", async ({ pa
   for (const locator of [
     page.getByRole("button", { name: /切换至/ }),
     page.getByRole("button", { name: /页内导航/ }),
-    page.getByRole("link", { name: "Blog", exact: true }).first(),
+    page.getByRole("link", { name: /Blog/ }).first(),
     page.locator(".hero .primary-link"),
     page.getByRole("link", { name: /GitHub/ }).first()
   ]) {
