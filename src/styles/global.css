@@ -162,7 +162,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .secondary-link:hover { color: var(--gold); }
 
 .hero-art {
-  position: relative; height: 540px; overflow: visible;
+  position: relative;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.05;
+  max-height: min(540px, 52dvh);
+  overflow: visible;
   border: 0 !important; border-radius: 0; background: transparent !important;
   box-shadow: none !important; outline: none; animation: art-float 10s ease-in-out infinite;
   padding-top: 8px;
@@ -198,8 +203,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .starfield span:nth-child(4n) { width: 2px; height: 2px; background: var(--gold); opacity: .38; }
 
 .hero-art svg.main-chart {
-  position: absolute; left: 50%; top: 44%;
-  width: min(420px, 88%); height: auto;
+  position: absolute; left: 50%; top: 46%;
+  width: min(420px, 88%);
+  max-width: 100%;
+  max-height: 78%;
+  height: auto;
   aspect-ratio: 300 / 340;
   transform: translate(-50%, -50%);
   overflow: visible; z-index: 2;
@@ -537,7 +545,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .nav-links { display: none; }
   .site-header { grid-template-columns: 1fr auto; }
   .hero { min-height: auto; padding: 42px 0 56px; grid-template-columns: 1fr; }
-  .hero-art { height: 400px; animation: none; }
+  .hero-art {
+    aspect-ratio: 5 / 6;
+    max-height: min(400px, 48dvh);
+    animation: none;
+  }
   .create-grid { grid-template-columns: 1fr 1fr; }
   .article-grid { grid-template-columns: 1fr; gap: 36px; }
   .article-visual { height: 220px; }
@@ -550,6 +562,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 520px) {
   .create-grid { grid-template-columns: 1fr; }
   .hero h1 { font-size: clamp(48px, 14vw, 64px); white-space: normal; }
+}
+/* Short windows / cramped height: shrink art, drop secondary coords, don't force full-svh hero */
+@media (max-height: 700px) {
+  .hero { min-height: auto; }
+  .hero-art { max-height: min(360px, 42dvh); }
+  .hero-caption .meta { display: none; }
+  .chart-toolbar-actions { gap: 4px; }
+  .chart-atlas-link { padding-inline: 8px; }
+  .chart-shuffle { padding-inline: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

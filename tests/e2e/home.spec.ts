@@ -60,11 +60,48 @@ test("keeps every target viewport free of horizontal overflow", async ({ page })
     { width: 430, height: 932 },
     { width: 768, height: 1024 },
     { width: 1440, height: 900 },
-    { width: 1920, height: 1080 }
+    { width: 1920, height: 1080 },
+    { width: 360, height: 640 },
+    { width: 320, height: 568 },
+    { width: 800, height: 400 }
   ]) {
     await page.setViewportSize(viewport);
     await page.goto("/");
     expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)).toBe(false);
+  }
+});
+
+test("keeps the constellation chart inside the art frame on odd viewports", async ({ page }) => {
+  for (const viewport of [
+    { width: 360, height: 640 },
+    { width: 320, height: 568 },
+    { width: 800, height: 400 },
+    { width: 360, height: 800 },
+    { width: 1440, height: 900 }
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    const art = await page.locator(".hero-art").boundingBox();
+    const chart = await page.locator("#hero-chart").boundingBox();
+    expect(art).not.toBeNull();
+    expect(chart).not.toBeNull();
+    expect(chart!.x).toBeGreaterThanOrEqual(art!.x - 1);
+    expect(chart!.y).toBeGreaterThanOrEqual(art!.y - 1);
+    expect(chart!.x + chart!.width).toBeLessThanOrEqual(art!.x + art!.width + 1);
+    expect(chart!.y + chart!.height).toBeLessThanOrEqual(art!.y + art!.height + 1);
+  }
+});
+
+test("keeps chart toolbar touch targets usable when the viewport is short", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto("/");
+  for (const locator of [
+    page.getByRole("link", { name: "全部星座", exact: true }),
+    page.getByRole("button", { name: "换一颗", exact: true })
+  ]) {
+    const box = await locator.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
   }
 });
 
